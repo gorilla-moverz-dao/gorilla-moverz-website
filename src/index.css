@@ -1,0 +1,57 @@
+body {
+  background-image: url("/images/background.jpg") !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+}
+
+/* Root padding change on mobile */
+@media only screen and (max-width: 600px) {
+  #root {
+    padding: 1rem !important;
+  }
+}
+
+form {
+  width: 100%;
+}
+
+.logo {
+  padding-bottom: 2em;
+  will-change: filter;
+  transition: filter 300ms;
+  filter: drop-shadow(0 0 10px #ffff00) drop-shadow(0 0 20px #ffff00);
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 10px #ffff00) drop-shadow(0 0 20px #ffff00)
+    drop-shadow(0 0 30px #ffff00);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+.teaser {
+  display: unset;
+}
+
+.logo-text,
+.logo-text-mobile {
+  font-size: 48px !important;
+  text-shadow: 1px 1px 2px #000;
+  filter: drop-shadow(0 0 10px #ffff00);
+  color: #ffffea;
+}
+
+.logo-text-mobile {
+  font-size: 36px !important;
+}
+
+p {
+  text-shadow: 1px 1px 2px #000;
+  padding-bottom: 12px;
+}
+
+h1 {
+  text-shadow: 1px 1px 3px #000;
+}
