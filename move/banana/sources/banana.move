@@ -129,6 +129,13 @@ module GorillaMoverz::banana {
     }
 
     #[test(creator = @GorillaMoverz)]
+    public fun test_init(
+        creator: &signer,
+    ) {
+        init_module(creator);
+    }
+
+    #[test(creator = @GorillaMoverz)]
     fun test_basic_flow(
         creator: &signer,
     ) acquires ManagedFungibleAsset {

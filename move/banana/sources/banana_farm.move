@@ -157,16 +157,32 @@ module GorillaMoverz::banana_farm_one {
         treasury.timeout_in_seconds
     }
 
+    #[test_only]
+    use aptos_framework::account;
+    #[test_only]
+    use GorillaMoverz::launchpad;
+
+
     #[test(creator = @GorillaMoverz, user1 = @0x200)]
     fun test_basic_flow(
         creator: &signer,
         user1: &signer,
     ) acquires BananaTreasury {
-        let asset = banana::get_metadata();
+        let creator_address = signer::address_of(creator);
+        account::create_account_for_test(creator_address);
+
+        let user1_address = signer::address_of(user1);
+        account::create_account_for_test(user1_address);
+
+        banana::test_init(creator);
+        banana::mint(creator, creator_address, 100);
 
         init_module(creator);
-        let creator_address = signer::address_of(creator);
+        let asset = banana::get_metadata();
 
         deposit(creator, 100);
+
+        launchpad::test_init(creator);
+        // TODO: Create a collection and verify that the nft is from that collection using with withdraw function
     }
 }

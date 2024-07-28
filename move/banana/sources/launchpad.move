@@ -576,6 +576,13 @@ module GorillaMoverz::launchpad {
     #[test_only]
     use aptos_framework::account;
 
+    #[test(creator = @GorillaMoverz)]
+    public fun test_init(
+        creator: &signer,
+    ) {
+        init_module(creator);
+    }
+
     #[test(aptos_framework = @0x1, sender = @GorillaMoverz, user1 = @0x200, user2 = @0x201)]
     fun test_happy_path(
         aptos_framework: &signer,
