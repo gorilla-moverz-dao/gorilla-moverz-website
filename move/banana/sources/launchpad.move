@@ -602,7 +602,7 @@ module GorillaMoverz::launchpad {
             sender,
             string::utf8(b"description"),
             string::utf8(b"name"),
-            string::utf8(b"https://gateway.irys.xyz/manifest_id/collection.json"),
+            string::utf8(b"https://gorilla-moverz.xyz/nfts/farmer/collection.json"),
             10,
             option::some(10),
             option::some(3),
@@ -626,7 +626,7 @@ module GorillaMoverz::launchpad {
         mint_nft(user1, collection_1, 1);
 
         let nft = mint_nft_internal(user1_addr, collection_1);
-        assert!(token::uri(nft) == string::utf8(b"https://gateway.irys.xyz/manifest_id/5.json"), 2);
+        assert!(token::uri(nft) == string::utf8(b"https://gorilla-moverz.xyz/nfts/farmer/metadata/5"), 2);
 
         let active_or_next_stage = get_active_or_next_mint_stage(collection_1);
         assert!(active_or_next_stage == option::some(string::utf8(ALLOWLIST_MINT_STAGE_CATEGORY)), 3);
