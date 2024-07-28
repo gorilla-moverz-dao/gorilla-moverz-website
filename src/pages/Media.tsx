@@ -29,22 +29,28 @@ function Media() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const episodes = [
     {
-      title: "Podcast Episode #1",
+      title: "Movecast Episode #1",
       description: "Gorilla Leon: Vision and Importance of Memes",
       url: "https://www.youtube.com/embed/eWX_ssGKu4w?si=ondczoi9BycPB_nK",
       preview: "https://img.youtube.com/vi/eWX_ssGKu4w/0.jpg",
     },
     {
-      title: "Podcast Episode #2",
+      title: "Movecast Episode #2",
       description: "Gorilla usedtowels: Real-Life Community Building",
       url: "https://www.youtube.com/embed/a0OTfgkebpg?si=YW9rtr6pdL8wVotn",
       preview: "https://img.youtube.com/vi/a0OTfgkebpg/0.jpg",
     },
     {
-      title: "Podcast Episode #3",
+      title: "Movecast Episode #3",
       description: "EthCC Integrated Day",
       url: "https://www.youtube.com/embed/_K5VarwTtzU?si=kWlAINbNYFJrA62R",
       preview: "https://img.youtube.com/vi/_K5VarwTtzU/0.jpg",
+    },
+    {
+      title: "Movecast Episode #4",
+      description: "BRKT - Bet on what you believe in",
+      url: "https://www.youtube.com/embed/Vn22zJktpOs?si=hP0FiFZojW_DLv3m",
+      preview: "https://img.youtube.com/vi/Vn22zJktpOs/0.jpg",
     },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
