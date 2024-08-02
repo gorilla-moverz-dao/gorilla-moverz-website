@@ -576,7 +576,7 @@ module GorillaMoverz::launchpad {
     #[test_only]
     use aptos_framework::account;
 
-    #[test(creator = @GorillaMoverz)]
+    #[test_only]
     public fun test_init(
         creator: &signer,
     ) {
@@ -604,25 +604,13 @@ module GorillaMoverz::launchpad {
         init_module(sender);
 
         // create first collection
-
-        create_collection(
+        test_create_collection(
             sender,
             string::utf8(b"description"),
             string::utf8(b"name"),
-            string::utf8(b"https://gorilla-moverz.xyz/nfts/farmer/collection.json"),
-            10,
-            option::some(10),
-            option::some(3),
             option::some(vector[user1_addr]),
-            option::some(timestamp::now_seconds()),
-            option::some(timestamp::now_seconds() + 100),
-            option::some(3),
-            option::some(5),
-            option::some(timestamp::now_seconds() + 200),
-            option::some(timestamp::now_seconds() + 300),
-            option::some(2),
-            option::some(10),
         );
+        
         let registry = get_registry();
         let collection_1 = *vector::borrow(&registry, vector::length(&registry) - 1);
         assert!(collection::count(collection_1) == option::some(3), 1);
@@ -673,5 +661,38 @@ module GorillaMoverz::launchpad {
 
         coin::destroy_burn_cap(burn_cap);
         coin::destroy_mint_cap(mint_cap);
+    }
+
+    #[test_only]
+    public fun test_setup_banana_farmer(aptos_framework: &signer, creator: &signer, allowlist: Option<vector<address>>) acquires Registry, Config, CollectionConfig, CollectionOwnerObjConfig {
+        timestamp::set_time_has_started_for_testing(aptos_framework);
+        test_create_collection(
+            creator,
+            string::utf8(b"farmer description"),
+            string::utf8(b"farmer"),
+            allowlist
+        );
+    }
+
+    #[test_only]
+    fun test_create_collection(sender: &signer, description: String, name: String, allowlist: Option<vector<address>>) acquires Registry, Config, CollectionConfig, CollectionOwnerObjConfig {
+        create_collection(
+            sender,
+            description,
+            name,
+            string::utf8(b"https://gorilla-moverz.xyz/nfts/farmer/collection.json"),
+            10,
+            option::some(10),
+            option::some(3),
+            allowlist,
+            option::some(timestamp::now_seconds()),
+            option::some(timestamp::now_seconds() + 100),
+            option::some(3),
+            option::some(5),
+            option::some(timestamp::now_seconds() + 200),
+            option::some(timestamp::now_seconds() + 300),
+            option::some(2),
+            option::some(10),
+        );
     }
 }

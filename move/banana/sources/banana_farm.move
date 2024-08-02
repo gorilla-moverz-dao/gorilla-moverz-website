@@ -161,10 +161,13 @@ module GorillaMoverz::banana_farm_one {
     use aptos_framework::account;
     #[test_only]
     use GorillaMoverz::launchpad;
+    #[test_only]
+    use std::option::{Self};
 
 
-    #[test(creator = @GorillaMoverz, user1 = @0x200)]
+    #[test(aptos_framework = @0x1, creator = @GorillaMoverz, user1 = @0x200)]
     fun test_basic_flow(
+        aptos_framework: &signer,
         creator: &signer,
         user1: &signer,
     ) acquires BananaTreasury {
@@ -183,6 +186,11 @@ module GorillaMoverz::banana_farm_one {
         deposit(creator, 100);
 
         launchpad::test_init(creator);
+        launchpad::test_setup_banana_farmer(
+            aptos_framework,
+            creator,
+            option::some(vector[user1_address]),
+        )
         // TODO: Create a collection and verify that the nft is from that collection using with withdraw function
     }
 }
