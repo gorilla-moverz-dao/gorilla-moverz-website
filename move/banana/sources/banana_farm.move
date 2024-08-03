@@ -197,7 +197,7 @@ module GorillaMoverz::banana_farm_one {
     ) acquires BananaTreasury {
         let user1_address = signer::address_of(user1);
         
-        let (main_collection, partner_collection) = test_setup_farm(aptos_framework, creator, user1);
+        let (_main_collection, partner_collection) = test_setup_farm(aptos_framework, creator, user1);
         let partner_nft = launchpad::test_mint_nft(user1_address, partner_collection);
 
         withdraw(user1, partner_nft);
@@ -215,7 +215,6 @@ module GorillaMoverz::banana_farm_one {
         banana::mint(creator, creator_address, 1_000_000_000);
 
         init_module(creator);
-        let asset = banana::get_metadata();
 
         deposit(creator, 1_000_000_000);
 
