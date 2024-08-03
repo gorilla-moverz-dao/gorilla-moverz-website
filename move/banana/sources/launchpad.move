@@ -40,6 +40,8 @@ module GorillaMoverz::launchpad {
     const EEND_TIME_MUST_BE_SET_FOR_STAGE: u64 = 9;
     /// Mint limit per address must be set for stage
     const EMINT_LIMIT_PER_ADDR_MUST_BE_SET_FOR_STAGE: u64 = 10;
+    /// Only allowlist manager can add addresses to allowlist
+    const EONLY_ALLOWLIST_MANAGER_CAN_ADD: u64 = 11;
 
     const DEFAULT_PRE_MINT_AMOUNT: u64 = 0;
     const DEFAULT_MINT_FEE_PER_NFT: u64 = 0;
@@ -99,6 +101,7 @@ module GorillaMoverz::launchpad {
         /// Key is stage, value is mint fee denomination
         mint_fee_per_nft_by_stages: SimpleMap<String, u64>,
         collection_owner_obj: Object<CollectionOwnerObjConfig>,
+        allowlist_manager: Option<address>,
     }
 
     /// Global per contract
@@ -180,6 +183,7 @@ module GorillaMoverz::launchpad {
         allowlist_mint_limit_per_addr: Option<u64>,
         // Allowlist mint fee per NFT denominated in oapt (smallest unit of APT, i.e. 1e-8 APT)
         allowlist_mint_fee_per_nft: Option<u64>,
+        allowlist_manager: Option<address>,
         public_mint_start_time: Option<u64>,
         public_mint_end_time: Option<u64>,
         public_mint_limit_per_addr: Option<u64>,
@@ -221,6 +225,7 @@ module GorillaMoverz::launchpad {
         move_to(collection_obj_signer, CollectionConfig {
             mint_fee_per_nft_by_stages: simple_map::new(),
             collection_owner_obj,
+            allowlist_manager,
         });
 
         assert!(
@@ -319,6 +324,31 @@ module GorillaMoverz::launchpad {
             collection_obj,
             nft_objs,
         });
+    }
+
+    // Add addresses to allowlist
+    public entry fun add_allowlist_addresses(sender: &signer, addresses: vector<address>, collection_obj: Object<Collection>) acquires CollectionOwnerObjConfig, CollectionConfig {
+        let collection_config = borrow_global<CollectionConfig>(object::object_address(&collection_obj));
+
+        assert!(collection_config.allowlist_manager == option::some(signer::address_of(sender)), EONLY_ALLOWLIST_MANAGER_CAN_ADD);
+
+        let collection_owner_obj = collection_config.collection_owner_obj;
+        let collection_owner_config = borrow_global<CollectionOwnerObjConfig>(
+            object::object_address(&collection_owner_obj)
+        );
+
+        let collection_owner_obj_signer = &object::generate_signer_for_extending(&collection_owner_config.extend_ref);
+        let stage = string::utf8(ALLOWLIST_MINT_STAGE_CATEGORY);
+
+        for (i in 0..vector::length(&addresses)) {
+             mint_stage::upsert_allowlist(
+                collection_owner_obj_signer,
+                collection_obj,
+                mint_stage::find_mint_stage_index_by_name(collection_obj, stage),
+                *vector::borrow(&addresses, i),
+                1
+            );
+        };
     }
 
     // ================================= View  ================================= //
@@ -592,10 +622,11 @@ module GorillaMoverz::launchpad {
         init_module(creator);
     }
 
-    #[test(aptos_framework = @0x1, sender = @GorillaMoverz, user1 = @0x200, user2 = @0x201)]
+    #[test(aptos_framework = @0x1, sender = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300, user2 = @0x301)]
     fun test_happy_path(
         aptos_framework: &signer,
         sender: &signer,
+        allowlist_manager: &signer,
         user1: &signer,
         user2: &signer,
     ) acquires Registry, Config, CollectionConfig, CollectionOwnerObjConfig {
@@ -603,6 +634,7 @@ module GorillaMoverz::launchpad {
 
         let user1_addr = signer::address_of(user1);
         let user2_addr = signer::address_of(user2);
+        let allowlist_manager_addr = signer::address_of(allowlist_manager);
 
         // current timestamp is 0 after initialization
         timestamp::set_time_has_started_for_testing(aptos_framework);
@@ -615,6 +647,7 @@ module GorillaMoverz::launchpad {
         // create first collection
         test_create_collection(
             sender,
+            allowlist_manager_addr,
             string::utf8(b"description"),
             string::utf8(b"name"),
             option::some(vector[user1_addr]),
@@ -673,10 +706,11 @@ module GorillaMoverz::launchpad {
     }
 
     #[test_only]
-    public fun test_setup_banana_farmer(aptos_framework: &signer, creator: &signer, allowlist: Option<vector<address>>): (Object<Collection>, Object<Collection>) acquires Registry, Config, CollectionConfig, CollectionOwnerObjConfig {
+    public fun test_setup_banana_farmer(aptos_framework: &signer, creator: &signer, allowlist_manager: address, allowlist: Option<vector<address>>): (Object<Collection>, Object<Collection>) acquires Registry, Config, CollectionConfig, CollectionOwnerObjConfig {
         timestamp::set_time_has_started_for_testing(aptos_framework);
         test_create_collection(
             creator,
+            allowlist_manager,
             string::utf8(b"farmer description"),
             string::utf8(b"farmer"),
             allowlist
@@ -688,6 +722,7 @@ module GorillaMoverz::launchpad {
 
         test_create_collection(
             creator,
+            allowlist_manager,
             string::utf8(b"partner description"),
             string::utf8(b"partner"),
             allowlist
@@ -707,7 +742,7 @@ module GorillaMoverz::launchpad {
     }
 
     #[test_only]
-    fun test_create_collection(sender: &signer, description: String, name: String, allowlist: Option<vector<address>>) acquires Registry, Config, CollectionConfig, CollectionOwnerObjConfig {
+    fun test_create_collection(sender: &signer, allowlist_manager: address, description: String, name: String, allowlist: Option<vector<address>>) acquires Registry, Config, CollectionConfig, CollectionOwnerObjConfig {
         create_collection(
             sender,
             description,
@@ -721,6 +756,7 @@ module GorillaMoverz::launchpad {
             option::some(timestamp::now_seconds() + 100),
             option::some(3),
             option::some(5),
+            option::some(allowlist_manager),
             option::some(timestamp::now_seconds() + 200),
             option::some(timestamp::now_seconds() + 300),
             option::some(2),

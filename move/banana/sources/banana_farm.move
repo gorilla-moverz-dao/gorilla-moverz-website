@@ -169,15 +169,18 @@ module GorillaMoverz::banana_farm_one {
     use aptos_std::debug;
 
 
-    #[test(aptos_framework = @0x1, creator = @GorillaMoverz, user1 = @0x200)]
+    #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300, user2 = @0x400)]
     fun test_basic_flow(
         aptos_framework: &signer,
         creator: &signer,
+        allowlist_manager: &signer,
         user1: &signer,
+        user2: &signer,
     ) acquires BananaTreasury {
         let user1_address = signer::address_of(user1);
+        let user2_address = signer::address_of(user2);
 
-        let (main_collection, partner_collection) = test_setup_farm(aptos_framework, creator, user1);
+        let (main_collection, partner_collection) = test_setup_farm(aptos_framework, creator, allowlist_manager, user1);
         let nft = launchpad::test_mint_nft(user1_address, main_collection);
 
         debug::print(&main_collection);
@@ -186,42 +189,51 @@ module GorillaMoverz::banana_farm_one {
         debug::print(&collection::name(partner_collection));
 
         withdraw(user1, nft);
+
+        // Add user to allowlist and try to withdraw
+        launchpad::add_allowlist_addresses(allowlist_manager, vector[user2_address], main_collection);
+        let nft_user2 = launchpad::test_mint_nft(user2_address, main_collection);
+        withdraw(user2, nft_user2);
     }
 
-    #[test(aptos_framework = @0x1, creator = @GorillaMoverz, user1 = @0x200)]
+    #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300)]
     #[expected_failure(abort_code = EWRONG_COLLECTION, location = Self)]
     fun test_wrong_main_nft(
         aptos_framework: &signer,
         creator: &signer,
+        allowlist_manager: &signer,
         user1: &signer,
     ) acquires BananaTreasury {
         let user1_address = signer::address_of(user1);
         
-        let (_main_collection, partner_collection) = test_setup_farm(aptos_framework, creator, user1);
+        let (_main_collection, partner_collection) = test_setup_farm(aptos_framework, creator, allowlist_manager, user1);
         let partner_nft = launchpad::test_mint_nft(user1_address, partner_collection);
 
         withdraw(user1, partner_nft);
     }
 
     #[test_only]
-    fun test_setup_farm(aptos_framework: &signer, creator: &signer, user1: &signer): (Object<Collection>, Object<Collection>) acquires BananaTreasury {
+    fun test_setup_farm(aptos_framework: &signer, creator: &signer, allowlist_manager: &signer, user1: &signer): (Object<Collection>, Object<Collection>) acquires BananaTreasury {
         let creator_address = signer::address_of(creator);
         account::create_account_for_test(creator_address);
 
         let user1_address = signer::address_of(user1);
         account::create_account_for_test(user1_address);
 
+        let allowlist_manager_address = signer::address_of(allowlist_manager);
+
         banana::test_init(creator);
-        banana::mint(creator, creator_address, 1_000_000_000);
+        banana::mint(creator, creator_address, 2_000_000_000);
 
         init_module(creator);
 
-        deposit(creator, 1_000_000_000);
+        deposit(creator, 2_000_000_000);
 
         launchpad::test_init(creator);
         let (main_collection, partner_collection) = launchpad::test_setup_banana_farmer(
             aptos_framework,
             creator,
+            allowlist_manager_address,
             option::some(vector[user1_address]),
         );
 
