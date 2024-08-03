@@ -4,12 +4,14 @@ module GorillaMoverz::banana_farm_one {
     use aptos_framework::object::{Self, Object, ExtendRef};
     use aptos_framework::timestamp;
     use aptos_std::table::{Self, Table};
-    use std::string::{Self, String};
+    use std::string::{String};
+    use std::option::{Self, Option};
     use std::signer;
     use aptos_token_objects::token::{Self, Token};
     use aptos_token_objects::collection::{Self, Collection};
  
     use GorillaMoverz::banana;
+    use GorillaMoverz::launchpad;
 
     const ENOT_ELAPSED: u64 = 1;
     const EONLY_ADMIN_CAN_UPDATE: u64 = 2;
@@ -21,7 +23,7 @@ module GorillaMoverz::banana_farm_one {
         last_farmed: Table<address, u64>,
         is_closed: bool,
         timeout_in_seconds: u64,
-        collection_id: String,
+        collection_address: Option<address>,
     }
 
     fun init_module(deployer: &signer) {
@@ -40,7 +42,7 @@ module GorillaMoverz::banana_farm_one {
                 last_farmed: table::new(),
                 is_closed: false,
                 timeout_in_seconds: 2 * 60,
-                collection_id: string::utf8(b""),
+                collection_address: option::none(),
             }
         );
     }
@@ -58,13 +60,17 @@ module GorillaMoverz::banana_farm_one {
 
         assert!(object::owner(nft) == account, E_NOT_AUTHORIZED);
 
-        /* TODO: Check if the nft is of a specific collection
-        let col = token::collection_object(nft);
-        let collection_creator = collection::creator(col);
-        assert!(collection_creator == @GorillaMoverz, E_NOT_AUTHORIZED);
-        */
-        
+        let is_launchpad_collection = launchpad::verify_collection(nft);
+        assert!(is_launchpad_collection, E_NOT_AUTHORIZED);
+
         let treasury = borrow_global_mut<BananaTreasury>(@GorillaMoverz);
+
+        let collection_obj = token::collection_object(nft);
+        let collection_address = object::object_address(&collection_obj);
+        assert!(option::some(collection_address) == treasury.collection_address, E_NOT_AUTHORIZED);
+
+        // TODO: Verify collection address
+
         let timeout = treasury.timeout_in_seconds;
 
         let asset = banana::get_metadata();
@@ -101,11 +107,11 @@ module GorillaMoverz::banana_farm_one {
         treasury.timeout_in_seconds = timeout_in_seconds;
     }
 
-    public entry fun set_collection_id(sender: &signer, collection_id: String) acquires BananaTreasury {
+    public entry fun set_collection_address(sender: &signer, collection_address: address) acquires BananaTreasury {
         assert!(is_admin(signer::address_of(sender)), EONLY_ADMIN_CAN_UPDATE);
 
         let treasury = borrow_global_mut<BananaTreasury>(@GorillaMoverz);
-        treasury.collection_id = collection_id;
+        treasury.collection_address = option::some(collection_address);
     }
 
     fun is_admin(sender: address): bool {
@@ -160,9 +166,7 @@ module GorillaMoverz::banana_farm_one {
     #[test_only]
     use aptos_framework::account;
     #[test_only]
-    use GorillaMoverz::launchpad;
-    #[test_only]
-    use std::option::{Self};
+    use aptos_std::debug;
 
 
     #[test(aptos_framework = @0x1, creator = @GorillaMoverz, user1 = @0x200)]
@@ -178,19 +182,33 @@ module GorillaMoverz::banana_farm_one {
         account::create_account_for_test(user1_address);
 
         banana::test_init(creator);
-        banana::mint(creator, creator_address, 100);
+        banana::mint(creator, creator_address, 1_000_000_000);
 
         init_module(creator);
         let asset = banana::get_metadata();
 
-        deposit(creator, 100);
+        deposit(creator, 1_000_000_000);
 
         launchpad::test_init(creator);
-        launchpad::test_setup_banana_farmer(
+        let (main_collection, partner_collection) = launchpad::test_setup_banana_farmer(
             aptos_framework,
             creator,
             option::some(vector[user1_address]),
-        )
+        );
+
+        let collection_address = object::object_address(&main_collection);
+        set_collection_address(creator, collection_address);
+
+        let nft = launchpad::test_mint_nft(user1_address, main_collection);
+
+        debug::print(&main_collection);
+        debug::print(&collection::creator(main_collection));
+        debug::print(&launchpad::verify_collection(nft));
+
+        withdraw(user1, nft);
+
         // TODO: Create a collection and verify that the nft is from that collection using with withdraw function
+
+
     }
 }

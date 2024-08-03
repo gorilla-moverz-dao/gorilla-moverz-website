@@ -370,6 +370,15 @@ module GorillaMoverz::launchpad {
         amount * fee
     }
 
+    #[view]
+    public fun verify_collection(
+        nft: Object<Token>,
+    ): bool {
+        let collection_obj = token::collection_object(nft);
+        exists<CollectionConfig>(object::object_address(&collection_obj))
+    }
+
+
     // Get the name of the current active mint stage or the next mint stage if there is no active mint stage
     #[view]
     public fun get_active_or_next_mint_stage(collection_obj: Object<Collection>): Option<String> {
@@ -664,7 +673,7 @@ module GorillaMoverz::launchpad {
     }
 
     #[test_only]
-    public fun test_setup_banana_farmer(aptos_framework: &signer, creator: &signer, allowlist: Option<vector<address>>) acquires Registry, Config, CollectionConfig, CollectionOwnerObjConfig {
+    public fun test_setup_banana_farmer(aptos_framework: &signer, creator: &signer, allowlist: Option<vector<address>>): (Object<Collection>, Object<Collection>) acquires Registry, Config, CollectionConfig, CollectionOwnerObjConfig {
         timestamp::set_time_has_started_for_testing(aptos_framework);
         test_create_collection(
             creator,
@@ -672,6 +681,26 @@ module GorillaMoverz::launchpad {
             string::utf8(b"farmer"),
             allowlist
         );
+
+        let registry = get_registry();
+        let main_collection = *vector::borrow(&registry, vector::length(&registry) - 1);
+
+        test_create_collection(
+            creator,
+            string::utf8(b"partner description"),
+            string::utf8(b"partner"),
+            allowlist
+        );
+        let partner_collection = *vector::borrow(&registry, vector::length(&registry) - 1);
+
+        (main_collection, partner_collection)
+    }
+
+    #[test_only]
+    public fun test_mint_nft(sender_addr: address, collection_obj: Object<Collection>): Object<Token> acquires CollectionConfig, CollectionOwnerObjConfig {
+        let nft = mint_nft_internal(sender_addr, collection_obj);
+
+        nft
     }
 
     #[test_only]
