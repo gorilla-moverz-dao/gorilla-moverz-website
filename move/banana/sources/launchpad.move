@@ -684,6 +684,7 @@ module GorillaMoverz::launchpad {
 
         let registry = get_registry();
         let main_collection = *vector::borrow(&registry, vector::length(&registry) - 1);
+        assert!(collection::name(main_collection) == string::utf8(b"farmer"), 1);
 
         test_create_collection(
             creator,
@@ -691,7 +692,9 @@ module GorillaMoverz::launchpad {
             string::utf8(b"partner"),
             allowlist
         );
+        let registry = get_registry();
         let partner_collection = *vector::borrow(&registry, vector::length(&registry) - 1);
+        assert!(collection::name(partner_collection) == string::utf8(b"partner"), 1);
 
         (main_collection, partner_collection)
     }

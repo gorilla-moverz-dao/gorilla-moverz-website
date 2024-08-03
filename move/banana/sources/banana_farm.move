@@ -10,6 +10,8 @@ module GorillaMoverz::banana_farm_one {
     use aptos_token_objects::token::{Self, Token};
     use aptos_token_objects::collection::{Self, Collection};
  
+    use aptos_std::debug;
+
     use GorillaMoverz::banana;
     use GorillaMoverz::launchpad;
 
@@ -165,8 +167,6 @@ module GorillaMoverz::banana_farm_one {
 
     #[test_only]
     use aptos_framework::account;
-    #[test_only]
-    use aptos_std::debug;
 
 
     #[test(aptos_framework = @0x1, creator = @GorillaMoverz, user1 = @0x200)]
@@ -203,12 +203,15 @@ module GorillaMoverz::banana_farm_one {
 
         debug::print(&main_collection);
         debug::print(&collection::creator(main_collection));
+        debug::print(&collection::name(main_collection));
+        debug::print(&collection::name(partner_collection));
         debug::print(&launchpad::verify_collection(nft));
 
         withdraw(user1, nft);
 
-        // TODO: Create a collection and verify that the nft is from that collection using with withdraw function
+        let partner_nft = launchpad::test_mint_nft(user1_address, partner_collection);
 
-
+        // TODO: Validate expected failure
+        withdraw(user1, partner_nft);
     }
 }
