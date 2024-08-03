@@ -10,14 +10,14 @@ module GorillaMoverz::banana_farm_one {
     use aptos_token_objects::token::{Self, Token};
     use aptos_token_objects::collection::{Self, Collection};
  
-    use aptos_std::debug;
-
     use GorillaMoverz::banana;
     use GorillaMoverz::launchpad;
 
     const ENOT_ELAPSED: u64 = 1;
     const EONLY_ADMIN_CAN_UPDATE: u64 = 2;
-    const E_NOT_AUTHORIZED: u64 = 3;
+    const ENOT_AUTHORIZED: u64 = 3;
+    const ENOT_OWNED_NFT: u64 = 4;
+    const EWRONG_COLLECTION: u64 = 5;
 
     struct BananaTreasury has key {
         coins: Object<FungibleStore>,
@@ -60,18 +60,16 @@ module GorillaMoverz::banana_farm_one {
     public entry fun withdraw(sender: &signer, nft: Object<Token>) acquires BananaTreasury {
         let account = signer::address_of(sender);
 
-        assert!(object::owner(nft) == account, E_NOT_AUTHORIZED);
+        assert!(object::owner(nft) == account, ENOT_OWNED_NFT);
 
         let is_launchpad_collection = launchpad::verify_collection(nft);
-        assert!(is_launchpad_collection, E_NOT_AUTHORIZED);
+        assert!(is_launchpad_collection, EWRONG_COLLECTION);
 
         let treasury = borrow_global_mut<BananaTreasury>(@GorillaMoverz);
 
         let collection_obj = token::collection_object(nft);
         let collection_address = object::object_address(&collection_obj);
-        assert!(option::some(collection_address) == treasury.collection_address, E_NOT_AUTHORIZED);
-
-        // TODO: Verify collection address
+        assert!(option::some(collection_address) == treasury.collection_address, EWRONG_COLLECTION);
 
         let timeout = treasury.timeout_in_seconds;
 
@@ -167,6 +165,8 @@ module GorillaMoverz::banana_farm_one {
 
     #[test_only]
     use aptos_framework::account;
+    #[test_only]
+    use aptos_std::debug;
 
 
     #[test(aptos_framework = @0x1, creator = @GorillaMoverz, user1 = @0x200)]
@@ -175,6 +175,36 @@ module GorillaMoverz::banana_farm_one {
         creator: &signer,
         user1: &signer,
     ) acquires BananaTreasury {
+        let user1_address = signer::address_of(user1);
+
+        let (main_collection, partner_collection) = test_setup_farm(aptos_framework, creator, user1);
+        let nft = launchpad::test_mint_nft(user1_address, main_collection);
+
+        debug::print(&main_collection);
+        debug::print(&collection::creator(main_collection));
+        debug::print(&collection::name(main_collection));
+        debug::print(&collection::name(partner_collection));
+
+        withdraw(user1, nft);
+    }
+
+    #[test(aptos_framework = @0x1, creator = @GorillaMoverz, user1 = @0x200)]
+    #[expected_failure(abort_code = EWRONG_COLLECTION, location = Self)]
+    fun test_wrong_main_nft(
+        aptos_framework: &signer,
+        creator: &signer,
+        user1: &signer,
+    ) acquires BananaTreasury {
+        let user1_address = signer::address_of(user1);
+        
+        let (main_collection, partner_collection) = test_setup_farm(aptos_framework, creator, user1);
+        let partner_nft = launchpad::test_mint_nft(user1_address, partner_collection);
+
+        withdraw(user1, partner_nft);
+    }
+
+    #[test_only]
+    fun test_setup_farm(aptos_framework: &signer, creator: &signer, user1: &signer): (Object<Collection>, Object<Collection>) acquires BananaTreasury {
         let creator_address = signer::address_of(creator);
         account::create_account_for_test(creator_address);
 
@@ -199,19 +229,7 @@ module GorillaMoverz::banana_farm_one {
         let collection_address = object::object_address(&main_collection);
         set_collection_address(creator, collection_address);
 
-        let nft = launchpad::test_mint_nft(user1_address, main_collection);
-
-        debug::print(&main_collection);
-        debug::print(&collection::creator(main_collection));
-        debug::print(&collection::name(main_collection));
-        debug::print(&collection::name(partner_collection));
-        debug::print(&launchpad::verify_collection(nft));
-
-        withdraw(user1, nft);
-
-        let partner_nft = launchpad::test_mint_nft(user1_address, partner_collection);
-
-        // TODO: Validate expected failure
-        withdraw(user1, partner_nft);
+        (main_collection, partner_collection)
     }
+
 }
