@@ -42,6 +42,8 @@ module GorillaMoverz::launchpad {
     const EMINT_LIMIT_PER_ADDR_MUST_BE_SET_FOR_STAGE: u64 = 10;
     /// Only allowlist manager can add addresses to allowlist
     const EONLY_ALLOWLIST_MANAGER_CAN_ADD: u64 = 11;
+    /// Only admin can update allowlist manager
+    const EONLY_ADMIN_CAN_UPDATE_ALOWWLIST_MANAGER: u64 = 12;
 
     const DEFAULT_PRE_MINT_AMOUNT: u64 = 0;
     const DEFAULT_MINT_FEE_PER_NFT: u64 = 0;
@@ -349,6 +351,15 @@ module GorillaMoverz::launchpad {
                 1
             );
         };
+    }
+
+    // Set allowlist manager
+    public entry fun set_allowlist_manager(sender: &signer, allowlist_manager: address, collection_obj: Object<Collection>) acquires Config, CollectionConfig {
+        let config = borrow_global<Config>(@GorillaMoverz);
+        assert!(is_admin(config, signer::address_of(sender)), EONLY_ADMIN_CAN_UPDATE_ALOWWLIST_MANAGER);
+
+        let collection_config = borrow_global_mut<CollectionConfig>(object::object_address(&collection_obj));
+        collection_config.allowlist_manager = option::some(allowlist_manager);
     }
 
     // ================================= View  ================================= //
@@ -700,6 +711,8 @@ module GorillaMoverz::launchpad {
         timestamp::update_global_time_for_test_secs(350);
         let active_or_next_stage = get_active_or_next_mint_stage(collection_1);
         assert!(active_or_next_stage == option::none(), 12);
+
+        set_allowlist_manager(sender, user1_addr, collection_1);
 
         coin::destroy_burn_cap(burn_cap);
         coin::destroy_mint_cap(mint_cap);
