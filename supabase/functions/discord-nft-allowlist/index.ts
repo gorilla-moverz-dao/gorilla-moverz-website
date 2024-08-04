@@ -119,8 +119,11 @@ async function home(request: Request) {
       const transaction = await aptos.transaction.build.simple({
         sender: admin.accountAddress,
         data: {
-          function: `${addr}::banana::transfer`,
-          functionArguments: [addr, value, 1_000_000_000],
+          function: `${addr}::launchpad::add_allowlist_addresses`,
+          functionArguments: [
+            [value],
+            guildToCollection.get(post.guild_id),
+          ],
         },
       });
 
