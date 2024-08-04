@@ -3,8 +3,8 @@ name = "Gorilla Moverz"
 version = "0.0.1"
 
 [addresses]
-GorillaMoverz = "fb1e34e3f3a4be3ba29fe24f385d631102228c63860abf299518a9fc7d4261ff"
-initial_creator_addr = "fb1e34e3f3a4be3ba29fe24f385d631102228c63860abf299518a9fc7d4261ff"
+GorillaMoverz = "6c240d4a65483fe88ac559102ea0ac48d3298bb9874b0f7766d7f3523e4bfb07"
+initial_creator_addr = "6c240d4a65483fe88ac559102ea0ac48d3298bb9874b0f7766d7f3523e4bfb07"
 minter = "0x3c41ff6b5845e0094e19888cba63773591be9de59cafa9e582386f6af15dd490"
 
 [dependencies]

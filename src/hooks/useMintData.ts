@@ -1,7 +1,7 @@
 import movementClient from "../services/movement-client";
 import { AccountAddress } from "@aptos-labs/ts-sdk";
 import { useQuery } from "@tanstack/react-query";
-import { FARM_COLLECTION_ID, FARM_CONTRACT_ADDRESS } from "../constants";
+import { FARM_COLLECTION_ID, MODULE_ADDRESS } from "../constants";
 
 export interface Token {
   token_name: string;
@@ -58,7 +58,7 @@ async function getStartAndEndTime(
   const mintStageRes = await movementClient.view<[{ vec: [string] }]>({
     payload: {
       function: `${
-        AccountAddress.from(FARM_CONTRACT_ADDRESS)
+        AccountAddress.from(MODULE_ADDRESS)
       }::launchpad::get_active_or_next_mint_stage`,
       functionArguments: [collection_id],
     },
@@ -69,7 +69,7 @@ async function getStartAndEndTime(
   const startAndEndRes = await movementClient.view<[string, string]>({
     payload: {
       function: `${
-        AccountAddress.from(FARM_CONTRACT_ADDRESS)
+        AccountAddress.from(MODULE_ADDRESS)
       }::launchpad::get_mint_stage_start_and_end_time`,
       functionArguments: [collection_id, mintStage],
     },

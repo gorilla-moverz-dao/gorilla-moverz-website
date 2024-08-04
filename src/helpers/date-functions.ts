@@ -26,3 +26,9 @@ export function formatDate(date: Date) {
 
   return `${month} ${day}${suffix}, ${year} at ${formattedHours}:${formattedMinutes}${period}`;
 }
+
+export const dateToSeconds = (date: Date | undefined) => {
+  if (!date) return;
+  const dateInSeconds = Math.floor(+date / 1000);
+  return dateInSeconds;
+};

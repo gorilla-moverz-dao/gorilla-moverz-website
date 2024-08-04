@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import movementClient from "../../services/movement-client";
 import { MODULE_ADDRESS, NETWORK } from "../../constants";
-import { formatDate } from "../../helpers/formatDate";
+import { formatDate } from "../../helpers/date-functions";
 import { clampNumber } from "../../helpers/clampNumber";
 import { FaCopy, FaLink } from "react-icons/fa6";
 import { useOwnedNFTs } from "../../hooks/useOwnedNFTs";

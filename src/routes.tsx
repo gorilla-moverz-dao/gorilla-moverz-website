@@ -8,6 +8,7 @@ import GorillaNFT from "./pages/GorillaNFT";
 import Media from "./pages/Media";
 import BananaFarm from "./pages/BananaFarm";
 import Lighthouse from "./pages/Lighthouse";
+import CollectionCreate from "./components/banana-farm-collection/CollectionCreate";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
       { path: "partners", element: <Partners /> },
       { path: "lighthouse", element: <Lighthouse /> },
       { path: "bananas", element: <BananaFarm /> },
+      { path: "bananas/create", element: <CollectionCreate /> },
     ],
   },
 ]);
