@@ -9,5 +9,6 @@ export const FULL_NODE = "https://aptos.devnet.m1.movementlabs.xyz";
 export const FARM_COLLECTION_ID =
   "0xcf4c13caaacfbb5221b20b0e117912c92bb3f180cf229de609a6011b12020aee";
 export const NETWORK = Network.TESTNET;
-export const BANANA_CONTRACT_ADDRESS = "0x" + MODULE_ADDRESS;
-export const EXCLUDE_LEADERBOARD = [BANANA_CONTRACT_ADDRESS];
+export const BANANA_CONTRACT_ADDRESS =
+  "0x669407291b36b0449fede62613f7618c1f6266507adcbf112ef25a817e99f035";
+export const EXCLUDE_LEADERBOARD = ["0x" + MODULE_ADDRESS];
