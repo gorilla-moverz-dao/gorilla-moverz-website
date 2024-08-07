@@ -132,6 +132,22 @@ async function home(request: Request) {
         transaction,
       });
       console.log(res);
+      const transactionResult = await aptos.waitForTransaction({
+        transactionHash: res.hash,
+      });
+      console.log(transactionResult);
+      if (transactionResult.success) {
+        return json({
+          // Type 4 responds with the below message retaining the user's
+          // input at the top.
+          type: 4,
+          data: {
+            content: `Added to allowlist`,
+          },
+        });
+      } else {
+        return json({ error: transactionResult }, { status: 400 });
+      }
     } catch (ex) {
       return json({
         // Type 4 responds with the below message retaining the user's
