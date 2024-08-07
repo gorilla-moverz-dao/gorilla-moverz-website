@@ -52,6 +52,12 @@ function Media() {
       url: "https://www.youtube.com/embed/Vn22zJktpOs?si=hP0FiFZojW_DLv3m",
       preview: "https://img.youtube.com/vi/Vn22zJktpOs/0.jpg",
     },
+    {
+      title: "Movecast Episode #5",
+      description: "Satay Finance - Unleashing DeFi Simplicity",
+      url: "https://www.youtube.com/embed/3WNnaAVH8Sc?si=uUwNjJpKv5-annlX",
+      preview: "https://img.youtube.com/vi/3WNnaAVH8Sc/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
