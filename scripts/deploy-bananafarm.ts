@@ -130,7 +130,7 @@ async function deposit(
   const transaction = await aptos.transaction.build.simple({
     sender: signer.accountAddress,
     data: {
-      function: `${signer.accountAddress}::banana_farm_one::deposit`,
+      function: `${signer.accountAddress}::banana_farm::deposit`,
       functionArguments: [convertToAmount(amount)],
     },
   });
@@ -154,8 +154,7 @@ async function setCollectionAddress(
   const transaction = await aptos.transaction.build.simple({
     sender: signer.accountAddress,
     data: {
-      function:
-        `${signer.accountAddress}::banana_farm_one::set_collection_address`,
+      function: `${signer.accountAddress}::banana_farm::set_collection_address`,
       functionArguments: [collectionId],
     },
   });

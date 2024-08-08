@@ -1,10 +1,9 @@
-module GorillaMoverz::banana_farm_one {
+module GorillaMoverz::banana_farm {
     use aptos_framework::fungible_asset::{Self, FungibleStore };
     use aptos_framework::primary_fungible_store;
     use aptos_framework::object::{Self, Object, ExtendRef};
     use aptos_framework::timestamp;
     use aptos_std::table::{Self, Table};
-    use std::string::{String};
     use std::option::{Self, Option};
     use std::signer;
     use aptos_token_objects::token::{Self, Token};
@@ -123,26 +122,6 @@ module GorillaMoverz::banana_farm_one {
     }
 
     #[view]
-    public fun get_collection_from_token(t: Object<Token>): String {
-        let col = token::collection_object(t);
-        collection::name(col)
-    }
-
-    #[view]
-    public fun get_collection_object_from_token(t: Object<Token>): Object<Collection> {
-        let col = token::collection_object(t);
-        col
-    }
-
-    #[view]
-    public fun get_collection_creator(nft: Object<Token>): address {
-        let col = token::collection_object(nft);
-        let collection_creator = collection::creator(col);
-
-        collection_creator
-    }
-
-    #[view]
     public fun treasury_balance(): u64 acquires BananaTreasury {
         let treasury = borrow_global_mut<BananaTreasury>(@GorillaMoverz);
         fungible_asset::balance(treasury.coins)
@@ -155,6 +134,12 @@ module GorillaMoverz::banana_farm_one {
         let default = 0;
         let last_farmed = table::borrow_with_default(&treasury.last_farmed, account, &default);
         *last_farmed
+    }
+
+    #[view]
+    public fun collection_address(): Option<address> acquires BananaTreasury {
+        let treasury = borrow_global_mut<BananaTreasury>(@GorillaMoverz);
+        treasury.collection_address
     }
 
     #[view]
