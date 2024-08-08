@@ -24,7 +24,7 @@ import {
 const guildToCollection = new Map([
   [
     "1248584514494529657",
-    "0x2f52fd6a933b6a23fab521ab4e53f2f62c1ca893a72106e2b737b25e25b8d4cc",
+    "0xba47e8a4111d53d81773e920b55c4152976a47ea4b002777cd81e8eb6ed9e4e2",
   ],
 ]);
 
