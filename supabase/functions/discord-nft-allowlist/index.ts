@@ -111,7 +111,7 @@ async function home(request: Request) {
   // It implies that a user has issued a command.
   if (type === DiscordCommandType.ApplicationCommand) {
     const value = data.options.find(
-      (option) => option.name === "name",
+      (option) => option.name === "address",
     )?.value;
 
     try {
