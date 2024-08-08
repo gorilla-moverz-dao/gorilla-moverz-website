@@ -2,7 +2,6 @@ import { getSigner, submitAndWaitForTransaction } from "./aptos-helper";
 import { convertToAmount, dateToSeconds, runCommand } from "./helper";
 import {
   Account,
-  AnyNumber,
   Aptos,
   AptosConfig,
   Network,
@@ -11,7 +10,8 @@ import {
 
 const moveDir = "move/banana/";
 const aptosYml = moveDir + ".aptos/config.yaml";
-const mint_amount = convertToAmount(100_000_000);
+const mint_amount = 100_000_000;
+const deposit_amount = 10_000_000;
 const publish = false;
 
 const config = new AptosConfig({
@@ -37,7 +37,10 @@ async function main() {
     mint_amount,
   );
 
-  await createCollection(admin);
+  const collectionId = await createCollection(admin);
+  await setCollectionAddress(admin, collectionId);
+
+  await deposit(admin, deposit_amount);
 }
 
 main().catch((error) => console.error(error));
@@ -46,13 +49,13 @@ async function mintFACoin(
   coin: string,
   signer: Account,
   receiver: Account,
-  amount: AnyNumber,
+  amount: number,
 ): Promise<string> {
   const transaction = await aptos.transaction.build.simple({
     sender: signer.accountAddress,
     data: {
       function: `${signer.accountAddress}::${coin}::mint`,
-      functionArguments: [receiver.accountAddress, amount],
+      functionArguments: [receiver.accountAddress, convertToAmount(amount)],
     },
   });
 
@@ -61,7 +64,7 @@ async function mintFACoin(
     signer,
     transaction,
   );
-  console.log(`Minting ${coin} coin successful. - `, response.hash);
+  console.log(`Minting ${coin} coin successful. - tx: `, response.hash);
   return response.hash;
 }
 
@@ -112,12 +115,56 @@ async function createCollection(
     signer,
     transaction,
   )) as UserTransactionResponse;
-  console.log(`Collection created successful. - `, response.hash);
-  console.log(response.events);
   const collectionCreated = response.events.find((e) =>
     e.type.split("::")[2] === "CreateCollectionEvent"
   );
-  console.log(collectionCreated);
   const collectionId = collectionCreated?.data.collection_obj.inner;
+  console.log(`Collection created successful. - tx: `, collectionId);
   return collectionId;
+}
+
+async function deposit(
+  signer: Account,
+  amount: number,
+): Promise<string> {
+  const transaction = await aptos.transaction.build.simple({
+    sender: signer.accountAddress,
+    data: {
+      function: `${signer.accountAddress}::banana_farm_one::deposit`,
+      functionArguments: [convertToAmount(amount)],
+    },
+  });
+
+  const response = await submitAndWaitForTransaction(
+    aptos,
+    signer,
+    transaction,
+  );
+  console.log(
+    `Deposited ${amount} bananas to banana farm - tx: `,
+    response.hash,
+  );
+  return response.hash;
+}
+
+async function setCollectionAddress(
+  signer: Account,
+  collectionId: string,
+): Promise<string> {
+  const transaction = await aptos.transaction.build.simple({
+    sender: signer.accountAddress,
+    data: {
+      function:
+        `${signer.accountAddress}::banana_farm_one::set_collection_address`,
+      functionArguments: [collectionId],
+    },
+  });
+
+  const response = await submitAndWaitForTransaction(
+    aptos,
+    signer,
+    transaction,
+  );
+  console.log(`Set collection Id to ${collectionId} - tx: `, response.hash);
+  return response.hash;
 }
