@@ -7,7 +7,6 @@ module GorillaMoverz::banana_farm {
     use std::option::{Self, Option};
     use std::signer;
     use aptos_token_objects::token::{Self, Token};
-    use aptos_token_objects::collection::{Self, Collection};
  
     use GorillaMoverz::banana;
     use GorillaMoverz::launchpad;
@@ -152,6 +151,9 @@ module GorillaMoverz::banana_farm {
     use aptos_framework::account;
     #[test_only]
     use aptos_std::debug;
+    #[test_only]
+    use aptos_token_objects::collection::{Self, Collection};
+
 
 
     #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300, user2 = @0x400)]
