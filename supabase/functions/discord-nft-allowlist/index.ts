@@ -20,6 +20,12 @@ import {
   Ed25519PrivateKey,
   Network,
 } from "npm:@aptos-labs/ts-sdk@^1.18.1";
+import { createClient } from "jsr:@supabase/supabase-js@2";
+
+const supabaseClient = createClient(
+  Deno.env.get("SUPABASE_URL") ?? "",
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+);
 
 const guildToCollection = new Map([
   [
@@ -37,6 +43,7 @@ interface PostData {
   member: {
     user: {
       id: string;
+      username: string;
     };
   };
 }
@@ -61,8 +68,6 @@ async function home(request: Request) {
   const admin = Account.fromPrivateKey({
     privateKey,
   });
-
-  console.log(admin.accountAddress.toString());
 
   // validateRequest() ensures that a request is of POST method and
   // has the following headers.
@@ -115,6 +120,15 @@ async function home(request: Request) {
     )?.value;
 
     try {
+      if (!value) throw new Error("Address not provided");
+
+      await blockMultipleEntries(
+        post.guild_id,
+        "discord_user_id",
+        post.member.user.id,
+      );
+      await blockMultipleEntries(post.guild_id, "wallet_address", value);
+
       const addr = Deno.env.get("ACCOUNT_ADDRESS")!;
       const transaction = await aptos.transaction.build.simple({
         sender: admin.accountAddress,
@@ -135,8 +149,14 @@ async function home(request: Request) {
       const transactionResult = await aptos.waitForTransaction({
         transactionHash: res.hash,
       });
-      console.log(transactionResult);
       if (transactionResult.success) {
+        await supabaseClient.from("banana_farm_allowlist").insert({
+          discord_user_id: post.member.user.id,
+          discord_user_name: post.member.user.username,
+          wallet_address: value,
+          guild_id: post.guild_id,
+        });
+
         return json({
           // Type 4 responds with the below message retaining the user's
           // input at the top.
@@ -158,15 +178,6 @@ async function home(request: Request) {
         },
       });
     }
-
-    return json({
-      // Type 4 responds with the below message retaining the user's
-      // input at the top.
-      type: 4,
-      data: {
-        content: `Hello, ${value}!`,
-      },
-    });
   }
 
   // We will return a bad request error as a valid Discord request
@@ -195,4 +206,24 @@ async function verifySignature(
 /** Converts a hexadecimal string to Uint8Array. */
 function hexToUint8Array(hex: string) {
   return new Uint8Array(hex.match(/.{1,2}/g)!.map((val) => parseInt(val, 16)));
+}
+
+async function blockMultipleEntries(
+  guild_id: string,
+  column: "discord_user_id" | "wallet_address",
+  value: string,
+) {
+  const { data, error } = await supabaseClient.from("banana_farm_allowlist")
+    .select("*").eq("guild_id", guild_id).eq("discord_user_id", value)
+    .maybeSingle();
+  if (error) {
+    throw new Error(error.message);
+  }
+  if (data) {
+    throw new Error(
+      column === "discord_user_id"
+        ? "User already submitted a wallet address"
+        : "Wallet address already submitted",
+    );
+  }
 }
