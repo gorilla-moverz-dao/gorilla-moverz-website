@@ -12,15 +12,10 @@ import {
 } from "https://deno.land/x/sift@0.6.0/mod.ts";
 // TweetNaCl is a cryptography library that we use to verify requests
 // from Discord.
-import nacl from "https://cdn.skypack.dev/tweetnacl@v1.0.3?dts";
-import {
-  Account,
-  Aptos,
-  AptosConfig,
-  Ed25519PrivateKey,
-  Network,
-} from "npm:@aptos-labs/ts-sdk@^1.18.1";
+
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { DiscordCommandType, verifySignature } from "./discord-functions.ts";
+import { addAllowlistAddresses } from "./aptos-functions.ts";
 
 const supabaseClient = createClient(
   Deno.env.get("SUPABASE_URL") ?? "",
@@ -48,11 +43,6 @@ interface PostData {
   };
 }
 
-enum DiscordCommandType {
-  Ping = 1,
-  ApplicationCommand = 2,
-}
-
 // For all requests to "/" endpoint, we want to invoke home() handler.
 serve({
   "/discord-nft-allowlist": home,
@@ -60,15 +50,6 @@ serve({
 
 // The main logic of the Discord Slash Command is defined in this function.
 async function home(request: Request) {
-  const aptosConfig = new AptosConfig({
-    network: Network.TESTNET,
-  });
-  const aptos = new Aptos(aptosConfig);
-  const privateKey = new Ed25519PrivateKey(Deno.env.get("APTOS_PK")!);
-  const admin = Account.fromPrivateKey({
-    privateKey,
-  });
-
   // validateRequest() ensures that a request is of POST method and
   // has the following headers.
   const { error } = await validateRequest(request, {
@@ -103,7 +84,8 @@ async function home(request: Request) {
     });
   }
 
-  if (!guildToCollection.has(post.guild_id)) {
+  const collectionId = guildToCollection.get(post.guild_id);
+  if (collectionId === undefined) {
     return json({
       type: 4,
       data: {
@@ -129,26 +111,10 @@ async function home(request: Request) {
       );
       await blockMultipleEntries(post.guild_id, "wallet_address", value);
 
-      const addr = Deno.env.get("ACCOUNT_ADDRESS")!;
-      const transaction = await aptos.transaction.build.simple({
-        sender: admin.accountAddress,
-        data: {
-          function: `${addr}::launchpad::add_allowlist_addresses`,
-          functionArguments: [
-            [value],
-            guildToCollection.get(post.guild_id),
-          ],
-        },
-      });
-
-      const res = await aptos.signAndSubmitTransaction({
-        signer: admin,
-        transaction,
-      });
-      console.log(res);
-      const transactionResult = await aptos.waitForTransaction({
-        transactionHash: res.hash,
-      });
+      const transactionResult = await addAllowlistAddresses(
+        value,
+        collectionId,
+      );
       if (transactionResult.success) {
         await supabaseClient.from("banana_farm_allowlist").insert({
           discord_user_id: post.member.user.id,
@@ -183,29 +149,6 @@ async function home(request: Request) {
   // We will return a bad request error as a valid Discord request
   // shouldn't reach here.
   return json({ error: "bad request" }, { status: 400 });
-}
-
-/** Verify whether the request is coming from Discord. */
-async function verifySignature(
-  request: Request,
-): Promise<{ valid: boolean; body: string }> {
-  const PUBLIC_KEY = Deno.env.get("DISCORD_PUBLIC_KEY")!;
-  // Discord sends these headers with every request.
-  const signature = request.headers.get("X-Signature-Ed25519")!;
-  const timestamp = request.headers.get("X-Signature-Timestamp")!;
-  const body = await request.text();
-  const valid = nacl.sign.detached.verify(
-    new TextEncoder().encode(timestamp + body),
-    hexToUint8Array(signature),
-    hexToUint8Array(PUBLIC_KEY),
-  );
-
-  return { valid, body };
-}
-
-/** Converts a hexadecimal string to Uint8Array. */
-function hexToUint8Array(hex: string) {
-  return new Uint8Array(hex.match(/.{1,2}/g)!.map((val) => parseInt(val, 16)));
 }
 
 async function blockMultipleEntries(
