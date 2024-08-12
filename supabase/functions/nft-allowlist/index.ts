@@ -1,21 +1,14 @@
-// Follow this setup guide to integrate the Deno language server with your editor:
-// https://deno.land/manual/getting_started/setup_your_environment
-// This enables autocomplete, go to definition, etc.
-
-// Sift is a small routing library that abstracts away details like starting a
-// listener on a port, and provides a simple function (serve) that has an API
-// to invoke a function for a specific path.
 import {
   json,
   serve,
   validateRequest,
 } from "https://deno.land/x/sift@0.6.0/mod.ts";
-// TweetNaCl is a cryptography library that we use to verify requests
-// from Discord.
-
 import { createClient } from "jsr:@supabase/supabase-js@2";
-import { verifySignature } from "./discord-functions.ts";
 import { addAllowlistAddresses } from "./aptos-functions.ts";
+import {
+  DiscordPostData,
+  verifySignature,
+} from "../_shared/discord-functions.ts";
 
 const DISCORD_API_BASE_URL = "https://discord.com/api/v10";
 
@@ -24,28 +17,11 @@ const supabaseClient = createClient(
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
 );
 
-interface PostData {
-  application_id: string;
-  token: string;
-  type: number;
-  data: {
-    options: { name: string; value: string }[];
-  };
-  guild_id: string;
-  member: {
-    user: {
-      id: string;
-      username: string;
-    };
-  };
-}
-
 serve({
   "/nft-allowlist": home,
 });
 
 async function home(request: Request) {
-  console.log(request);
   // validateRequest() ensures that a request is of POST method and
   // has the following headers.
   const { error } = await validateRequest(request, {
@@ -70,7 +46,7 @@ async function home(request: Request) {
     );
   }
 
-  const post: PostData = JSON.parse(body);
+  const post: DiscordPostData = JSON.parse(body);
 
   try {
     const u = new URL(request.url);

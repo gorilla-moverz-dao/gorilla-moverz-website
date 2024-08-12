@@ -27,3 +27,19 @@ export enum DiscordCommandType {
   Ping = 1,
   ApplicationCommand = 2,
 }
+
+export interface DiscordPostData {
+  application_id: string;
+  token: string;
+  type: number;
+  data: {
+    options: { name: string; value: string }[];
+  };
+  guild_id: string;
+  member: {
+    user: {
+      id: string;
+      username: string;
+    };
+  };
+}
