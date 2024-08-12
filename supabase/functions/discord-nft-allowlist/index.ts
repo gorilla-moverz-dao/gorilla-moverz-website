@@ -15,7 +15,6 @@ import {
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { DiscordCommandType, verifySignature } from "./discord-functions.ts";
-import { addAllowlistAddresses } from "./aptos-functions.ts";
 
 const supabaseClient = createClient(
   Deno.env.get("SUPABASE_URL") ?? "",
@@ -30,6 +29,8 @@ const guildToCollection = new Map([
 ]);
 
 interface PostData {
+  application_id: string;
+  token: string;
   type: number;
   data: {
     options: { name: string; value: string }[];
@@ -43,12 +44,10 @@ interface PostData {
   };
 }
 
-// For all requests to "/" endpoint, we want to invoke home() handler.
 serve({
   "/discord-nft-allowlist": home,
 });
 
-// The main logic of the Discord Slash Command is defined in this function.
 async function home(request: Request) {
   // validateRequest() ensures that a request is of POST method and
   // has the following headers.
@@ -76,65 +75,64 @@ async function home(request: Request) {
 
   const post: PostData = JSON.parse(body);
   const { type = 0, data = { options: [] } } = post;
-  // Discord performs Ping interactions to test our application.
-  // Type 1 in a request implies a Ping interaction.
   if (type === DiscordCommandType.Ping) {
     return json({
       type: 1, // Type 1 in a response is a Pong interaction response type.
     });
   }
 
-  const collectionId = guildToCollection.get(post.guild_id);
-  if (collectionId === undefined) {
-    return json({
-      type: 4,
-      data: {
-        content: "This server is not allowed to interact with this bot.",
-      },
-    });
-  }
-
   // Type 2 in a request is an ApplicationCommand interaction.
   // It implies that a user has issued a command.
   if (type === DiscordCommandType.ApplicationCommand) {
-    const value = data.options.find(
+    const collectionId = guildToCollection.get(post.guild_id);
+    if (collectionId === undefined) {
+      return json({
+        type: 4,
+        data: {
+          content: "This server is not allowed to interact with this bot.",
+        },
+      });
+    }
+
+    const address = data.options.find(
       (option) => option.name === "address",
     )?.value;
 
     try {
-      if (!value) throw new Error("Address not provided");
+      if (!address) throw new Error("Address not provided");
 
       await blockMultipleEntries(
         post.guild_id,
         "discord_user_id",
         post.member.user.id,
       );
-      await blockMultipleEntries(post.guild_id, "wallet_address", value);
+      await blockMultipleEntries(post.guild_id, "wallet_address", address);
 
-      const transactionResult = await addAllowlistAddresses(
-        value,
-        collectionId,
-      );
-      if (transactionResult.success) {
-        await supabaseClient.from("banana_farm_allowlist").insert({
-          discord_user_id: post.member.user.id,
-          discord_user_name: post.member.user.username,
-          wallet_address: value,
-          guild_id: post.guild_id,
-        });
-
-        return json({
-          // Type 4 responds with the below message retaining the user's
-          // input at the top.
-          type: 4,
-          data: {
-            content: `Added to allowlist`,
+      // Forward request for delayed update of message because response needs to be sent within 3 secs
+      fetch(
+        request.url.replace("/discord-nft-allowlist", "/nft-allowlist") +
+          `?collectionId=${collectionId}&address=${address}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Signature-Ed25519": request.headers.get("X-Signature-Ed25519") ??
+              "",
+            "X-Signature-Timestamp":
+              request.headers.get("X-Signature-Timestamp") ?? "",
           },
-        });
-      } else {
-        return json({ error: transactionResult }, { status: 400 });
-      }
+          body: body,
+        },
+      );
+
+      // Respond to the initial interaction
+      const initialResponse = json({
+        type: 5, // Type 5 is a deferred response
+      });
+
+      return initialResponse;
     } catch (ex) {
+      console.log(ex);
       return json({
         // Type 4 responds with the below message retaining the user's
         // input at the top.
@@ -157,7 +155,7 @@ async function blockMultipleEntries(
   value: string,
 ) {
   const { data, error } = await supabaseClient.from("banana_farm_allowlist")
-    .select("*").eq("guild_id", guild_id).eq("discord_user_id", value)
+    .select("*").eq("guild_id", guild_id).eq(column, value)
     .maybeSingle();
   if (error) {
     throw new Error(error.message);
