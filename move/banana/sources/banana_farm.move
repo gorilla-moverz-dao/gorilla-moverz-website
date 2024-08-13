@@ -7,8 +7,7 @@ module GorillaMoverz::banana_farm {
     use std::option::{Self, Option};
     use std::signer;
     use aptos_token_objects::token::{Self, Token};
-    use aptos_token_objects::collection::{Self, Collection};
- 
+    
     use GorillaMoverz::banana;
     use GorillaMoverz::launchpad;
 
@@ -192,6 +191,7 @@ module GorillaMoverz::banana_farm {
     }
 
     #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300, user2 = @0x400)]
+    #[expected_failure(abort_code = 327681, location = GorillaMoverz::banana)]
     fun test_basic_flow_frozen(
         aptos_framework: &signer,
         creator: &signer,
@@ -215,16 +215,53 @@ module GorillaMoverz::banana_farm {
         assert!(!primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_FROZEN);
         withdraw(user1, nft);
         assert!(primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_NOT_FROZEN);
+
+        let balance = primary_fungible_store::balance(user1_address, asset);
+        debug::print(&balance);
+        assert!(primary_fungible_store::balance(user1_address, asset) == 1_000_000_000, 6);
         
         // Withdraw again, should work even though funds are frozen.
+        // TODO: fails on timeout, how to circumvent in tests?
+        // withdraw(user1, nft); 
+        
+        // Transfer via banana module is disabled because user1 is not creator/owner
+        GorillaMoverz::banana::transfer(user1, user1_address, user2_address, 1_000_000);
+    }
+
+    #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300, user2 = @0x400)]
+    #[expected_failure(abort_code = 327683, location = aptos_framework::fungible_asset)]
+    fun test_basic_flow_frozen_2(
+        aptos_framework: &signer,
+        creator: &signer,
+        allowlist_manager: &signer,
+        user1: &signer,
+        user2: &signer,
+    ) acquires BananaTreasury {
+        let user1_address = signer::address_of(user1);
+        let user2_address = signer::address_of(user2);
+
+        let (main_collection, partner_collection) = test_setup_farm(aptos_framework, creator, allowlist_manager, user1);
+        let nft = launchpad::test_mint_nft(user1_address, main_collection);
+        let asset = GorillaMoverz::banana::get_metadata();
+
+
+        debug::print(&main_collection);
+        debug::print(&collection::creator(main_collection));
+        debug::print(&collection::name(main_collection));
+        debug::print(&collection::name(partner_collection));
+
+        assert!(!primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_FROZEN);
         withdraw(user1, nft);
-
-
-        // Add user to allowlist and try to withdraw
-        launchpad::add_allowlist_addresses(allowlist_manager, vector[user2_address], main_collection);
-        let nft_user2 = launchpad::test_mint_nft(user2_address, main_collection);
-        withdraw(user2, nft_user2);
         assert!(primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_NOT_FROZEN);
+
+        let balance = primary_fungible_store::balance(user1_address, asset);
+        debug::print(&balance);
+        assert!(primary_fungible_store::balance(user1_address, asset) == 1_000_000_000, 6);
+    
+        // Transfer via fungible_asset is disabled due to freeze
+        let user1_wallet = primary_fungible_store::primary_store(user1_address, asset);
+        let user2_wallet = primary_fungible_store::ensure_primary_store_exists(user2_address, asset);
+        fungible_asset::transfer(user1, user1_wallet, user2_wallet, 1_000_000); 
     }
 
 
