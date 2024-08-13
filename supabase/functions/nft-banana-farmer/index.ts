@@ -68,7 +68,8 @@ Deno.serve(async (req) => {
   const nft: BananaFarmerNFT = {
     name: "Farmer #" + farmer.id,
     description: "Farmer #" + farmer.id,
-    image: "https://gorilla-moverz.xyz/nfts/farmer/images/" + farmer.image,
+    image: "https://gorilla-moverz.xyz/nfts/" + slug + "/images/" +
+      farmer.image,
     attributes: [],
     external_url: "https://gorilla-moverz.xyz/bananas/collections/" + slug +
       "/" + farmer.id,
