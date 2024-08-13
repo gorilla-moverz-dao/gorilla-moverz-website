@@ -9,6 +9,7 @@ module GorillaMoverz::banana {
     use std::signer;
     use std::string::utf8;
     use std::option;
+    friend GorillaMoverz::banana_farm;
 
     /// Only fungible asset metadata owner can make changes.
     const ENOT_OWNER: u64 = 1;
@@ -38,7 +39,7 @@ module GorillaMoverz::banana {
             utf8(b"https://gorilla-moverz.xyz/images/banana.png"), /* icon */
             utf8(b"https://gorilla-moverz.xyz"), /* project */
         );
-
+        
         // Create mint/burn/transfer refs to allow creator to manage the fungible asset.
         let mint_ref = fungible_asset::generate_mint_ref(constructor_ref);
         let burn_ref = fungible_asset::generate_burn_ref(constructor_ref);
@@ -54,7 +55,7 @@ module GorillaMoverz::banana {
 
     #[view]
     /// Return the address of the managed fungible asset that's created when this module is deployed.
-    public fun get_metadata(): Object<Metadata> {
+    public(friend) fun get_metadata(): Object<Metadata> {
         let asset_address = object::create_object_address(&@GorillaMoverz, ASSET_SYMBOL);
         object::address_to_object<Metadata>(asset_address)
     }
@@ -87,9 +88,18 @@ module GorillaMoverz::banana {
     }
 
     /// Freeze an account so it cannot transfer or receive fungible assets.
-    public entry fun freeze_account(admin: &signer, account: address) acquires ManagedFungibleAsset {
+    public(friend) entry fun freeze_account(admin: &signer, account: address) acquires ManagedFungibleAsset {
         let asset = get_metadata();
         let transfer_ref = &authorized_borrow_refs(admin, asset).transfer_ref;
+        let wallet = primary_fungible_store::ensure_primary_store_exists(account, asset);
+        fungible_asset::set_frozen_flag(transfer_ref, wallet, true);
+    }
+
+    /// Freeze an account so it cannot transfer or receive fungible assets.
+    public(friend) entry fun freeze_own_account(sender: &signer) acquires ManagedFungibleAsset {
+        let asset = get_metadata();
+        let account = signer::address_of(sender);
+        let transfer_ref = &borrow_global<ManagedFungibleAsset>(object::object_address(&asset)).transfer_ref;
         let wallet = primary_fungible_store::ensure_primary_store_exists(account, asset);
         fungible_asset::set_frozen_flag(transfer_ref, wallet, true);
     }
@@ -155,6 +165,52 @@ module GorillaMoverz::banana {
         assert!(!primary_fungible_store::is_frozen(creator_address, asset), 7);
         burn(creator, creator_address, 90);
     }
+
+// TODO: Should people other than creator be able to access transfer operation?
+    #[test(creator = @GorillaMoverz)]
+    fun test_basic_flow_aaron(
+        creator: &signer,
+    ) acquires ManagedFungibleAsset {
+        init_module(creator);
+        let creator_address = signer::address_of(creator);
+        let aaron_address = @0xface;
+
+        mint(creator, aaron_address, 100);
+        let asset = get_metadata();
+        assert!(primary_fungible_store::balance(aaron_address, asset) == 100, 4);
+        freeze_account(creator, aaron_address);
+        assert!(primary_fungible_store::is_frozen(aaron_address, asset), 5);
+        transfer(creator, aaron_address, creator_address, 10);
+        assert!(primary_fungible_store::balance(creator_address, asset) == 10, 6);
+
+        unfreeze_account(creator, aaron_address);
+        assert!(!primary_fungible_store::is_frozen(aaron_address, asset), 7);
+        burn(creator, creator_address, 10);
+    }
+
+    #[test(creator = @GorillaMoverz, aaron = @0xface)]
+    #[expected_failure(abort_code = 327683, location = aptos_framework::fungible_asset)]
+    fun test_frozen_not_allowed_flow(
+        creator: &signer,
+        aaron: &signer
+    ) acquires ManagedFungibleAsset {
+        init_module(creator);
+        let creator_address = signer::address_of(creator);
+        let aaron_address = @0xface;
+
+        mint(creator, creator_address, 100);
+        mint(creator, aaron_address, 100);
+        let asset = get_metadata();
+        assert!(primary_fungible_store::balance(creator_address, asset) == 100, 4);
+        freeze_account(creator, creator_address);
+        assert!(primary_fungible_store::is_frozen(creator_address, asset), 5);
+        transfer(creator, creator_address, aaron_address, 10);
+
+        let aaron_wallet = primary_fungible_store::primary_store(aaron_address, asset);
+        let creator_wallet = primary_fungible_store::ensure_primary_store_exists(creator_address, asset);
+        fungible_asset::transfer(aaron, aaron_wallet, creator_wallet, 10); 
+    }
+
 
     #[test(creator = @GorillaMoverz, aaron = @0xface)]
     #[expected_failure(abort_code = 0x50001, location = Self)]

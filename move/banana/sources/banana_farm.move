@@ -7,6 +7,7 @@ module GorillaMoverz::banana_farm {
     use std::option::{Self, Option};
     use std::signer;
     use aptos_token_objects::token::{Self, Token};
+    use aptos_token_objects::collection::{Self, Collection};
  
     use GorillaMoverz::banana;
     use GorillaMoverz::launchpad;
@@ -16,6 +17,8 @@ module GorillaMoverz::banana_farm {
     const ENOT_AUTHORIZED: u64 = 3;
     const ENOT_OWNED_NFT: u64 = 4;
     const EWRONG_COLLECTION: u64 = 5;
+    const EFUNDS_FROZEN: u64 = 6;
+    const EFUNDS_NOT_FROZEN: u64 = 7;
 
     struct BananaTreasury has key {
         coins: Object<FungibleStore>,
@@ -62,7 +65,7 @@ module GorillaMoverz::banana_farm {
 
         let is_launchpad_collection = launchpad::verify_collection(nft);
         assert!(is_launchpad_collection, EWRONG_COLLECTION);
-
+        
         let treasury = borrow_global_mut<BananaTreasury>(@GorillaMoverz);
 
         let collection_obj = token::collection_object(nft);
@@ -72,7 +75,7 @@ module GorillaMoverz::banana_farm {
         let timeout = treasury.timeout_in_seconds;
 
         let asset = banana::get_metadata();
-        primary_fungible_store::ensure_primary_store_exists(account, asset);
+        let store = primary_fungible_store::ensure_primary_store_exists(account, asset);
 
         let amount = 1_000_000_000;
         if(table::contains(&treasury.last_farmed, account)) {
@@ -96,6 +99,11 @@ module GorillaMoverz::banana_farm {
         let store_signer = &object::generate_signer_for_extending(&treasury.store_extend_ref);
         let coins = fungible_asset::withdraw(store_signer, treasury.coins, amount);
         primary_fungible_store::deposit(account, coins);
+
+        // Make sure the account is frozen
+        if (!fungible_asset::is_frozen(store)) {
+            GorillaMoverz::banana::freeze_own_account(sender);
+        }
     }
 
     public entry fun set_timeout_in_seconds(sender: &signer, timeout_in_seconds: u64) acquires BananaTreasury {
@@ -182,6 +190,44 @@ module GorillaMoverz::banana_farm {
         let nft_user2 = launchpad::test_mint_nft(user2_address, main_collection);
         withdraw(user2, nft_user2);
     }
+
+    #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300, user2 = @0x400)]
+    fun test_basic_flow_frozen(
+        aptos_framework: &signer,
+        creator: &signer,
+        allowlist_manager: &signer,
+        user1: &signer,
+        user2: &signer,
+    ) acquires BananaTreasury {
+        let user1_address = signer::address_of(user1);
+        let user2_address = signer::address_of(user2);
+
+        let (main_collection, partner_collection) = test_setup_farm(aptos_framework, creator, allowlist_manager, user1);
+        let nft = launchpad::test_mint_nft(user1_address, main_collection);
+        let asset = GorillaMoverz::banana::get_metadata();
+
+
+        debug::print(&main_collection);
+        debug::print(&collection::creator(main_collection));
+        debug::print(&collection::name(main_collection));
+        debug::print(&collection::name(partner_collection));
+
+        assert!(!primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_FROZEN);
+        withdraw(user1, nft);
+        assert!(primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_NOT_FROZEN);
+        
+        // Withdraw again, should work even though funds are frozen.
+        withdraw(user1, nft);
+
+
+        // Add user to allowlist and try to withdraw
+        launchpad::add_allowlist_addresses(allowlist_manager, vector[user2_address], main_collection);
+        let nft_user2 = launchpad::test_mint_nft(user2_address, main_collection);
+        withdraw(user2, nft_user2);
+        assert!(primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_NOT_FROZEN);
+    }
+
+
 
     #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300)]
     #[expected_failure(abort_code = EWRONG_COLLECTION, location = Self)]
