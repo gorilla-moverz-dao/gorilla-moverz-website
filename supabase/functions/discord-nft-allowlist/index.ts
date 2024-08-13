@@ -87,9 +87,10 @@ async function home(request: Request) {
       await blockMultipleEntries(post.guild_id, "wallet_address", address);
 
       // Forward request for delayed update of message because response needs to be sent within 3 secs
+      const url = Deno.env.get("SUPABASE_URL") +
+        `/functions/v1/nft-allowlist?collectionId=${collectionId}&address=${address}`;
       fetch(
-        request.url.replace("/discord-nft-allowlist", "/nft-allowlist") +
-          `?collectionId=${collectionId}&address=${address}`,
+        url,
         {
           method: "POST",
           headers: {
