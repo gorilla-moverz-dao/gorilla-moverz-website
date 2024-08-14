@@ -55,8 +55,14 @@ function Media() {
     {
       title: "Movecast Episode #5",
       description: "Satay Finance - Unleashing DeFi Simplicity",
-      url: "https://www.youtube.com/embed/3WNnaAVH8Sc?si=uUwNjJpKv5-annlX",
+      url: "https://www.youtube.com/embed/3WNnaAVH8Sc?si=yUMDfK_LDkQCR8oR",
       preview: "https://img.youtube.com/vi/3WNnaAVH8Sc/0.jpg",
+    },
+    {
+      title: "Movecast Episode #6",
+      description: "Lasting Community Design - Cooper Scanlon (Movement Labs)",
+      url: "https://www.youtube.com/embed/OydX5_kQG-M?si=ji_k772KbNph4F3i",
+      preview: "https://img.youtube.com/vi/OydX5_kQG-M/0.jpg",
     },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
