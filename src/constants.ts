@@ -4,15 +4,11 @@ export const SUPRA_API_URL = "https://pinphweythafvrejqfgm.supabase.co";
 export const SURPA_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpbnBod2V5dGhhZnZyZWpxZmdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTc3MDE5NzAsImV4cCI6MjAzMzI3Nzk3MH0.jUdXMHfDxyALSRdw4FW5Zjqgsh9vq6bp8dNUtstBcYw";
 export const MODULE_ADDRESS =
-  "fb1e34e3f3a4be3ba29fe24f385d631102228c63860abf299518a9fc7d4261ff";
+  "054211d69a169a86cb370b0492a20382160c5cb62f3a0524c15f2678c20a7c1e";
 export const FULL_NODE = "https://aptos.devnet.m1.movementlabs.xyz";
-export const FARM_CONTRACT_ADDRESS =
-  "fb1e34e3f3a4be3ba29fe24f385d631102228c63860abf299518a9fc7d4261ff";
 export const FARM_COLLECTION_ID =
-  "0xb7c9aeb6d7558181a546ce4509c477f9652756c4702a02e295d0819d1a13ea85";
+  "0xba47e8a4111d53d81773e920b55c4152976a47ea4b002777cd81e8eb6ed9e4e2";
 export const NETWORK = Network.TESTNET;
 export const BANANA_CONTRACT_ADDRESS =
-  "0x2f52fd6a933b6a23fab521ab4e53f2f62c1ca893a72106e2b737b25e25b8d4cc";
-export const EXCLUDE_LEADERBOARD = [
-  "0xfb1e34e3f3a4be3ba29fe24f385d631102228c63860abf299518a9fc7d4261ff",
-];
+  "0x4d92915d90fe5b2a99c942d3f249493e2ff57e835b5ce8f88c178444641828c0";
+export const EXCLUDE_LEADERBOARD = ["0x" + MODULE_ADDRESS];

@@ -35,8 +35,8 @@ module GorillaMoverz::banana {
             utf8(b"BANANA | Gorilla Moverz"), /* name */
             utf8(ASSET_SYMBOL), /* symbol */
             9, /* decimals */
-            utf8(b"https://www.gorilla-moverz.xyz/images/banana.png"), /* icon */
-            utf8(b"https://www.gorilla-moverz.xyz"), /* project */
+            utf8(b"https://gorilla-moverz.xyz/images/banana.png"), /* icon */
+            utf8(b"https://gorilla-moverz.xyz"), /* project */
         );
 
         // Create mint/burn/transfer refs to allow creator to manage the fungible asset.
@@ -126,6 +126,13 @@ module GorillaMoverz::banana {
     ): &ManagedFungibleAsset acquires ManagedFungibleAsset {
         assert!(object::is_owner(asset, signer::address_of(owner)), error::permission_denied(ENOT_OWNER));
         borrow_global<ManagedFungibleAsset>(object::object_address(&asset))
+    }
+
+    #[test(creator = @GorillaMoverz)]
+    public fun test_init(
+        creator: &signer,
+    ) {
+        init_module(creator);
     }
 
     #[test(creator = @GorillaMoverz)]

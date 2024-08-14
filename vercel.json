@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/nfts/farmer/metadata/:match*",
-      "destination": "https://pinphweythafvrejqfgm.supabase.co/functions/v1/nft-banana-farmer/:match*"
+      "source": "/nfts/:slug/metadata/:match*",
+      "destination": "https://pinphweythafvrejqfgm.supabase.co/functions/v1/nft-banana-farmer/:slug/:match*"
     },
     { "source": "/(.*)", "destination": "/" }
   ]

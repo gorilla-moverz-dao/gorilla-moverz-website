@@ -11,7 +11,7 @@ export class ContractClient {
   signAndSubmitTransaction: WalletContextState["signAndSubmitTransaction"] =
     {} as WalletContextState["signAndSubmitTransaction"];
 
-  private bananaFarm = `${MODULE_ADDRESS}::banana_farm_one` as const;
+  private bananaFarm = `${MODULE_ADDRESS}::banana_farm` as const;
 
   async getTokenBalance(address: string, assetType: string) {
     const data = await movementClient.getCurrentFungibleAssetBalances({
@@ -74,23 +74,34 @@ export class ContractClient {
   }
 
   async getTreasuryTimeout() {
-    const treasuryTimeout = await movementClient.view<[string]>({
+    const response = await movementClient.view<[string]>({
       payload: {
         function: `${this.bananaFarm}::get_treasury_timeout`,
         functionArguments: [],
       },
     });
 
-    return parseInt(treasuryTimeout[0]);
+    return parseInt(response[0]);
+  }
+
+  async getCollectionAddress() {
+    const response = await movementClient.view<[string]>({
+      payload: {
+        function: `${this.bananaFarm}::collection_address`,
+        functionArguments: [],
+      },
+    });
+
+    return response[0];
   }
 
   async getLastFarmed() {
-    const lastFarmedResponse = await movementClient.view<[string]>({
+    const response = await movementClient.view<[string]>({
       payload: {
         function: `${this.bananaFarm}::last_farmed`,
         functionArguments: [this.accountAddress],
       },
     });
-    return lastFarmedResponse[0];
+    return response[0];
   }
 }

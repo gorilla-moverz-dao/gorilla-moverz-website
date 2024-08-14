@@ -180,3 +180,7 @@ s3_secret_key = "env(S3_SECRET_KEY)"
 
 [functions.nft-banana-farmer]
 verify_jwt = false
+[functions.nft-allowlist]
+verify_jwt = false
+[functions.discord-nft-allowlist]
+verify_jwt = false

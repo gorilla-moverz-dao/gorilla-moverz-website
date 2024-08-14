@@ -15,6 +15,7 @@ export const corsHeaders = {
 
 interface BananaFarmer {
   id: number;
+  nft_number: number;
   created_at: string;
   image: string;
 }
@@ -32,16 +33,21 @@ Deno.serve(async (req) => {
     return new Response("ok", { headers: corsHeaders });
   }
 
-  const id = req.url.split("/").pop() ?? "";
+  const path = req.url.split("/");
+  const nft_number = path.pop() ?? "";
+  const slug = path.pop() ?? "";
 
   const supabaseClient = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
   );
 
   // Database queries will have RLS policies enforced
-  const { data, error } = await supabaseClient.from("banana_farmer").select("*")
-    .eq("id", id)
+  const { data, error } = await supabaseClient.from("banana_farm_nfts").select(
+    "*, banana_farm_collections!inner(slug)",
+  )
+    .eq("nft_number", nft_number)
+    .eq("banana_farm_collections.slug", slug)
     .maybeSingle();
 
   if (error) {
@@ -62,9 +68,11 @@ Deno.serve(async (req) => {
   const nft: BananaFarmerNFT = {
     name: "Farmer #" + farmer.id,
     description: "Farmer #" + farmer.id,
-    image: "https://gorilla-moverz.xyz/nfts/farmer/images/" + farmer.image,
+    image: "https://gorilla-moverz.xyz/nfts/" + slug + "/images/" +
+      farmer.image,
     attributes: [],
-    external_url: "https://gorilla-moverz.xyz/bananas/farmer/" + farmer.id,
+    external_url: "https://gorilla-moverz.xyz/bananas/collections/" + slug +
+      "/" + farmer.id,
   };
 
   return new Response(
