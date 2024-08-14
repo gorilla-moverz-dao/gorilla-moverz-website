@@ -178,7 +178,9 @@ module GorillaMoverz::banana_farm {
         withdraw(user1, nft);
 
         // Add user to allowlist and try to withdraw
+        assert!(launchpad::is_allowlisted(user2_address, main_collection) == false, 1);
         launchpad::add_allowlist_addresses(allowlist_manager, vector[user2_address], main_collection);
+        assert!(launchpad::is_allowlisted(user2_address, main_collection) == true, 2);
         let nft_user2 = launchpad::test_mint_nft(user2_address, main_collection);
         withdraw(user2, nft_user2);
     }

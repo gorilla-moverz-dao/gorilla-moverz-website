@@ -71,9 +71,29 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
           <Box paddingRight={4}>
             <form onSubmit={mintNft}>
               {account?.address && (
-                <Button type="submit" disabled={!data?.isMintActive}>
-                  Mint
-                </Button>
+                <>
+                  {data?.isAllowlisted && (
+                    <Button
+                      type="submit"
+                      disabled={!data?.isMintActive || !data.isAllowlisted}
+                    >
+                      Mint
+                    </Button>
+                  )}
+                  {!data?.isAllowlisted && (
+                    <Button
+                      type="button"
+                      onClick={() =>
+                        window.open(
+                          "https://discord.com/channels/1248584514494529657/1273354461905027103",
+                          "blank"
+                        )
+                      }
+                    >
+                      Get on the allowlist
+                    </Button>
+                  )}
+                </>
               )}
 
               {!account?.address && <WalletSelector />}
