@@ -7,7 +7,8 @@ import {
 } from "npm:@aptos-labs/ts-sdk@^1.18.1";
 
 const aptosConfig = new AptosConfig({
-  network: Network.TESTNET,
+  network: Network.CUSTOM,
+  fullnode: "https://aptos.testnet.suzuka.movementlabs.xyz/v1",
 });
 const aptos = new Aptos(aptosConfig);
 const privateKey = new Ed25519PrivateKey(Deno.env.get("APTOS_PK")!);
@@ -21,10 +22,7 @@ export async function addAllowlistAddresses(address: string, guildId: string) {
     sender: signer.accountAddress,
     data: {
       function: `${addr}::launchpad::add_allowlist_addresses`,
-      functionArguments: [
-        [address],
-        guildId,
-      ],
+      functionArguments: [[address], guildId],
     },
   });
 
