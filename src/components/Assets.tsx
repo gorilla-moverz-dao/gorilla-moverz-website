@@ -12,7 +12,7 @@ function Assets() {
     <>
       {bananas && bananas.length > 0 && (
         <>
-          <PageTitle size="lg" paddingTop={4}>
+          <PageTitle size="lg" paddingTop={0}>
             My bananas
           </PageTitle>
 

@@ -4,9 +4,15 @@ import { useWallet } from "@aptos-labs/wallet-adapter-react";
 
 export interface Token {
   token_name: string;
+  description: string;
   token_data_id: string;
   token_uri: string;
   collection_id: string;
+  current_collection: {
+    collection_id: string;
+    collection_name: string;
+    description: string;
+  };
   cdn_asset_uris: {
     cdn_image_uri: string;
     asset_uri: string;
@@ -28,7 +34,7 @@ export function useOwnedNFTs(collection_id: string) {
   const { account } = useWallet();
 
   return useQuery({
-    queryKey: ["owned_nfts", account?.address],
+    queryKey: ["owned_nfts", account?.address, collection_id],
     refetchInterval: 1000 * 30,
     queryFn: async () => {
       try {
