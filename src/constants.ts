@@ -1,8 +1,7 @@
 import { Network } from "@aptos-labs/ts-sdk";
 
-export const SUPRA_API_URL = "https://pinphweythafvrejqfgm.supabase.co";
-export const SURPA_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpbnBod2V5dGhhZnZyZWpxZmdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTc3MDE5NzAsImV4cCI6MjAzMzI3Nzk3MH0.jUdXMHfDxyALSRdw4FW5Zjqgsh9vq6bp8dNUtstBcYw";
+export const SUPRA_API_URL = import.meta.env.VITE_SUPRA_API_URL;
+export const SURPA_ANON_KEY = import.meta.env.VITE_SUPRA_ANON_KEY;
 export const MODULE_ADDRESS =
   "054211d69a169a86cb370b0492a20382160c5cb62f3a0524c15f2678c20a7c1e";
 export const FULL_NODE = "https://aptos.devnet.m1.movementlabs.xyz";

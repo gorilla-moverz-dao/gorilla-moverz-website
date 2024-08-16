@@ -21,11 +21,8 @@ import {
 import { Partner, PartnerSchema } from "../contracts/partner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createClient } from "@supabase/supabase-js";
-import { SUPRA_API_URL, SURPA_ANON_KEY } from "../constants";
 import PageTitle from "../components/PageTitle";
-
-const supabase = createClient(SUPRA_API_URL, SURPA_ANON_KEY);
+import { supabase } from "../services/supabase-client";
 
 function Partners() {
   const {

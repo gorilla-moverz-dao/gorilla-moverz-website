@@ -1,4 +1,3 @@
-import { BananaFarmNFT } from "../_shared/database-contracts.ts";
 import { supabaseClient } from "../_shared/supabase-client.ts";
 import { corsHeaders } from "../_shared/webserver-functions.ts";
 import {
@@ -25,8 +24,8 @@ async function nft(req: Request, _connInfo: ConnInfo, params: PathParams) {
     return new Response("ok", { headers: corsHeaders });
   }
 
-  const nft_number = params?.nft_number;
-  const slug = params?.slug;
+  const nft_number = params?.nft_number ?? "";
+  const slug = params?.slug ?? "";
 
   const { data, error } = await supabaseClient
     .from("banana_farm_nfts")
@@ -49,13 +48,12 @@ async function nft(req: Request, _connInfo: ConnInfo, params: PathParams) {
     return new Response("Not found", { status: 404 });
   }
 
-  const farmer: BananaFarmNFT = data;
   const nft: BananaFarmerNFTMetadata = {
-    name: "Farmer #" + farmer.id,
-    description: "Farmer #" + farmer.id,
-    image: `https://gorilla-moverz.xyz/nfts/${slug}/images/${farmer.image}`,
+    name: "Farmer #" + data.id,
+    description: "Farmer #" + data.id,
+    image: `https://gorilla-moverz.xyz/nfts/${slug}/images/${data.image}`,
     attributes: [],
-    external_url: `https://gorilla-moverz.xyz/bananas/collections/${slug}/${farmer.id}`,
+    external_url: `https://gorilla-moverz.xyz/bananas/collections/${slug}/${data.id}`,
   };
 
   return json(nft, {
