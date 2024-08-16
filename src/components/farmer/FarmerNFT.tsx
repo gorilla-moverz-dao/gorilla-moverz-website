@@ -14,9 +14,10 @@ import Countdown from "./Countdown";
 interface Props {
   collectionId: string;
   slug: string;
+  enableFarming: boolean;
 }
 
-function FarmerNFT({ collectionId, slug }: Props) {
+function FarmerNFT({ collectionId, slug, enableFarming }: Props) {
   const { account } = useWallet();
   const { data: ownedNFTs, isLoading } = useOwnedNFTs(collectionId);
   const [imageUrl, setImageUrl] = useState<string>("");
@@ -95,28 +96,38 @@ function FarmerNFT({ collectionId, slug }: Props) {
             </Box>
 
             <Box flex={1}>
-              <Text>NFT Number: {ownedNFTs.current_token_data?.token_name}</Text>
+              <PageTitle size="lg" paddingTop={0}>
+                {ownedNFTs.current_token_data.current_collection.collection_name} | #
+                {ownedNFTs.current_token_data.token_name}
+              </PageTitle>
+              <Text paddingBottom={4}>{ownedNFTs.current_token_data.current_collection.description}</Text>
 
               <Assets />
 
-              {account && farmed_data && (
-                <Box paddingTop={4}>
-                  <Button
-                    onClick={() => withdraw()}
-                    colorScheme={farmed_data.remainingTime > 0 ? "gray" : "green"}
-                    disabled={farmed_data.remainingTime > 0}
-                  >
-                    <Countdown seconds={farmed_data.remainingTime > 0 ? farmed_data.remainingTime : 0} />
-                  </Button>
-                  <Text paddingTop={2}>
-                    <i>
-                      Last Farmed:&nbsp;
-                      {farmed_data.lastFarmedDate && farmed_data.lastFarmedDate.getDate() > 0
-                        ? farmed_data.lastFarmedDate.toLocaleString()
-                        : "Never"}
-                    </i>
-                  </Text>
-                </Box>
+              {enableFarming ? (
+                <>
+                  {account && farmed_data && (
+                    <Box paddingTop={4}>
+                      <Button
+                        onClick={() => withdraw()}
+                        colorScheme={farmed_data.remainingTime > 0 ? "gray" : "green"}
+                        disabled={farmed_data.remainingTime > 0}
+                      >
+                        <Countdown seconds={farmed_data.remainingTime > 0 ? farmed_data.remainingTime : 0} />
+                      </Button>
+                      <Text paddingTop={2}>
+                        <i>
+                          Last Farmed:&nbsp;
+                          {farmed_data.lastFarmedDate && farmed_data.lastFarmedDate.getDate() > 0
+                            ? farmed_data.lastFarmedDate.toLocaleString()
+                            : "Never"}
+                        </i>
+                      </Text>
+                    </Box>
+                  )}
+                </>
+              ) : (
+                <Text paddingTop={4}>Farm bananas in the banana farm an enjoy the boost!</Text>
               )}
             </Box>
           </Flex>
