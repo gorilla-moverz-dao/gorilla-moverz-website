@@ -1,25 +1,9 @@
-import {
-  json,
-  serve,
-  validateRequest,
-} from "https://deno.land/x/sift@0.6.0/mod.ts";
-import { createClient } from "jsr:@supabase/supabase-js@2";
-import {
-  DiscordCommandType,
-  DiscordPostData,
-  verifySignature,
-} from "../_shared/discord-functions.ts";
-
-const supabaseClient = createClient(
-  Deno.env.get("SUPABASE_URL") ?? "",
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-);
+import { json, serve, validateRequest } from "https://deno.land/x/sift@0.6.0/mod.ts";
+import { DiscordCommandType, DiscordPostData, verifySignature } from "../_shared/discord-functions.ts";
+import { supabaseClient } from "../_shared/supabase-client.ts";
 
 const guildToCollection = new Map([
-  [
-    "1248584514494529657",
-    "0xba47e8a4111d53d81773e920b55c4152976a47ea4b002777cd81e8eb6ed9e4e2",
-  ],
+  ["1248584514494529657", "0xba47e8a4111d53d81773e920b55c4152976a47ea4b002777cd81e8eb6ed9e4e2"],
 ]);
 
 serve({
@@ -72,37 +56,26 @@ async function home(request: Request) {
       });
     }
 
-    const address = data.options.find(
-      (option) => option.name === "address",
-    )?.value;
+    const address = data.options.find((option) => option.name === "address")?.value;
 
     try {
       if (!address) throw new Error("Address not provided");
 
-      await blockMultipleEntries(
-        post.guild_id,
-        "discord_user_id",
-        post.member.user.id,
-      );
+      await blockMultipleEntries(post.guild_id, "discord_user_id", post.member.user.id);
       await blockMultipleEntries(post.guild_id, "wallet_address", address);
 
       // Forward request for delayed update of message because response needs to be sent within 3 secs
-      const url = Deno.env.get("SUPABASE_URL") +
-        `/functions/v1/nft-allowlist?collectionId=${collectionId}&address=${address}`;
-      fetch(
-        url,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Signature-Ed25519": request.headers.get("X-Signature-Ed25519") ??
-              "",
-            "X-Signature-Timestamp":
-              request.headers.get("X-Signature-Timestamp") ?? "",
-          },
-          body: body,
+      const url =
+        Deno.env.get("SUPABASE_URL") + `/functions/v1/nft-allowlist?collectionId=${collectionId}&address=${address}`;
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Signature-Ed25519": request.headers.get("X-Signature-Ed25519") ?? "",
+          "X-Signature-Timestamp": request.headers.get("X-Signature-Timestamp") ?? "",
         },
-      );
+        body: body,
+      });
 
       // Respond to the initial interaction
       const initialResponse = json({
@@ -128,22 +101,19 @@ async function home(request: Request) {
   return json({ error: "bad request" }, { status: 400 });
 }
 
-async function blockMultipleEntries(
-  guild_id: string,
-  column: "discord_user_id" | "wallet_address",
-  value: string,
-) {
-  const { data, error } = await supabaseClient.from("banana_farm_allowlist")
-    .select("*").eq("guild_id", guild_id).eq(column, value)
+async function blockMultipleEntries(guild_id: string, column: "discord_user_id" | "wallet_address", value: string) {
+  const { data, error } = await supabaseClient
+    .from("banana_farm_allowlist")
+    .select("*")
+    .eq("guild_id", guild_id)
+    .eq(column, value)
     .maybeSingle();
   if (error) {
     throw new Error(error.message);
   }
   if (data) {
     throw new Error(
-      column === "discord_user_id"
-        ? "User already submitted a wallet address"
-        : "Wallet address already submitted",
+      column === "discord_user_id" ? "User already submitted a wallet address" : "Wallet address already submitted",
     );
   }
 }

@@ -7,24 +7,12 @@ import {
   AptosStandardSupportedWallet,
   truncateAddress,
 } from "@aptos-labs/wallet-adapter-react";
-import {
-  Badge,
-  Box,
-  Button,
-  Image,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Text,
-  Tooltip,
-} from "@chakra-ui/react";
+import { Badge, Box, Button, Image, Menu, MenuButton, MenuItem, MenuList, Text, Tooltip } from "@chakra-ui/react";
 import { FaChevronDown } from "react-icons/fa6";
 import { IoIosLogOut } from "react-icons/io";
 
 export function WalletSelector() {
-  const { connect, disconnect, account, wallets, connected, network, wallet } =
-    useWallet();
+  const { connect, disconnect, account, wallets, connected, network, wallet } = useWallet();
 
   const onWalletSelected = (wallet: WalletName) => {
     connect(wallet);
@@ -39,24 +27,12 @@ export function WalletSelector() {
     );
   };
 
-  const buttonText = account?.ansName
-    ? account?.ansName
-    : truncateAddress(account?.address);
+  const buttonText = account?.ansName ? account?.ansName : truncateAddress(account?.address);
 
   if (connected) {
     return (
-      <Tooltip
-        hasArrow
-        label={getLabel()}
-        bg="gray.700"
-        color="gray.100"
-        aria-label="Wallet information"
-      >
-        <Button
-          className="wallet-button"
-          onClick={() => disconnect()}
-          rightIcon={<IoIosLogOut />}
-        >
+      <Tooltip hasArrow label={getLabel()} bg="gray.700" color="gray.100" aria-label="Wallet information">
+        <Button className="wallet-button" onClick={() => disconnect()} rightIcon={<IoIosLogOut />}>
           {buttonText}
         </Button>
       </Tooltip>
@@ -79,13 +55,9 @@ export function WalletSelector() {
   );
 }
 
-const walletView = (
-  wallet: Wallet | AptosStandardSupportedWallet,
-  onWalletSelected: (wallet: WalletName) => void
-) => {
+const walletView = (wallet: Wallet | AptosStandardSupportedWallet, onWalletSelected: (wallet: WalletName) => void) => {
   const isWalletReady =
-    wallet.readyState === WalletReadyState.Installed ||
-    wallet.readyState === WalletReadyState.Loadable;
+    wallet.readyState === WalletReadyState.Installed || wallet.readyState === WalletReadyState.Loadable;
 
   // The user is on a mobile device
   if (!isWalletReady && isRedirectable()) {
@@ -93,10 +65,7 @@ const walletView = (
     // If the user has a deep linked app, show the wallet
     if (mobileSupport) {
       return (
-        <MenuItem
-          key={wallet.name}
-          onClick={() => onWalletSelected(wallet.name)}
-        >
+        <MenuItem key={wallet.name} onClick={() => onWalletSelected(wallet.name)}>
           <div className="wallet-menu-wrapper">
             <div className="wallet-name-wrapper">
               <img src={wallet.icon} width={25} style={{ marginRight: 10 }} />
@@ -117,8 +86,7 @@ const walletView = (
       <MenuItem
         key={wallet.name}
         onClick={
-          wallet.readyState === WalletReadyState.Installed ||
-          wallet.readyState === WalletReadyState.Loadable
+          wallet.readyState === WalletReadyState.Installed || wallet.readyState === WalletReadyState.Loadable
             ? () => onWalletSelected(wallet.name)
             : () => window.open(wallet.url)
         }
@@ -127,8 +95,7 @@ const walletView = (
         <Box flex={1} paddingRight={4}>
           {wallet.name}
         </Box>
-        {wallet.readyState === WalletReadyState.Installed ||
-        wallet.readyState === WalletReadyState.Loadable ? (
+        {wallet.readyState === WalletReadyState.Installed || wallet.readyState === WalletReadyState.Loadable ? (
           <Badge>Connect</Badge>
         ) : (
           <Badge>Install</Badge>

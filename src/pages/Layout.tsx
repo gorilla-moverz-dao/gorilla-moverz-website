@@ -96,11 +96,7 @@ function Layout() {
             </Box>
           )}
 
-          <Box
-            width={"100%"}
-            textAlign={"left"}
-            marginTop={isMobile ? 0 : -106}
-          >
+          <Box width={"100%"} textAlign={"left"} marginTop={isMobile ? 0 : -106}>
             <BoxBlurred>
               <Box padding={4}>
                 <Outlet />

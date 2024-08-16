@@ -4,10 +4,7 @@ import * as yaml from "js-yaml";
 import * as fs from "fs";
 
 // Function to run a command in a specific directory
-export function runCommand(
-  command: string,
-  directory: string,
-): Promise<void> {
+export function runCommand(command: string, directory: string): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     exec(command, { cwd: directory }, (error, stdout, stderr) => {
       if (error) {

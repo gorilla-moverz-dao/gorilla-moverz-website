@@ -1,26 +1,8 @@
-// Follow this setup guide to integrate the Deno language server with your editor:
-// https://deno.land/manual/getting_started/setup_your_environment
-// This enables autocomplete, go to definition, etc.
+import { supabaseClient } from "../_shared/supabase-client.ts";
+import { corsHeaders } from "../_shared/webserver-functions.ts";
+import { ConnInfo, PathParams, json, serve } from "https://deno.land/x/sift@0.6.0/mod.ts";
 
-// Setup type definitions for built-in Supabase Runtime APIs
-/// <reference types="https://esm.sh/@supabase/functions-js/src/edge-runtime.d.ts" />
-
-import { createClient } from "jsr:@supabase/supabase-js@2";
-
-export const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
-
-interface BananaFarmer {
-  id: number;
-  nft_number: number;
-  created_at: string;
-  image: string;
-}
-
-interface BananaFarmerNFT {
+interface BananaFarmerNFTMetadata {
   image: string;
   name: string;
   description: string;
@@ -28,33 +10,30 @@ interface BananaFarmerNFT {
   attributes: unknown[];
 }
 
-Deno.serve(async (req) => {
+serve({
+  "/nft-banana-farmer/:slug/:nft_number": nft,
+});
+
+async function nft(req: Request, _connInfo: ConnInfo, params: PathParams) {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
-  const path = req.url.split("/");
-  const nft_number = path.pop() ?? "";
-  const slug = path.pop() ?? "";
+  const nft_number = params?.nft_number ?? "";
+  const slug = params?.slug ?? "";
 
-  const supabaseClient = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-  );
-
-  // Database queries will have RLS policies enforced
-  const { data, error } = await supabaseClient.from("banana_farm_nfts").select(
-    "*, banana_farm_collections!inner(slug)",
-  )
+  const { data, error } = await supabaseClient
+    .from("banana_farm_nfts")
+    .select("*, banana_farm_collections!inner(slug)")
     .eq("nft_number", nft_number)
     .eq("banana_farm_collections.slug", slug)
     .maybeSingle();
 
   if (error) {
-    return new Response(
-      JSON.stringify({ error: error.message }),
+    return json(
+      { error: error.message },
       {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: corsHeaders,
         status: 500,
       },
     );
@@ -64,19 +43,15 @@ Deno.serve(async (req) => {
     return new Response("Not found", { status: 404 });
   }
 
-  const farmer: BananaFarmer = data;
-  const nft: BananaFarmerNFT = {
-    name: "Farmer #" + farmer.id,
-    description: "Farmer #" + farmer.id,
-    image: "https://gorilla-moverz.xyz/nfts/" + slug + "/images/" +
-      farmer.image,
+  const nft: BananaFarmerNFTMetadata = {
+    name: "Farmer #" + data.id,
+    description: "Farmer #" + data.id,
+    image: `https://gorilla-moverz.xyz/nfts/${slug}/images/${data.image}`,
     attributes: [],
-    external_url: "https://gorilla-moverz.xyz/bananas/collections/" + slug +
-      "/" + farmer.id,
+    external_url: `https://gorilla-moverz.xyz/bananas/collections/${slug}/${data.id}`,
   };
 
-  return new Response(
-    JSON.stringify(nft),
-    { headers: { ...corsHeaders, "Content-Type": "application/json" } },
-  );
-});
+  return json(nft, {
+    headers: corsHeaders,
+  });
+}

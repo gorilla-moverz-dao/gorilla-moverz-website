@@ -32,8 +32,7 @@ export default function Countdown({ seconds }: { seconds: number }) {
 
   return (
     <>
-      Farm Bananas in {timeLeft.mins}:
-      {timeLeft.secs < 10 ? `0${timeLeft.secs}` : timeLeft.secs}
+      Farm Bananas in {timeLeft.mins}:{timeLeft.secs < 10 ? `0${timeLeft.secs}` : timeLeft.secs}
     </>
   );
 }

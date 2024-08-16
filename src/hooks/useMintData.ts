@@ -1,7 +1,7 @@
 import movementClient from "../services/movement-client";
 import { AccountAddress } from "@aptos-labs/ts-sdk";
 import { useQuery } from "@tanstack/react-query";
-import { FARM_COLLECTION_ID, MODULE_ADDRESS } from "../constants";
+import { MODULE_ADDRESS } from "../constants";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 
 export interface Token {
@@ -57,9 +57,7 @@ interface MintData {
 async function getStartAndEndTime(collection_id: string) {
   const mintStageRes = await movementClient.view<[{ vec: [string] }]>({
     payload: {
-      function: `${AccountAddress.from(
-        MODULE_ADDRESS
-      )}::launchpad::get_active_or_next_mint_stage`,
+      function: `${AccountAddress.from(MODULE_ADDRESS)}::launchpad::get_active_or_next_mint_stage`,
       functionArguments: [collection_id],
     },
   });
@@ -68,9 +66,7 @@ async function getStartAndEndTime(collection_id: string) {
 
   const startAndEndRes = await movementClient.view<[string, string]>({
     payload: {
-      function: `${AccountAddress.from(
-        MODULE_ADDRESS
-      )}::launchpad::get_mint_stage_start_and_end_time`,
+      function: `${AccountAddress.from(MODULE_ADDRESS)}::launchpad::get_mint_stage_start_and_end_time`,
       functionArguments: [collection_id, mintStage],
     },
   });
@@ -81,8 +77,7 @@ async function getStartAndEndTime(collection_id: string) {
     startDate: new Date(parseInt(start, 10) * 1000),
     endDate: new Date(parseInt(end, 10) * 1000),
     // isMintInfinite is true if the mint stage is 100 years later
-    isMintInfinite:
-      parseInt(end, 10) === parseInt(start, 10) + 100 * 365 * 24 * 60 * 60,
+    isMintInfinite: parseInt(end, 10) === parseInt(start, 10) + 100 * 365 * 24 * 60 * 60,
   };
 }
 
@@ -90,16 +85,14 @@ async function getIsAllowlisted(address: string, collection_id: string) {
   return (
     await movementClient.view<[boolean]>({
       payload: {
-        function: `${AccountAddress.from(
-          MODULE_ADDRESS
-        )}::launchpad::is_allowlisted`,
+        function: `${AccountAddress.from(MODULE_ADDRESS)}::launchpad::is_allowlisted`,
         functionArguments: [address, collection_id],
       },
     })
   )[0];
 }
 
-export function useMintData(collection_id: string = FARM_COLLECTION_ID) {
+export function useMintData(collection_id: string) {
   const { account } = useWallet();
   const address = account?.address;
 
@@ -110,13 +103,9 @@ export function useMintData(collection_id: string = FARM_COLLECTION_ID) {
       try {
         if (!collection_id) return null;
 
-        const { startDate, endDate, isMintInfinite } = await getStartAndEndTime(
-          collection_id
-        );
+        const { startDate, endDate, isMintInfinite } = await getStartAndEndTime(collection_id);
 
-        const isAllowlisted = address
-          ? await getIsAllowlisted(address, collection_id)
-          : false;
+        const isAllowlisted = address ? await getIsAllowlisted(address, collection_id) : false;
 
         const res = await movementClient.queryIndexer<MintQueryResult>({
           query: {
@@ -164,16 +153,12 @@ export function useMintData(collection_id: string = FARM_COLLECTION_ID) {
         return {
           maxSupply: collection.max_supply ?? 0,
           totalMinted: collection.current_supply ?? 0,
-          uniqueHolders:
-            res.current_collection_ownership_v2_view_aggregate.aggregate
-              ?.count ?? 0,
+          uniqueHolders: res.current_collection_ownership_v2_view_aggregate.aggregate?.count ?? 0,
           collection,
           endDate,
           startDate,
           isMintActive:
-            new Date() >= startDate &&
-            new Date() <= endDate &&
-            collection.max_supply > collection.current_supply,
+            new Date() >= startDate && new Date() <= endDate && collection.max_supply > collection.current_supply,
           isMintInfinite,
           isAllowlisted,
         } satisfies MintData;

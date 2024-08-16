@@ -8,11 +8,7 @@ function ErrorPage() {
     <>
       <Box padding={5}>
         <Heading>Oops...</Heading>
-        <Text>
-          {isRouteErrorResponse(error)
-            ? "This page does not exist."
-            : "An error occurred"}
-        </Text>
+        <Text>{isRouteErrorResponse(error) ? "This page does not exist." : "An error occurred"}</Text>
       </Box>
     </>
   );
