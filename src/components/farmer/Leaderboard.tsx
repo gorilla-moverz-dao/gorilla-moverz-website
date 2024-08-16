@@ -1,15 +1,7 @@
 import { truncateAddress } from "@aptos-labs/wallet-adapter-react";
 import { useLeaderboard } from "../../hooks/useLeaderboard";
 import PageTitle from "../PageTitle";
-import {
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from "@chakra-ui/react";
+import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 
 function Leaderboard() {
   const { data } = useLeaderboard();

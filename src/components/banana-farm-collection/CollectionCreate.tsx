@@ -4,15 +4,7 @@ import movementClient from "../../services/movement-client";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import {
-  Box,
-  Button,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-  Textarea,
-} from "@chakra-ui/react";
+import { Box, Button, FormControl, FormErrorMessage, FormLabel, Input, Textarea } from "@chakra-ui/react";
 import { WalletSelector } from "../WalletSelector";
 import { dateToSeconds } from "../../helpers/date-functions";
 
@@ -40,8 +32,7 @@ function CollectionCreate() {
   const createCollection = async (collection: CreateCollection) => {
     try {
       if (!account) throw new Error("Please connect your wallet");
-      if (account.address !== "0x" + MODULE_ADDRESS)
-        throw new Error("Wrong account");
+      if (account.address !== "0x" + MODULE_ADDRESS) throw new Error("Wrong account");
 
       const mintFeePerNFT = 0;
       const mintLimitPerAccount = 1;
@@ -73,10 +64,9 @@ function CollectionCreate() {
         },
       });
 
-      const committedTransactionResponse =
-        await movementClient.waitForTransaction({
-          transactionHash: response.hash,
-        });
+      const committedTransactionResponse = await movementClient.waitForTransaction({
+        transactionHash: response.hash,
+      });
       if (committedTransactionResponse.success) {
         alert("Collection created successfully");
       }
@@ -100,15 +90,10 @@ function CollectionCreate() {
             placeholder="Collection name"
             _placeholder={{ opacity: 1, color: "gray.300" }}
           />
-          {errors.collectionName && (
-            <FormErrorMessage>{errors.collectionName.message}</FormErrorMessage>
-          )}
+          {errors.collectionName && <FormErrorMessage>{errors.collectionName.message}</FormErrorMessage>}
         </FormControl>
 
-        <FormControl
-          isInvalid={!!errors.collectionDescription}
-          marginBottom={4}
-        >
+        <FormControl isInvalid={!!errors.collectionDescription} marginBottom={4}>
           <FormLabel>Collection description</FormLabel>
           <Textarea
             {...register("collectionDescription")}
@@ -116,11 +101,7 @@ function CollectionCreate() {
             placeholder="Description of the NFT Collection"
             _placeholder={{ opacity: 1, color: "gray.300" }}
           />
-          {errors.collectionDescription && (
-            <FormErrorMessage>
-              {errors.collectionDescription.message}
-            </FormErrorMessage>
-          )}
+          {errors.collectionDescription && <FormErrorMessage>{errors.collectionDescription.message}</FormErrorMessage>}
         </FormControl>
 
         <FormControl isInvalid={!!errors.projectUri} marginBottom={4}>
@@ -131,9 +112,7 @@ function CollectionCreate() {
             value={"https://gorilla-moverz.xyz/nfts/farmer/collection.json"}
             _placeholder={{ opacity: 1, color: "gray.300" }}
           />
-          {errors.projectUri && (
-            <FormErrorMessage>{errors.projectUri.message}</FormErrorMessage>
-          )}
+          {errors.projectUri && <FormErrorMessage>{errors.projectUri.message}</FormErrorMessage>}
         </FormControl>
 
         <FormControl isInvalid={!!errors.maxSupply} marginBottom={4}>
@@ -144,9 +123,7 @@ function CollectionCreate() {
             value={"4000"}
             _placeholder={{ opacity: 1, color: "gray.300" }}
           />
-          {errors.maxSupply && (
-            <FormErrorMessage>{errors.maxSupply.message}</FormErrorMessage>
-          )}
+          {errors.maxSupply && <FormErrorMessage>{errors.maxSupply.message}</FormErrorMessage>}
         </FormControl>
 
         <FormControl isInvalid={!!errors.allowlistManager} marginBottom={4}>
@@ -157,19 +134,10 @@ function CollectionCreate() {
             value={"0x" + MODULE_ADDRESS}
             _placeholder={{ opacity: 1, color: "gray.300" }}
           />
-          {errors.allowlistManager && (
-            <FormErrorMessage>
-              {errors.allowlistManager.message}
-            </FormErrorMessage>
-          )}
+          {errors.allowlistManager && <FormErrorMessage>{errors.allowlistManager.message}</FormErrorMessage>}
         </FormControl>
 
-        <Button
-          colorScheme="green"
-          marginBottom={2}
-          type="submit"
-          disabled={!isValid}
-        >
+        <Button colorScheme="green" marginBottom={2} type="submit" disabled={!isValid}>
           Create Collection
         </Button>
       </form>

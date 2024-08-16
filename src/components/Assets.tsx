@@ -5,9 +5,7 @@ import { BANANA_CONTRACT_ADDRESS } from "../constants";
 
 function Assets() {
   const { data: assets } = useAssets();
-  const bananas = assets?.filter(
-    (i) => i.asset_type === BANANA_CONTRACT_ADDRESS
-  );
+  const bananas = assets?.filter((i) => i.asset_type === BANANA_CONTRACT_ADDRESS);
   if (!bananas?.length) return null;
 
   return (
@@ -25,8 +23,7 @@ function Assets() {
                 <Box>
                   <b>{asset.metadata?.name}</b>
                   <br />
-                  Amount:{" "}
-                  {asset.amount / Math.pow(10, asset.metadata?.decimals ?? 0)}
+                  Amount: {asset.amount / Math.pow(10, asset.metadata?.decimals ?? 0)}
                 </Box>
               </HStack>
             );

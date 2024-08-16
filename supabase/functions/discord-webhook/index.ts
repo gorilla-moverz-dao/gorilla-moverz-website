@@ -43,15 +43,9 @@ Comments:
 ${data.comments}
 `;
 
-  await post(
-    DISCORD_WEBHOOK_URL,
-    {
-      content: message,
-    },
-  );
+  await post(DISCORD_WEBHOOK_URL, {
+    content: message,
+  });
 
-  return new Response(
-    JSON.stringify(data),
-    { headers: { "Content-Type": "application/json" } },
-  );
+  return new Response(JSON.stringify(data), { headers: { "Content-Type": "application/json" } });
 });

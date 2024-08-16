@@ -18,18 +18,15 @@ function HomePage() {
         </Box>
         <Flex flex={1} flexDirection="column">
           <Text>
-            <b>Gorilla Moverz</b> is committed to helping <b>Movement Labs</b>{" "}
-            reach the moon. We are the <b>Social Infrastructure</b> project on
-            Movement. As a community of engaged, fanatically supportive Movement
-            users, our role involves stimulating activity, promoting
-            initiatives, and providing steady support during testnets. Soon this
-            infrastructure will be represented on-chain through an NFT and
-            memecoin. Together, we're shaping the future of crypto.
+            <b>Gorilla Moverz</b> is committed to helping <b>Movement Labs</b> reach the moon. We are the{" "}
+            <b>Social Infrastructure</b> project on Movement. As a community of engaged, fanatically supportive Movement
+            users, our role involves stimulating activity, promoting initiatives, and providing steady support during
+            testnets. Soon this infrastructure will be represented on-chain through an NFT and memecoin. Together, we're
+            shaping the future of crypto.
           </Text>
           <Text>
-            Beyond this mission, we actively seek strategic partnerships with
-            prominent players and crypto projects in the broad Movement
-            ecosystem.
+            Beyond this mission, we actively seek strategic partnerships with prominent players and crypto projects in
+            the broad Movement ecosystem.
           </Text>
           <Text>
             <b>Apes together strong!</b> 🦍 🍌

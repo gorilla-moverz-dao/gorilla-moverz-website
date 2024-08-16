@@ -20,5 +20,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </QueryClientProvider>
       </AptosWalletAdapterProvider>
     </ChakraProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

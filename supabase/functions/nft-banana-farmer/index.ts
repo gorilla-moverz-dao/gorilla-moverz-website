@@ -1,11 +1,6 @@
 import { supabaseClient } from "../_shared/supabase-client.ts";
 import { corsHeaders } from "../_shared/webserver-functions.ts";
-import {
-  ConnInfo,
-  PathParams,
-  json,
-  serve,
-} from "https://deno.land/x/sift@0.6.0/mod.ts";
+import { ConnInfo, PathParams, json, serve } from "https://deno.land/x/sift@0.6.0/mod.ts";
 
 interface BananaFarmerNFTMetadata {
   image: string;
@@ -40,7 +35,7 @@ async function nft(req: Request, _connInfo: ConnInfo, params: PathParams) {
       {
         headers: corsHeaders,
         status: 500,
-      }
+      },
     );
   }
 

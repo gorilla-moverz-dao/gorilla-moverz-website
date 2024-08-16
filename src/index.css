@@ -24,8 +24,7 @@ form {
 }
 
 .logo:hover {
-  filter: drop-shadow(0 0 10px #ffff00) drop-shadow(0 0 20px #ffff00)
-    drop-shadow(0 0 30px #ffff00);
+  filter: drop-shadow(0 0 10px #ffff00) drop-shadow(0 0 20px #ffff00) drop-shadow(0 0 30px #ffff00);
 }
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);

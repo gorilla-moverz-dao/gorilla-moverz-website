@@ -1,12 +1,6 @@
 import { getSigner, submitAndWaitForTransaction } from "./aptos-helper";
 import { convertToAmount, dateToSeconds, runCommand } from "./helper";
-import {
-  Account,
-  Aptos,
-  AptosConfig,
-  Network,
-  UserTransactionResponse,
-} from "@aptos-labs/ts-sdk";
+import { Account, Aptos, AptosConfig, Network, UserTransactionResponse } from "@aptos-labs/ts-sdk";
 
 const moveDir = "move/banana/";
 const aptosYml = moveDir + ".aptos/config.yaml";
@@ -30,12 +24,7 @@ async function main() {
     await runCommand("aptos move publish --assume-yes", moveDir);
   }
 
-  await mintFACoin(
-    "banana",
-    admin,
-    admin,
-    mint_amount,
-  );
+  await mintFACoin("banana", admin, admin, mint_amount);
 
   const collectionId = await createCollection(admin);
   await setCollectionAddress(admin, collectionId);
@@ -45,12 +34,7 @@ async function main() {
 
 main().catch((error) => console.error(error));
 
-async function mintFACoin(
-  coin: string,
-  signer: Account,
-  receiver: Account,
-  amount: number,
-): Promise<string> {
+async function mintFACoin(coin: string, signer: Account, receiver: Account, amount: number): Promise<string> {
   const transaction = await aptos.transaction.build.simple({
     sender: signer.accountAddress,
     data: {
@@ -59,18 +43,12 @@ async function mintFACoin(
     },
   });
 
-  const response = await submitAndWaitForTransaction(
-    aptos,
-    signer,
-    transaction,
-  );
+  const response = await submitAndWaitForTransaction(aptos, signer, transaction);
   console.log(`Minting ${coin} coin successful. - tx: `, response.hash);
   return response.hash;
 }
 
-async function createCollection(
-  signer: Account,
-): Promise<string> {
+async function createCollection(signer: Account): Promise<string> {
   const mintFeePerNFT = 0;
   const mintLimitPerAccount = 1;
   const preMintAmount = 0;
@@ -110,23 +88,14 @@ async function createCollection(
     },
   });
 
-  const response = (await submitAndWaitForTransaction(
-    aptos,
-    signer,
-    transaction,
-  )) as UserTransactionResponse;
-  const collectionCreated = response.events.find((e) =>
-    e.type.split("::")[2] === "CreateCollectionEvent"
-  );
+  const response = (await submitAndWaitForTransaction(aptos, signer, transaction)) as UserTransactionResponse;
+  const collectionCreated = response.events.find((e) => e.type.split("::")[2] === "CreateCollectionEvent");
   const collectionId = collectionCreated?.data.collection_obj.inner;
   console.log(`Collection created successful. - tx: `, collectionId);
   return collectionId;
 }
 
-async function deposit(
-  signer: Account,
-  amount: number,
-): Promise<string> {
+async function deposit(signer: Account, amount: number): Promise<string> {
   const transaction = await aptos.transaction.build.simple({
     sender: signer.accountAddress,
     data: {
@@ -135,22 +104,12 @@ async function deposit(
     },
   });
 
-  const response = await submitAndWaitForTransaction(
-    aptos,
-    signer,
-    transaction,
-  );
-  console.log(
-    `Deposited ${amount} bananas to banana farm - tx: `,
-    response.hash,
-  );
+  const response = await submitAndWaitForTransaction(aptos, signer, transaction);
+  console.log(`Deposited ${amount} bananas to banana farm - tx: `, response.hash);
   return response.hash;
 }
 
-async function setCollectionAddress(
-  signer: Account,
-  collectionId: string,
-): Promise<string> {
+async function setCollectionAddress(signer: Account, collectionId: string): Promise<string> {
   const transaction = await aptos.transaction.build.simple({
     sender: signer.accountAddress,
     data: {
@@ -159,11 +118,7 @@ async function setCollectionAddress(
     },
   });
 
-  const response = await submitAndWaitForTransaction(
-    aptos,
-    signer,
-    transaction,
-  );
+  const response = await submitAndWaitForTransaction(aptos, signer, transaction);
   console.log(`Set collection Id to ${collectionId} - tx: `, response.hash);
   return response.hash;
 }

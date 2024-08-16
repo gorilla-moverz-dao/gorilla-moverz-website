@@ -100,16 +100,10 @@ function Media() {
         Media
       </PageTitle>
 
-      <SimpleGrid
-        spacing={4}
-        templateColumns="repeat(auto-fill, minmax(49%, 420px))"
-      >
+      <SimpleGrid spacing={4} templateColumns="repeat(auto-fill, minmax(49%, 420px))">
         {episodes.map((episode) => (
           <Card key={episode.url}>
-            <CardBody
-              onClick={() => openEpisodeModal(episode)}
-              cursor={"pointer"}
-            >
+            <CardBody onClick={() => openEpisodeModal(episode)} cursor={"pointer"}>
               <Image src={episode.preview}></Image>
               <Stack mt="6" spacing="3">
                 <Heading size="md" color="green.600">
