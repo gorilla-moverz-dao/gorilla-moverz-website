@@ -6,6 +6,7 @@ module GorillaMoverz::banana_farm {
     use aptos_std::table::{Self, Table};
     use std::option::{Self, Option};
     use std::signer;
+    use std::vector;
     use aptos_token_objects::token::{Self, Token};
  
     use GorillaMoverz::banana;
@@ -16,6 +17,7 @@ module GorillaMoverz::banana_farm {
     const ENOT_AUTHORIZED: u64 = 3;
     const ENOT_OWNED_NFT: u64 = 4;
     const EWRONG_COLLECTION: u64 = 5;
+    const EDUPLICATE_COLLECTION: u64 = 6;
 
     struct BananaTreasury has key {
         coins: Object<FungibleStore>,
@@ -55,7 +57,7 @@ module GorillaMoverz::banana_farm {
         fungible_asset::deposit(treasury.coins, in);
     }
 
-    public entry fun withdraw(sender: &signer, nft: Object<Token>) acquires BananaTreasury {
+    public entry fun farm(sender: &signer, nft: Object<Token>, partner_nfts: vector<Object<Token>>) acquires BananaTreasury {
         let account = signer::address_of(sender);
 
         assert!(object::owner(nft) == account, ENOT_OWNED_NFT);
@@ -63,10 +65,27 @@ module GorillaMoverz::banana_farm {
         let is_launchpad_collection = launchpad::verify_collection(nft);
         assert!(is_launchpad_collection, EWRONG_COLLECTION);
 
-        let treasury = borrow_global_mut<BananaTreasury>(@GorillaMoverz);
+        // Verify partner NFTs
+        let collection_addresses = vector::empty<address>();
 
-        let collection_obj = token::collection_object(nft);
-        let collection_address = object::object_address(&collection_obj);
+        let collection_address = object::object_address(&token::collection_object(nft));
+        vector::push_back(&mut collection_addresses, collection_address);
+        
+        let partner_nfts_len = vector::length(&partner_nfts);
+        for (i in 0..partner_nfts_len) {
+            let partner_nft = *vector::borrow(&partner_nfts, i);
+            assert!(object::owner(partner_nft) == account, ENOT_OWNED_NFT);
+
+            let is_launchpad_collection = launchpad::verify_collection(partner_nft);
+            assert!(is_launchpad_collection, EWRONG_COLLECTION);
+
+            let collection_address_partner = object::object_address(&token::collection_object(partner_nft));
+            let duplicate = vector::contains(&collection_addresses, &collection_address_partner);
+            assert!(!duplicate, EDUPLICATE_COLLECTION);
+            vector::push_back(&mut collection_addresses, collection_address_partner);
+        };
+
+        let treasury = borrow_global_mut<BananaTreasury>(@GorillaMoverz);
         assert!(option::some(collection_address) == treasury.collection_address, EWRONG_COLLECTION);
 
         let timeout = treasury.timeout_in_seconds;
@@ -87,7 +106,12 @@ module GorillaMoverz::banana_farm {
                 amount = 3_000_000_000;
             } else if (diff < timeout * 4) {
                 amount = 2_000_000_000;
-            }
+            };
+        };
+
+        // Increase amount based on partner NFTs (10% per NFT)
+        if (partner_nfts_len > 0) {
+            amount = amount + (amount / 10 * partner_nfts_len);
         };
 
         let now = timestamp::now_seconds();
@@ -175,14 +199,50 @@ module GorillaMoverz::banana_farm {
         debug::print(&collection::name(main_collection));
         debug::print(&collection::name(partner_collection));
 
-        withdraw(user1, nft);
+        farm(user1, nft, vector[]);
 
         // Add user to allowlist and try to withdraw
         assert!(launchpad::is_allowlisted(user2_address, main_collection) == false, 1);
         launchpad::add_allowlist_addresses(allowlist_manager, vector[user2_address], main_collection);
         assert!(launchpad::is_allowlisted(user2_address, main_collection) == true, 2);
         let nft_user2 = launchpad::test_mint_nft(user2_address, main_collection);
-        withdraw(user2, nft_user2);
+        farm(user2, nft_user2, vector[]);
+    }
+
+     #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300)]
+    fun test_partner_boost(
+        aptos_framework: &signer,
+        creator: &signer,
+        allowlist_manager: &signer,
+        user1: &signer,
+    ) acquires BananaTreasury {
+        let user1_address = signer::address_of(user1);
+
+        let (main_collection, partner_collection) = test_setup_farm(aptos_framework, creator, allowlist_manager, user1);
+        let nft = launchpad::test_mint_nft(user1_address, main_collection);
+        let partner_nft = launchpad::test_mint_nft(user1_address, partner_collection);
+
+        farm(user1, nft, vector[partner_nft]);
+
+        let asset = banana::get_metadata();
+        assert!(primary_fungible_store::balance(user1_address, asset) == 1_100_000_000, 6);
+    }
+
+    #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300)]
+    #[expected_failure(abort_code = EDUPLICATE_COLLECTION, location = Self)]
+    fun test_prevent_same_collection(
+        aptos_framework: &signer,
+        creator: &signer,
+        allowlist_manager: &signer,
+        user1: &signer,
+    ) acquires BananaTreasury {
+        let user1_address = signer::address_of(user1);
+
+        let (main_collection, partner_collection) = test_setup_farm(aptos_framework, creator, allowlist_manager, user1);
+        let nft = launchpad::test_mint_nft(user1_address, main_collection);
+        let partner_nft = launchpad::test_mint_nft(user1_address, partner_collection);
+
+        farm(user1, nft, vector[nft, partner_nft]);
     }
 
     #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300)]
@@ -198,7 +258,7 @@ module GorillaMoverz::banana_farm {
         let (_main_collection, partner_collection) = test_setup_farm(aptos_framework, creator, allowlist_manager, user1);
         let partner_nft = launchpad::test_mint_nft(user1_address, partner_collection);
 
-        withdraw(user1, partner_nft);
+        farm(user1, partner_nft, vector[]);
     }
 
     #[test_only]
