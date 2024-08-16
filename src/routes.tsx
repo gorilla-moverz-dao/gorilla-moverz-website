@@ -30,7 +30,7 @@ const router = createBrowserRouter([
         path: "bananas",
         element: <BananaFarm />,
         children: [
-          { index: true, element: <FarmerNFT collectionId={FARM_COLLECTION_ID} /> },
+          { index: true, element: <FarmerNFT collectionId={FARM_COLLECTION_ID} slug="farmer" /> },
           { path: "partner", element: <BananaFarmCollections /> },
           { path: "leaderboard", element: <Leaderboard /> },
         ],

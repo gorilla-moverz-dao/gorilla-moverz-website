@@ -12,9 +12,10 @@ import { WalletSelector } from "../WalletSelector";
 
 interface Props {
   collectionId: string;
+  slug: string;
 }
 
-function HeroSection({ collectionId }: Props) {
+function HeroSection({ collectionId, slug }: Props) {
   const { data, refetch: refetchMint } = useMintData(collectionId);
   const { account, signAndSubmitTransaction } = useWallet();
   const { refetch: refetchOwned } = useOwnedNFTs(collectionId);
@@ -46,7 +47,7 @@ function HeroSection({ collectionId }: Props) {
           src={
             collection?.cdn_asset_uris?.cdn_image_uri ??
             collection?.cdn_asset_uris?.cdn_animation_uri ??
-            "/images/bananafarm/collection.png"
+            "/nfts/" + slug + "/images/collection.png"
           }
           rounded={4}
         />

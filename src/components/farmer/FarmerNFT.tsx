@@ -13,9 +13,10 @@ import Countdown from "./Countdown";
 
 interface Props {
   collectionId: string;
+  slug: string;
 }
 
-function FarmerNFT({ collectionId }: Props) {
+function FarmerNFT({ collectionId, slug }: Props) {
   const { account } = useWallet();
   const { data: ownedNFTs, isLoading } = useOwnedNFTs(collectionId);
   const [imageUrl, setImageUrl] = useState<string>("");
@@ -70,7 +71,7 @@ function FarmerNFT({ collectionId }: Props) {
         </PageTitle>
         <Text>Please mint your NFT to participate.</Text>
 
-        <HeroSection collectionId={collectionId} />
+        <HeroSection collectionId={collectionId} slug={slug} />
       </>
     );
 

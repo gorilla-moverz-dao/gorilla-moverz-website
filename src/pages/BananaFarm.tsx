@@ -8,7 +8,10 @@ function BananaFarm() {
   const location = useLocation();
 
   const [activeTab, setActiveTab] = useState(1);
-  const path = location.pathname.split("/").pop();
+  const path = location.pathname
+    .split("/")
+    .filter((i) => !!i)
+    .pop();
 
   const tabs = [
     { id: "", name: "Banana farm" },

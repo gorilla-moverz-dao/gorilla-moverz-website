@@ -6,6 +6,7 @@ function BananaFarmCollections() {
   const { data, error } = useBananaFarmCollections();
   const [searchParams] = useSearchParams();
   const collectionId = searchParams.get("collectionId");
+  const slug = data?.find((collection) => collection.collection_address === collectionId)?.slug ?? "";
 
   if (error) return null;
 
@@ -13,7 +14,7 @@ function BananaFarmCollections() {
     return (
       <div>
         <h1>Collection ID: {collectionId}</h1>
-        <FarmerNFT collectionId={collectionId} />
+        <FarmerNFT collectionId={collectionId} slug={slug} />
       </div>
     );
   }
