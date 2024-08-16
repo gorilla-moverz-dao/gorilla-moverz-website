@@ -1,7 +1,7 @@
 import movementClient from "../services/movement-client";
 import { AccountAddress } from "@aptos-labs/ts-sdk";
 import { useQuery } from "@tanstack/react-query";
-import { FARM_COLLECTION_ID, MODULE_ADDRESS } from "../constants";
+import { MODULE_ADDRESS } from "../constants";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 
 export interface Token {
@@ -92,7 +92,7 @@ async function getIsAllowlisted(address: string, collection_id: string) {
   )[0];
 }
 
-export function useMintData(collection_id: string = FARM_COLLECTION_ID) {
+export function useMintData(collection_id: string) {
   const { account } = useWallet();
   const address = account?.address;
 

@@ -1,7 +1,7 @@
 import { useOwnedNFTs } from "../../hooks/useOwnedNFTs";
 import { Box, Button, Flex, Image, Spinner, Text, useToast } from "@chakra-ui/react";
 import PageTitle from "../PageTitle";
-import { HeroSection } from "./HeroSection";
+import HeroSection from "./HeroSection";
 import { useEffect, useState } from "react";
 import Assets from "../Assets";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
@@ -11,9 +11,13 @@ import useFarmData from "./useFarmData";
 import { useLeaderboard } from "../../hooks/useLeaderboard";
 import Countdown from "./Countdown";
 
-function FarmerNFT() {
+interface Props {
+  collectionId: string;
+}
+
+function FarmerNFT({ collectionId }: Props) {
   const { account } = useWallet();
-  const { data: ownedNFTs, isLoading } = useOwnedNFTs();
+  const { data: ownedNFTs, isLoading } = useOwnedNFTs(collectionId);
   const [imageUrl, setImageUrl] = useState<string>("");
 
   const contractClient = useContractClient();
@@ -66,7 +70,7 @@ function FarmerNFT() {
         </PageTitle>
         <Text>Please mint your NFT to participate.</Text>
 
-        <HeroSection />
+        <HeroSection collectionId={collectionId} />
       </>
     );
 

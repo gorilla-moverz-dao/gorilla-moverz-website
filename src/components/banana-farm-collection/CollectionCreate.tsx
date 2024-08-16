@@ -1,5 +1,5 @@
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
-import { BANANA_CONTRACT_ADDRESS, MODULE_ADDRESS } from "../../constants";
+import { MODULE_ADDRESS } from "../../constants";
 import movementClient from "../../services/movement-client";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,7 +41,7 @@ function CollectionCreate() {
 
       const response = await signAndSubmitTransaction({
         data: {
-          function: `${BANANA_CONTRACT_ADDRESS}::launchpad::create_collection`,
+          function: `${MODULE_ADDRESS}::launchpad::create_collection`,
           typeArguments: [],
           functionArguments: [
             collection.collectionDescription,
@@ -107,9 +107,8 @@ function CollectionCreate() {
         <FormControl isInvalid={!!errors.projectUri} marginBottom={4}>
           <FormLabel>Project uri</FormLabel>
           <Input
-            {...register("projectUri")}
+            {...register("projectUri", { value: "https://gorilla-moverz.xyz/nfts/farmer/collection.json" })}
             id="projectUri"
-            value={"https://gorilla-moverz.xyz/nfts/farmer/collection.json"}
             _placeholder={{ opacity: 1, color: "gray.300" }}
           />
           {errors.projectUri && <FormErrorMessage>{errors.projectUri.message}</FormErrorMessage>}

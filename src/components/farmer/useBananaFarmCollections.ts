@@ -5,7 +5,7 @@ const useBananaFarmCollections = () => {
   return useQuery({
     queryKey: ["banana_farm_collections"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("banana_farm_collections").select("*");
+      const { data, error } = await supabase.from("banana_farm_collections").select("*").neq("slug", "farmer");
 
       if (error) {
         throw new Error(error.message);

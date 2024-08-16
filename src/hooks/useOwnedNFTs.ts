@@ -1,6 +1,5 @@
 import movementClient from "../services/movement-client";
 import { useQuery } from "@tanstack/react-query";
-import { FARM_COLLECTION_ID } from "../constants";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 
 export interface Token {
@@ -25,7 +24,7 @@ interface NFTsQueryResult {
   current_token_ownerships_v2: Array<CurrentTokenData>;
 }
 
-export function useOwnedNFTs(collection_id: string = FARM_COLLECTION_ID) {
+export function useOwnedNFTs(collection_id: string) {
   const { account } = useWallet();
 
   return useQuery({

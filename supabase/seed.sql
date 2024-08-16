@@ -5,3 +5,10 @@ SELECT
   'farmer-' || (random() * 27 + 1)::int || '.png' AS image, 
   1 as collection_id,
   generate_series(1, 10000) as nft_number;
+
+
+insert into public.banana_farm_nfts (image, collection_id, nft_number)
+SELECT 
+  'partner-' || (random() * 1 + 1)::int || '.png' AS image, 
+  2 as collection_id,
+  generate_series(1, 2000) as nft_number;

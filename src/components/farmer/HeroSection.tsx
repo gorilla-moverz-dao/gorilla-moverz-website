@@ -10,12 +10,14 @@ import { FaCopy, FaLink } from "react-icons/fa6";
 import { useOwnedNFTs } from "../../hooks/useOwnedNFTs";
 import { WalletSelector } from "../WalletSelector";
 
-interface HeroSectionProps {}
+interface Props {
+  collectionId: string;
+}
 
-export const HeroSection: React.FC<HeroSectionProps> = () => {
-  const { data, refetch: refetchMint } = useMintData();
+function HeroSection({ collectionId }: Props) {
+  const { data, refetch: refetchMint } = useMintData(collectionId);
   const { account, signAndSubmitTransaction } = useWallet();
-  const { refetch: refetchOwned } = useOwnedNFTs();
+  const { refetch: refetchOwned } = useOwnedNFTs(collectionId);
 
   const { collection, totalMinted = 0, maxSupply = 1 } = data ?? {};
 
@@ -126,7 +128,7 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
       </Box>
     </Flex>
   );
-};
+}
 
 const AddressButton: FC<{ address: string }> = ({ address }) => {
   const [copied, setCopied] = useState(false);
@@ -146,3 +148,4 @@ const AddressButton: FC<{ address: string }> = ({ address }) => {
     </>
   );
 };
+export default HeroSection;

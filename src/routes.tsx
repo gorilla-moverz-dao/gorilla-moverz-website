@@ -12,6 +12,7 @@ import CollectionCreate from "./components/banana-farm-collection/CollectionCrea
 import BananaFarmCollections from "./components/farmer/BananaFarmCollections";
 import Leaderboard from "./components/farmer/Leaderboard";
 import FarmerNFT from "./components/farmer/FarmerNFT";
+import { FARM_COLLECTION_ID } from "./constants";
 
 const router = createBrowserRouter([
   {
@@ -29,7 +30,7 @@ const router = createBrowserRouter([
         path: "bananas",
         element: <BananaFarm />,
         children: [
-          { index: true, element: <FarmerNFT /> },
+          { index: true, element: <FarmerNFT collectionId={FARM_COLLECTION_ID} /> },
           { path: "partner", element: <BananaFarmCollections /> },
           { path: "leaderboard", element: <Leaderboard /> },
         ],

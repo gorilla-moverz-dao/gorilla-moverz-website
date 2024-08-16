@@ -26,8 +26,24 @@ async function main() {
 
   await mintFACoin("banana", admin, admin, mint_amount);
 
-  const collectionId = await createCollection(admin);
+  const collectionId = await createCollection(admin, {
+    collectionName: "Farmer | Gorilla Moverz",
+    collectionDescription:
+      "Farmer plays a key role in the Gorilla Moverz ecosystem. They are responsible for planting and harvesting the bananas that are used to feed the Gorillas.",
+    slug: "farmer",
+    maxSupply: 4000,
+    allowlistManager: admin.accountAddress.toString(),
+  });
   await setCollectionAddress(admin, collectionId);
+
+  const partnerCollectionId = await createCollection(admin, {
+    collectionName: "Gorillaz Partner 1",
+    collectionDescription: "Gorillaz Partner 1 Description",
+    slug: "partner1",
+    maxSupply: 2000,
+    allowlistManager: admin.accountAddress.toString(),
+  });
+  console.log("Partner Collection Id: ", partnerCollectionId);
 
   await deposit(admin, deposit_amount);
 }
@@ -48,20 +64,19 @@ async function mintFACoin(coin: string, signer: Account, receiver: Account, amou
   return response.hash;
 }
 
-async function createCollection(signer: Account): Promise<string> {
+interface CollectionConfig {
+  collectionName: string;
+  collectionDescription: string;
+  slug: string;
+  maxSupply: number;
+  allowlistManager: string;
+}
+
+async function createCollection(signer: Account, collection: CollectionConfig): Promise<string> {
   const mintFeePerNFT = 0;
   const mintLimitPerAccount = 1;
   const preMintAmount = 0;
   const royaltyPercentage = 0;
-
-  const collection = {
-    collectionName: "Farmer | Gorilla Moverz",
-    collectionDescription:
-      "Farmer plays a key role in the Gorilla Moverz ecosystem. They are responsible for planting and harvesting the bananas that are used to feed the Gorillas.",
-    projectUri: "https://gorilla-moverz.xyz/nfts/farmer/collection.json",
-    maxSupply: 4000,
-    allowlistManager: signer.accountAddress.toString(),
-  };
 
   const transaction = await aptos.transaction.build.simple({
     sender: signer.accountAddress,
@@ -70,7 +85,7 @@ async function createCollection(signer: Account): Promise<string> {
       functionArguments: [
         collection.collectionDescription,
         collection.collectionName,
-        collection.projectUri,
+        `https://gorilla-moverz.xyz/nfts/${collection.slug}/collection.json`,
         collection.maxSupply,
         royaltyPercentage,
         preMintAmount, // amount of NFT to pre-mint for myself
