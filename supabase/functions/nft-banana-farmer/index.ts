@@ -24,7 +24,7 @@ async function nft(req: Request, _connInfo: ConnInfo, params: PathParams) {
 
   const { data, error } = await supabaseClient
     .from("banana_farm_nfts")
-    .select("*, banana_farm_collections!inner(slug)")
+    .select("*, banana_farm_collections!inner(id, slug, name)")
     .eq("nft_number", nft_number)
     .eq("banana_farm_collections.slug", slug)
     .maybeSingle();
@@ -43,12 +43,14 @@ async function nft(req: Request, _connInfo: ConnInfo, params: PathParams) {
     return new Response("Not found", { status: 404 });
   }
 
+  console.log(data);
+
   const nft: BananaFarmerNFTMetadata = {
-    name: "Farmer #" + data.id,
-    description: "Farmer #" + data.id,
+    name: `${data.banana_farm_collections.name} | #${data.nft_number}`,
+    description: `${data.banana_farm_collections.name} | #${data.nft_number}`,
     image: `https://gorilla-moverz.xyz/nfts/${slug}/images/${data.image}`,
     attributes: [],
-    external_url: `https://gorilla-moverz.xyz/bananas/collections/${slug}/${data.id}`,
+    external_url: `https://gorilla-moverz.xyz/bananas`,
   };
 
   return json(nft, {
