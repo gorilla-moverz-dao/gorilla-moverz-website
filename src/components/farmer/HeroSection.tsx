@@ -47,7 +47,7 @@ function HeroSection({ collectionId, slug }: Props) {
           src={
             collection?.cdn_asset_uris?.cdn_image_uri ??
             collection?.cdn_asset_uris?.cdn_animation_uri ??
-            "/nfts/" + slug + "/images/collection.png"
+            "/nfts/" + slug + "/collection.png"
           }
           rounded={4}
         />
