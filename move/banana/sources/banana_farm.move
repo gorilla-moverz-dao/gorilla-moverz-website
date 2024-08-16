@@ -68,7 +68,7 @@ module GorillaMoverz::banana_farm {
         // Verify partner NFTs
         let collection_addresses = vector::empty<address>();
 
-        let collection_address = object::object_address(&token::collection_object(nft));
+        let collection_address = get_collection_address(nft);
         vector::push_back(&mut collection_addresses, collection_address);
         
         let partner_nfts_len = vector::length(&partner_nfts);
@@ -79,7 +79,7 @@ module GorillaMoverz::banana_farm {
             let is_launchpad_collection = launchpad::verify_collection(partner_nft);
             assert!(is_launchpad_collection, EWRONG_COLLECTION);
 
-            let collection_address_partner = object::object_address(&token::collection_object(partner_nft));
+            let collection_address_partner = get_collection_address(partner_nft);
             let duplicate = vector::contains(&collection_addresses, &collection_address_partner);
             assert!(!duplicate, EDUPLICATE_COLLECTION);
             vector::push_back(&mut collection_addresses, collection_address_partner);
@@ -142,6 +142,10 @@ module GorillaMoverz::banana_farm {
         } else {
             false
         }
+    }
+
+    fun get_collection_address(nft: Object<Token>): address {
+        object::object_address(&token::collection_object(nft))
     }
 
     #[view]
