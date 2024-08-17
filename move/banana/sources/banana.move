@@ -78,7 +78,7 @@ module GorillaMoverz::banana {
         let to_wallet = primary_fungible_store::ensure_primary_store_exists(to, asset);
         fungible_asset::transfer_with_ref(transfer_ref, from_wallet, to_wallet, amount);
     }
-
+    
     /// Burn fungible assets as the owner of metadata object.
     public entry fun burn(admin: &signer, from: address, amount: u64) acquires ManagedFungibleAsset {
         let asset = get_metadata();
@@ -128,13 +128,26 @@ module GorillaMoverz::banana {
         fungible_asset::deposit_with_ref(transfer_ref, to_wallet, fa);
     }
 
+    /// Withdraw to an account as the owner of metadata object ignoring `frozen` field.
+    public fun withdraw_to(admin: &signer, amount: u64, to: address, ) acquires ManagedFungibleAsset {
+        let asset = get_metadata();
+        let from = signer::address_of(admin);
+        let transfer_ref = &authorized_borrow_refs(admin, asset).transfer_ref;
+        let from_wallet = primary_fungible_store::primary_store(from, asset);
+        let to_wallet = primary_fungible_store::ensure_primary_store_exists(to, asset);
+        let fa = fungible_asset::withdraw_with_ref(transfer_ref, from_wallet, amount);
+        fungible_asset::deposit(to_wallet, fa);
+    }
+
+
     /// Borrow the immutable reference of the refs of `metadata`.
     /// This validates that the signer is the metadata object's owner.
     inline fun authorized_borrow_refs(
         owner: &signer,
         asset: Object<Metadata>,
     ): &ManagedFungibleAsset acquires ManagedFungibleAsset {
-        assert!(object::is_owner(asset, signer::address_of(owner)), error::permission_denied(ENOT_OWNER));
+        let is_owner = object::is_owner(asset, signer::address_of(owner));
+        assert!(is_owner, error::permission_denied(ENOT_OWNER));
         borrow_global<ManagedFungibleAsset>(object::object_address(&asset))
     }
 

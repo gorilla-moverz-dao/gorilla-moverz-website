@@ -94,10 +94,13 @@ module GorillaMoverz::banana_farm {
 
         let now = timestamp::now_seconds();
         table::upsert(&mut treasury.last_farmed, account, now);
-
-        let store_signer = &object::generate_signer_for_extending(&treasury.store_extend_ref);
-        GorillaMoverz::banana::transfer(store_signer, @GorillaMoverz, account, amount);
         
+        let store_signer = &object::generate_signer_for_extending(&treasury.store_extend_ref);
+        // let coins = fungible_asset::withdraw(store_signer, treasury.coins, amount);
+        // primary_fungible_store::deposit(account, coins);
+
+        let store_address = signer::address_of(store_signer);
+        GorillaMoverz::banana::withdraw_to(store_signer, amount, account);
 
         // Make sure the account is frozen
         if (!fungible_asset::is_frozen(store)) {
@@ -182,7 +185,7 @@ module GorillaMoverz::banana_farm {
         debug::print(&collection::name(main_collection));
         debug::print(&collection::name(partner_collection));
 
-        withdraw(user1, nft);
+        withdraw(user1, nft); // Should work for frozen account
 
         // Add user to allowlist and try to withdraw
         launchpad::add_allowlist_addresses(allowlist_manager, vector[user2_address], main_collection);
@@ -219,7 +222,7 @@ module GorillaMoverz::banana_farm {
         let balance = primary_fungible_store::balance(user1_address, asset);
         debug::print(&balance);
         assert!(primary_fungible_store::balance(user1_address, asset) == 1_000_000_000, 6);
-        
+
         // Withdraw again, should work even though funds are frozen. 
         timestamp::update_global_time_for_test_secs(650);
         withdraw(user1, nft); 
@@ -250,7 +253,7 @@ module GorillaMoverz::banana_farm {
         debug::print(&collection::name(partner_collection));
 
         assert!(!primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_FROZEN);
-        withdraw(user1, nft);
+        withdraw(user1, nft); // Should work for frozen account
         assert!(primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_NOT_FROZEN);
 
         let balance = primary_fungible_store::balance(user1_address, asset);
