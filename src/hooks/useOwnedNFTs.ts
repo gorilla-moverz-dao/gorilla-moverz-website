@@ -1,6 +1,7 @@
 import movementClient from "../services/movement-client";
 import { useQuery } from "@tanstack/react-query";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import useBananaFarmCollections from "../components/farmer/useBananaFarmCollections";
 
 export interface Token {
   token_name: string;
@@ -30,26 +31,30 @@ interface NFTsQueryResult {
   current_token_ownerships_v2: Array<CurrentTokenData>;
 }
 
-export function useOwnedNFTs(collection_id: string) {
+export function useOwnedNFTs() {
   const { account } = useWallet();
+  const { data: collections, isLoading } = useBananaFarmCollections();
 
   return useQuery({
-    queryKey: ["owned_nfts", account?.address, collection_id],
+    queryKey: ["owned_nfts", account?.address],
     refetchInterval: 1000 * 30,
     queryFn: async () => {
       try {
-        if (!collection_id || !account?.address) return null;
+        if (!account?.address) return null;
+        if (isLoading) return null;
+
+        const collectionIds = collections?.map((collection) => collection.collection_address);
 
         const res = await movementClient.queryIndexer<NFTsQueryResult>({
           query: {
             variables: {
               address: account?.address,
-              collection_id,
+              collectionIds,
             },
             query: `
-						query GetAccountNfts($address: String, $collection_id: String) {
+						query GetAccountNfts($address: String, $collectionIds: [String!]) {
               current_token_ownerships_v2(
-                where: {owner_address: {_eq: $address}, amount: {_gt: "0"}, current_token_data: {current_collection: {collection_id: {_eq: $collection_id}}}}
+                where: {owner_address: {_eq: $address}, amount: {_gt: "0"}, current_token_data: {current_collection: {collection_id: {_in: $collectionIds}}}}
               ) {
                 current_token_data {
                   collection_id
@@ -83,10 +88,7 @@ export function useOwnedNFTs(collection_id: string) {
           },
         });
 
-        const nft = res.current_token_ownerships_v2[0];
-        if (!nft) return null;
-
-        return nft;
+        return res.current_token_ownerships_v2;
       } catch (error) {
         console.error(error);
         return null;

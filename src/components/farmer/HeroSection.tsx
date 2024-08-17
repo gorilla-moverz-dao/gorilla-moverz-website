@@ -18,7 +18,7 @@ interface Props {
 function HeroSection({ collectionId }: Props) {
   const { data, refetch: refetchMint } = useMintData(collectionId);
   const { account, signAndSubmitTransaction } = useWallet();
-  const { refetch: refetchOwned } = useOwnedNFTs(collectionId);
+  const { refetch: refetchOwned } = useOwnedNFTs();
   const col = useBananaFarmCollection(collectionId);
 
   const { collection, totalMinted = 0, maxSupply = 1 } = data ?? {};
