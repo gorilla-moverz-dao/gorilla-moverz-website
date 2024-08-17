@@ -221,8 +221,8 @@ module GorillaMoverz::banana_farm {
         assert!(primary_fungible_store::balance(user1_address, asset) == 1_000_000_000, 6);
         
         // Withdraw again, should work even though funds are frozen. 
-        // TODO: fails on timeout, how to circumvent in tests?
-        // withdraw(user1, nft); 
+        timestamp::update_global_time_for_test_secs(650);
+        withdraw(user1, nft); 
         // Transfer via banana module is disabled because user1 is not creator/owner
         GorillaMoverz::banana::transfer(user1, user1_address, user2_address, 1_000_000);
     }
@@ -292,11 +292,11 @@ module GorillaMoverz::banana_farm {
         let allowlist_manager_address = signer::address_of(allowlist_manager);
 
         banana::test_init(creator);
-        banana::mint(creator, creator_address, 2_000_000_000);
+        banana::mint(creator, creator_address, 10_000_000_000);
 
         init_module(creator);
 
-        deposit(creator, 2_000_000_000);
+        deposit(creator, 10_000_000_000);
 
         launchpad::test_init(creator);
         let (main_collection, partner_collection) = launchpad::test_setup_banana_farmer(
