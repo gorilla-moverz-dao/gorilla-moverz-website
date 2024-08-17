@@ -80,7 +80,7 @@ function FarmerNFT({ collectionId, enableFarming }: Props) {
 
   const partnerNFTCollectionIds = ownedNFTs
     ?.filter((nft) => nft.current_token_data.collection_id !== collectionId)
-    .map((nft) => nft.current_token_data.collection_id);
+    .map((nft) => nft.current_token_data.token_data_id);
 
   return (
     <>
@@ -115,7 +115,7 @@ function FarmerNFT({ collectionId, enableFarming }: Props) {
                   {account && farmed_data && (
                     <Box paddingTop={4}>
                       <Button
-                        onClick={() => withdraw(collectionId, partnerNFTCollectionIds)}
+                        onClick={() => withdraw(farmerNFT.current_token_data.token_data_id, partnerNFTCollectionIds)}
                         colorScheme={farmed_data.remainingTime > 0 ? "gray" : "green"}
                         disabled={farmed_data.remainingTime > 0}
                       >
