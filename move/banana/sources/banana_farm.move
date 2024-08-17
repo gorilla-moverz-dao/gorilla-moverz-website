@@ -96,8 +96,8 @@ module GorillaMoverz::banana_farm {
         table::upsert(&mut treasury.last_farmed, account, now);
 
         let store_signer = &object::generate_signer_for_extending(&treasury.store_extend_ref);
-        let coins = fungible_asset::withdraw(store_signer, treasury.coins, amount);
-        primary_fungible_store::deposit(account, coins);
+        GorillaMoverz::banana::transfer(store_signer, @GorillaMoverz, account, amount);
+        
 
         // Make sure the account is frozen
         if (!fungible_asset::is_frozen(store)) {
@@ -220,10 +220,9 @@ module GorillaMoverz::banana_farm {
         debug::print(&balance);
         assert!(primary_fungible_store::balance(user1_address, asset) == 1_000_000_000, 6);
         
-        // Withdraw again, should work even though funds are frozen.
+        // Withdraw again, should work even though funds are frozen. 
         // TODO: fails on timeout, how to circumvent in tests?
         // withdraw(user1, nft); 
-        
         // Transfer via banana module is disabled because user1 is not creator/owner
         GorillaMoverz::banana::transfer(user1, user1_address, user2_address, 1_000_000);
     }
