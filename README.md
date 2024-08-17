@@ -50,3 +50,22 @@ curl -X POST \
 -H "Authorization: Bot $BOT_TOKEN" \
 -d '{"name":"bananafarm-allowlist","description":"Add an address to the Gorilla Moverz banana farm allowlist","options":[{"name":"address","description":"Movement Aptos wallet address","type":3,"required":true}]}' \
 "https://discord.com/api/v8/applications/$CLIENT_ID/commands"
+
+## Debug Discord Bot
+
+Setup .env.local file
+
+```
+DISCORD_BOT_TOKEN=
+DISCORD_APPLICATION_ID=
+DISCORD_PUBLIC_KEY=
+APTOS_PK=[Private Key of the allowlist manager: Should not be the admin of the collection]
+ACCOUNT_ADDRESS=[The account address the banana farm is deployed]
+```
+
+Run it
+
+```
+supabase functions serve --env-file ./supabase/.env.local
+ngrok http 54321
+```

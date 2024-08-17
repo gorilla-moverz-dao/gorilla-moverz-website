@@ -5,16 +5,16 @@ import { Card, CardBody, Heading, SimpleGrid, Stack, Image } from "@chakra-ui/re
 
 function BananaFarmCollections() {
   const { data, error } = useBananaFarmCollections();
+  const collections = data?.filter((collection) => collection.slug !== "farmer");
   const [searchParams] = useSearchParams();
   const collectionId = searchParams.get("collectionId");
-  const slug = data?.find((collection) => collection.collection_address === collectionId)?.slug ?? "";
 
   if (error) return null;
 
   if (collectionId) {
     return (
       <div>
-        <FarmerNFT collectionId={collectionId} slug={slug} enableFarming={false} />
+        <FarmerNFT collectionId={collectionId} enableFarming={false} />
       </div>
     );
   }
@@ -22,7 +22,7 @@ function BananaFarmCollections() {
   return (
     <div>
       <SimpleGrid spacing={4} templateColumns="repeat(auto-fill, minmax(49%, 420px))">
-        {data?.map((collection) => (
+        {collections?.map((collection) => (
           <Link key={collection.id} to={`./?collectionId=${collection.collection_address}`}>
             <Card key={collection.id}>
               <CardBody cursor={"pointer"}>

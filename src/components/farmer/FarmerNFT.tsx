@@ -8,16 +8,15 @@ import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import useContractClient from "../../hooks/useContracts";
 import useAssets from "../../hooks/useAssets";
 import useFarmData from "./useFarmData";
-import { useLeaderboard } from "../../hooks/useLeaderboard";
 import Countdown from "./Countdown";
+import useBananaFarmCollection from "./useBananaFarmCollection";
 
 interface Props {
   collectionId: string;
-  slug: string;
   enableFarming: boolean;
 }
 
-function FarmerNFT({ collectionId, slug, enableFarming }: Props) {
+function FarmerNFT({ collectionId, enableFarming }: Props) {
   const { account } = useWallet();
   const { data: ownedNFTs, isLoading } = useOwnedNFTs(collectionId);
   const [imageUrl, setImageUrl] = useState<string>("");
@@ -27,13 +26,13 @@ function FarmerNFT({ collectionId, slug, enableFarming }: Props) {
   const toast = useToast();
 
   const { data: farmed_data, refetch: refetchFarmed } = useFarmData();
-  const { refetch: refetchLeaderboard } = useLeaderboard();
+
+  const collection = useBananaFarmCollection(collectionId);
 
   const withdraw = async () => {
     try {
       const amount = await contractClient.withdraw(ownedNFTs?.current_token_data?.token_data_id ?? "");
       refetchFarmed();
-      refetchLeaderboard();
 
       toast({
         title: "Success",
@@ -62,6 +61,8 @@ function FarmerNFT({ collectionId, slug, enableFarming }: Props) {
     }
   }, [ownedNFTs]);
 
+  if (!collection) return null;
+
   if (isLoading) return <Spinner />;
 
   if (!ownedNFTs)
@@ -72,7 +73,7 @@ function FarmerNFT({ collectionId, slug, enableFarming }: Props) {
         </PageTitle>
         <Text>Please mint your NFT to participate.</Text>
 
-        <HeroSection collectionId={collectionId} slug={slug} />
+        <HeroSection collectionId={collectionId} />
       </>
     );
 

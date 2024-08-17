@@ -5,7 +5,7 @@ const useBananaFarmCollections = () => {
   return useQuery({
     queryKey: ["banana_farm_collections"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("banana_farm_collections").select("*").neq("slug", "farmer");
+      const { data, error } = await supabase.from("banana_farm_collections").select("*");
 
       if (error) {
         throw new Error(error.message);
@@ -13,6 +13,7 @@ const useBananaFarmCollections = () => {
 
       return data;
     },
+    staleTime: 1000 * 60 * 60 * 24,
     enabled: true,
   });
 };

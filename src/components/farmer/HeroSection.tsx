@@ -9,20 +9,22 @@ import { clampNumber } from "../../helpers/clampNumber";
 import { FaCopy, FaLink } from "react-icons/fa6";
 import { useOwnedNFTs } from "../../hooks/useOwnedNFTs";
 import { WalletSelector } from "../WalletSelector";
+import useBananaFarmCollection from "./useBananaFarmCollection";
 
 interface Props {
   collectionId: string;
-  slug: string;
 }
 
-function HeroSection({ collectionId, slug }: Props) {
+function HeroSection({ collectionId }: Props) {
   const { data, refetch: refetchMint } = useMintData(collectionId);
   const { account, signAndSubmitTransaction } = useWallet();
   const { refetch: refetchOwned } = useOwnedNFTs(collectionId);
+  const col = useBananaFarmCollection(collectionId);
 
   const { collection, totalMinted = 0, maxSupply = 1 } = data ?? {};
 
   if (!collection) return <p>Loading...</p>;
+  if (!col) return <p>Loading...</p>;
 
   const mintNft = async (e: FormEvent) => {
     e.preventDefault();
@@ -47,7 +49,7 @@ function HeroSection({ collectionId, slug }: Props) {
           src={
             collection?.cdn_asset_uris?.cdn_image_uri ??
             collection?.cdn_asset_uris?.cdn_animation_uri ??
-            "/nfts/" + slug + "/collection.png"
+            "/nfts/" + col.slug + "/collection.png"
           }
           rounded={4}
         />
@@ -67,12 +69,7 @@ function HeroSection({ collectionId, slug }: Props) {
                     </Button>
                   )}
                   {!data?.isAllowlisted && (
-                    <Button
-                      type="button"
-                      onClick={() =>
-                        window.open("https://discord.com/channels/1248584514494529657/1273354461905027103", "blank")
-                      }
-                    >
+                    <Button type="button" onClick={() => window.open(col.discord_link ?? "", "blank")}>
                       Get on the allowlist
                     </Button>
                   )}
