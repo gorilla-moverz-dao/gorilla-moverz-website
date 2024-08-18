@@ -37,35 +37,9 @@ Website of Gorilla Moverz!
 - Select farmer NFTs from the 27 submitted (gogo head quality is not always great)
   - or maybe create another public (twitter) contest to have more variants?
 - Create Project description to submit for hackaton. We might want to submit the whole Website including banana farm as a Project (could increase to posibillity to win something)
-- Create tweets (announce participation, teaser, screenshots?)
 - Create Video (Screenrecording with explanations)
 - Bananas should not be able to be sent to other Wallets.
 
-## Setup allowlist
+# Local Development
 
-BOT_TOKEN='replace_me_with_bot_token'
-CLIENT_ID='replace_me_with_client_id'
-curl -X POST \
--H 'Content-Type: application/json' \
--H "Authorization: Bot $BOT_TOKEN" \
--d '{"name":"bananafarm-allowlist","description":"Add an address to the Gorilla Moverz banana farm allowlist","options":[{"name":"address","description":"Movement Aptos wallet address","type":3,"required":true}]}' \
-"https://discord.com/api/v8/applications/$CLIENT_ID/commands"
-
-## Debug Discord Bot
-
-Setup .env.local file
-
-```
-DISCORD_BOT_TOKEN=
-DISCORD_APPLICATION_ID=
-DISCORD_PUBLIC_KEY=
-APTOS_PK=[Private Key of the allowlist manager: Should not be the admin of the collection]
-ACCOUNT_ADDRESS=[The account address the banana farm is deployed]
-```
-
-Run it
-
-```
-supabase functions serve --env-file ./supabase/.env.local
-ngrok http 54321
-```
+To contribute to the Banana Farm see [CONTRIBUTING.md](CONTRIBUTING.md)
