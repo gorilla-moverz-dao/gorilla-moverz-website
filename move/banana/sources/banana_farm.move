@@ -93,7 +93,7 @@ module GorillaMoverz::banana_farm {
         let asset = banana::get_metadata();
         primary_fungible_store::ensure_primary_store_exists(account, asset);
 
-        let amount = 1_000_000_000;
+        let amount = 10_000_000_000;
         if(table::contains(&treasury.last_farmed, account)) {
             let last_farmed = table::borrow(&treasury.last_farmed, account);
             let now = timestamp::now_seconds();
@@ -101,11 +101,11 @@ module GorillaMoverz::banana_farm {
             assert!(diff > timeout, ENOT_ELAPSED);
 
             if (diff < timeout * 2) {
-                amount = 4_000_000_000;
+                amount = 40_000_000_000;
             } else if (diff < timeout * 3) {
-                amount = 3_000_000_000;
+                amount = 30_000_000_000;
             } else if (diff < timeout * 4) {
-                amount = 2_000_000_000;
+                amount = 20_000_000_000;
             };
         };
 
@@ -229,7 +229,7 @@ module GorillaMoverz::banana_farm {
         farm(user1, nft, vector[partner_nft]);
 
         let asset = banana::get_metadata();
-        assert!(primary_fungible_store::balance(user1_address, asset) == 1_100_000_000, 6);
+        assert!(primary_fungible_store::balance(user1_address, asset) == 11_000_000_000, 6);
     }
 
     #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300)]
@@ -276,11 +276,11 @@ module GorillaMoverz::banana_farm {
         let allowlist_manager_address = signer::address_of(allowlist_manager);
 
         banana::test_init(creator);
-        banana::mint(creator, creator_address, 2_000_000_000);
+        banana::mint(creator, creator_address, 20_000_000_000);
 
         init_module(creator);
 
-        deposit(creator, 2_000_000_000);
+        deposit(creator, 20_000_000_000);
 
         launchpad::test_init(creator);
         let (main_collection, partner_collection) = launchpad::test_setup_banana_farmer(
