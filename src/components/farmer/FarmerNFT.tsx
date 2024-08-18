@@ -62,9 +62,9 @@ function FarmerNFT({ collectionId, enableFarming }: Props) {
     }
   }, [farmerNFT]);
 
-  if (isLoading || !collection || !ownedNFTs) return <Spinner />;
+  if (isLoading || !collection) return <Spinner />;
 
-  if (!farmerNFT)
+  if (!farmerNFT) {
     return (
       <>
         <PageTitle size="lg" paddingTop={4}>
@@ -75,6 +75,9 @@ function FarmerNFT({ collectionId, enableFarming }: Props) {
         <HeroSection collectionId={collectionId} />
       </>
     );
+  }
+
+  if (!ownedNFTs) return <Spinner />;
 
   const partnerNFTIds = ownedNFTs
     ?.filter((nft) => nft.current_token_data.collection_id !== collectionId)
