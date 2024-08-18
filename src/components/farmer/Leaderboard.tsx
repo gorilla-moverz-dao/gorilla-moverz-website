@@ -1,10 +1,13 @@
 import { truncateAddress } from "@aptos-labs/wallet-adapter-react";
 import { useLeaderboard } from "../../hooks/useLeaderboard";
 import PageTitle from "../PageTitle";
-import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 
 function Leaderboard() {
-  const { data } = useLeaderboard();
+  const { data, isLoading } = useLeaderboard();
+
+  if (isLoading) return <Spinner />;
+
   return (
     <>
       <PageTitle size="xl" paddingTop={8}>

@@ -65,6 +65,8 @@ export type Database = {
         Row: {
           collection_address: string
           created_at: string
+          discord_guild_id: string | null
+          discord_link: string | null
           id: number
           name: string
           slug: string
@@ -72,6 +74,8 @@ export type Database = {
         Insert: {
           collection_address: string
           created_at?: string
+          discord_guild_id?: string | null
+          discord_link?: string | null
           id?: number
           name: string
           slug: string
@@ -79,6 +83,8 @@ export type Database = {
         Update: {
           collection_address?: string
           created_at?: string
+          discord_guild_id?: string | null
+          discord_link?: string | null
           id?: number
           name?: string
           slug?: string
