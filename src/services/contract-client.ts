@@ -47,11 +47,11 @@ export class ContractClient {
     return r;
   }
 
-  async withdraw(nft: string) {
+  async farm(nft: string, partnerNfts: string[]) {
     const transaction: InputTransactionData = {
       data: {
-        function: `${this.bananaFarm}::withdraw`,
-        functionArguments: [nft],
+        function: `${this.bananaFarm}::farm`,
+        functionArguments: [nft, partnerNfts],
       },
     };
 

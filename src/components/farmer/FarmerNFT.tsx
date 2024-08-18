@@ -8,18 +8,18 @@ import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import useContractClient from "../../hooks/useContracts";
 import useAssets from "../../hooks/useAssets";
 import useFarmData from "./useFarmData";
-import { useLeaderboard } from "../../hooks/useLeaderboard";
 import Countdown from "./Countdown";
+import useBananaFarmCollection from "./useBananaFarmCollection";
 
 interface Props {
   collectionId: string;
-  slug: string;
   enableFarming: boolean;
 }
 
-function FarmerNFT({ collectionId, slug, enableFarming }: Props) {
+function FarmerNFT({ collectionId, enableFarming }: Props) {
   const { account } = useWallet();
-  const { data: ownedNFTs, isLoading } = useOwnedNFTs(collectionId);
+  const { data: ownedNFTs, isLoading } = useOwnedNFTs();
+  const farmerNFT = ownedNFTs?.find((nft) => nft.current_token_data.collection_id === collectionId);
   const [imageUrl, setImageUrl] = useState<string>("");
 
   const contractClient = useContractClient();
@@ -27,13 +27,13 @@ function FarmerNFT({ collectionId, slug, enableFarming }: Props) {
   const toast = useToast();
 
   const { data: farmed_data, refetch: refetchFarmed } = useFarmData();
-  const { refetch: refetchLeaderboard } = useLeaderboard();
 
-  const withdraw = async () => {
+  const collection = useBananaFarmCollection(collectionId);
+
+  const withdraw = async (farmerNFT: string, partnerNFTs: string[]) => {
     try {
-      const amount = await contractClient.withdraw(ownedNFTs?.current_token_data?.token_data_id ?? "");
+      const amount = await contractClient.farm(farmerNFT, partnerNFTs);
       refetchFarmed();
-      refetchLeaderboard();
 
       toast({
         title: "Success",
@@ -53,18 +53,18 @@ function FarmerNFT({ collectionId, slug, enableFarming }: Props) {
   };
 
   useEffect(() => {
-    if (ownedNFTs) {
-      fetch(ownedNFTs.current_token_data.token_uri).then((res) => {
+    if (farmerNFT) {
+      fetch(farmerNFT.current_token_data.token_uri).then((res) => {
         res.json().then((data) => {
           setImageUrl(data.image);
         });
       });
     }
-  }, [ownedNFTs]);
+  }, [farmerNFT]);
 
-  if (isLoading) return <Spinner />;
+  if (isLoading || !collection || !ownedNFTs) return <Spinner />;
 
-  if (!ownedNFTs)
+  if (!farmerNFT)
     return (
       <>
         <PageTitle size="lg" paddingTop={4}>
@@ -72,13 +72,17 @@ function FarmerNFT({ collectionId, slug, enableFarming }: Props) {
         </PageTitle>
         <Text>Please mint your NFT to participate.</Text>
 
-        <HeroSection collectionId={collectionId} slug={slug} />
+        <HeroSection collectionId={collectionId} />
       </>
     );
 
+  const partnerNFTIds = ownedNFTs
+    ?.filter((nft) => nft.current_token_data.collection_id !== collectionId)
+    .map((nft) => nft.current_token_data.token_data_id);
+
   return (
     <>
-      {ownedNFTs && (
+      {farmerNFT && (
         <>
           <PageTitle size="lg" paddingTop={4}>
             Your Farmer
@@ -97,10 +101,10 @@ function FarmerNFT({ collectionId, slug, enableFarming }: Props) {
 
             <Box flex={1}>
               <PageTitle size="lg" paddingTop={0}>
-                {ownedNFTs.current_token_data.current_collection.collection_name} | #
-                {ownedNFTs.current_token_data.token_name}
+                {farmerNFT.current_token_data.current_collection.collection_name} | #
+                {farmerNFT.current_token_data.token_name}
               </PageTitle>
-              <Text paddingBottom={4}>{ownedNFTs.current_token_data.current_collection.description}</Text>
+              <Text paddingBottom={4}>{farmerNFT.current_token_data.current_collection.description}</Text>
 
               <Assets />
 
@@ -109,7 +113,7 @@ function FarmerNFT({ collectionId, slug, enableFarming }: Props) {
                   {account && farmed_data && (
                     <Box paddingTop={4}>
                       <Button
-                        onClick={() => withdraw()}
+                        onClick={() => withdraw(farmerNFT.current_token_data.token_data_id, partnerNFTIds)}
                         colorScheme={farmed_data.remainingTime > 0 ? "gray" : "green"}
                         disabled={farmed_data.remainingTime > 0}
                       >
@@ -123,6 +127,10 @@ function FarmerNFT({ collectionId, slug, enableFarming }: Props) {
                             : "Never"}
                         </i>
                       </Text>
+
+                      {partnerNFTIds.length > 0 && (
+                        <Text>You have {partnerNFTIds.length} Partner NFTs that will boost your farm. </Text>
+                      )}
                     </Box>
                   )}
                 </>

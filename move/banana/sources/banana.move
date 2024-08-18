@@ -15,8 +15,6 @@ module GorillaMoverz::banana {
 
     const ASSET_SYMBOL: vector<u8> = b"BANANA";
 
-    const AMOUNT: u64 = 100000000000000000; // 100M
-
     #[resource_group_member(group = aptos_framework::object::ObjectGroup)]
     /// Hold refs to control the minting, transfer and burning of fungible assets.
     struct ManagedFungibleAsset has key {
