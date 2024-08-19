@@ -1,21 +1,9 @@
-import {
-  json,
-  serve,
-  validateRequest,
-} from "https://deno.land/x/sift@0.6.0/mod.ts";
-import { createClient } from "jsr:@supabase/supabase-js@2";
+import { json, serve, validateRequest } from "https://deno.land/x/sift@0.6.0/mod.ts";
 import { addAllowlistAddresses } from "./aptos-functions.ts";
-import {
-  DiscordPostData,
-  verifySignature,
-} from "../_shared/discord-functions.ts";
+import { DiscordPostData, verifySignature } from "../_shared/discord-functions.ts";
+import { supabaseClient } from "../_shared/supabase-client.ts";
 
 const DISCORD_API_BASE_URL = "https://discord.com/api/v10";
-
-const supabaseClient = createClient(
-  Deno.env.get("SUPABASE_URL") ?? "",
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-);
 
 serve({
   "/nft-allowlist": home,
@@ -53,10 +41,7 @@ async function home(request: Request) {
     const collectionId = u.searchParams.get("collectionId") ?? "";
     const address = u.searchParams.get("address") ?? "";
 
-    const transactionResult = await addAllowlistAddresses(
-      address,
-      collectionId,
-    );
+    const transactionResult = await addAllowlistAddresses(address, collectionId);
 
     let content = "";
     if (transactionResult.success) {
@@ -72,24 +57,18 @@ async function home(request: Request) {
       content = "Failed";
     }
 
-    const followUpResponse = await fetch(
-      `${DISCORD_API_BASE_URL}/webhooks/${post.application_id}/${post.token}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content,
-        }),
+    const followUpResponse = await fetch(`${DISCORD_API_BASE_URL}/webhooks/${post.application_id}/${post.token}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({
+        content,
+      }),
+    });
 
     if (!followUpResponse.ok) {
-      console.error(
-        "Failed to send follow-up message:",
-        await followUpResponse.text(),
-      );
+      console.error("Failed to send follow-up message:", await followUpResponse.text());
     }
 
     // Send a follow-up message

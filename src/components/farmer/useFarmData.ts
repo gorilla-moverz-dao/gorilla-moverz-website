@@ -16,16 +16,12 @@ const useFarmData = () => {
         const treasuryTimeout = await client.getTreasuryTimeout();
         const lastFarmed = await client.getLastFarmed();
 
-        const lastFarmedDate = lastFarmed !== "0"
-          ? new Date(parseInt(lastFarmed) * 1000)
-          : undefined;
+        const lastFarmedDate = lastFarmed !== "0" ? new Date(parseInt(lastFarmed) * 1000) : undefined;
 
         const currentDate = new Date();
         const differenceInSeconds = lastFarmedDate
-          ? Math.floor(
-            (currentDate.getTime() - lastFarmedDate.getTime()) / 1000,
-          )
-          : 0;
+          ? Math.floor((currentDate.getTime() - lastFarmedDate.getTime()) / 1000)
+          : treasuryTimeout;
         const remainingTime = treasuryTimeout - differenceInSeconds;
 
         return {

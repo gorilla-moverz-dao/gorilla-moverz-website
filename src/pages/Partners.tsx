@@ -21,11 +21,8 @@ import {
 import { Partner, PartnerSchema } from "../contracts/partner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createClient } from "@supabase/supabase-js";
-import { SUPRA_API_URL, SURPA_ANON_KEY } from "../constants";
 import PageTitle from "../components/PageTitle";
-
-const supabase = createClient(SUPRA_API_URL, SURPA_ANON_KEY);
+import { supabase } from "../services/supabase-client";
 
 function Partners() {
   const {
@@ -70,13 +67,11 @@ function Partners() {
           Integrations
         </PageTitle>
         <Text>
-          Gorilla Moverz is the first NFT project (with an ASSociated memecoin)
-          on Movement.
+          Gorilla Moverz is the first NFT project (with an ASSociated memecoin) on Movement.
           <br />
-          Our mission is to be critical “social infrastructure”; a community of
-          engaged, fanatically supportive users of Movement and the whole
-          Movement Ecosystem. We work closely with the Movement team in striving
-          to fulfil our mission.
+          Our mission is to be critical “social infrastructure”; a community of engaged, fanatically supportive users of
+          Movement and the whole Movement Ecosystem. We work closely with the Movement team in striving to fulfil our
+          mission.
         </Text>
 
         <PageTitle size="lg" paddingTop={4}>
@@ -84,10 +79,7 @@ function Partners() {
         </PageTitle>
 
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={5}>
-          <GridItem
-            verticalAlign={"center"}
-            style={{ display: "flex", alignItems: "center" }}
-          >
+          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
             <Link href="https://movementlabs.xyz/" target="_blank" isExternal>
               <img
                 style={{ maxWidth: "300px", width: "100%" }}
@@ -97,23 +89,13 @@ function Partners() {
             </Link>
           </GridItem>
 
-          <GridItem
-            verticalAlign={"center"}
-            style={{ display: "flex", alignItems: "center" }}
-          >
+          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
             <Link href="https://razorwallet.xyz/" target="_blank" isExternal>
-              <img
-                style={{ maxWidth: "300px", width: "100%" }}
-                src="/partners/razor.png"
-                alt="Razor DAO"
-              />
+              <img style={{ maxWidth: "300px", width: "100%" }} src="/partners/razor.png" alt="Razor DAO" />
             </Link>
           </GridItem>
 
-          <GridItem
-            verticalAlign={"center"}
-            style={{ display: "flex", alignItems: "center" }}
-          >
+          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
             <Link href="https://www.henry.social/" target="_blank" isExternal>
               <img
                 style={{ maxWidth: "300px", width: "100%" }}
@@ -123,10 +105,7 @@ function Partners() {
             </Link>
           </GridItem>
 
-          <GridItem
-            verticalAlign={"center"}
-            style={{ display: "flex", alignItems: "center" }}
-          >
+          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
             <Link href="https://www.curvance.com/" target="_blank" isExternal>
               <img
                 style={{ maxWidth: "300px", width: "100%" }}
@@ -136,28 +115,14 @@ function Partners() {
             </Link>
           </GridItem>
 
-          <GridItem
-            verticalAlign={"center"}
-            style={{ display: "flex", alignItems: "center" }}
-          >
+          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
             <Link href="https://www.brkt.gg/" target="_blank" isExternal>
-              <img
-                style={{ maxWidth: "300px", width: "300px" }}
-                src="/partners/brkt-logo.svg"
-                alt="BRKT"
-              />
+              <img style={{ maxWidth: "300px", width: "300px" }} src="/partners/brkt-logo.svg" alt="BRKT" />
             </Link>
           </GridItem>
 
-          <GridItem
-            verticalAlign={"center"}
-            style={{ display: "flex", alignItems: "center" }}
-          >
-            <Link
-              href="https://interestprotocol.com/"
-              target="_blank"
-              isExternal
-            >
+          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
+            <Link href="https://interestprotocol.com/" target="_blank" isExternal>
               <img
                 style={{ maxWidth: "300px", width: "300px" }}
                 src="/partners/interest-protocol-dark.svg"
@@ -166,42 +131,21 @@ function Partners() {
             </Link>
           </GridItem>
 
-          <GridItem
-            verticalAlign={"center"}
-            style={{ display: "flex", alignItems: "center" }}
-          >
+          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
             <Link href="https://www.upnetwork.xyz/" target="_blank" isExternal>
-              <img
-                style={{ maxWidth: "300px", width: "300px" }}
-                src="/partners/upnetwork-logo.png"
-                alt="Up Network"
-              />
+              <img style={{ maxWidth: "300px", width: "300px" }} src="/partners/upnetwork-logo.png" alt="Up Network" />
             </Link>
           </GridItem>
 
-          <GridItem
-            verticalAlign={"center"}
-            style={{ display: "flex", alignItems: "center" }}
-          >
+          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
             <Link href="https://t.co/wjbCLMmDFD" target="_blank" isExternal>
-              <img
-                style={{ maxWidth: "300px", width: "300px" }}
-                src="/partners/nexio.png"
-                alt="Nexio"
-              />
+              <img style={{ maxWidth: "300px", width: "300px" }} src="/partners/nexio.png" alt="Nexio" />
             </Link>
           </GridItem>
 
-          <GridItem
-            verticalAlign={"center"}
-            style={{ display: "flex", alignItems: "center" }}
-          >
+          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
             <Link href="https://www.satay.finance/" target="_blank" isExternal>
-              <img
-                style={{ maxWidth: "300px", width: "300px" }}
-                src="/partners/satay.svg"
-                alt="Satay Finance"
-              />
+              <img style={{ maxWidth: "300px", width: "300px" }} src="/partners/satay.svg" alt="Satay Finance" />
             </Link>
           </GridItem>
         </SimpleGrid>
@@ -211,15 +155,13 @@ function Partners() {
         </PageTitle>
 
         <Text>
-          We are always on the look out for partners that vibe with this
-          mission. To us, a partnership should be one of trust and respect,
-          focussed on achieving common goals and on mutuality of benefit.
+          We are always on the look out for partners that vibe with this mission. To us, a partnership should be one of
+          trust and respect, focussed on achieving common goals and on mutuality of benefit.
         </Text>
         <Text>We are looking forward to working together.</Text>
         <Text>
-          If you are a project or DAO that wants to collaborate or partner with
-          Gorilla Moverz, please do fill out this form and a founder-level
-          Gorilla (Silverback) will be in touch if it is of interest.
+          If you are a project or DAO that wants to collaborate or partner with Gorilla Moverz, please do fill out this
+          form and a founder-level Gorilla (Silverback) will be in touch if it is of interest.
         </Text>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl isInvalid={!!errors.name} marginBottom={4}>
@@ -230,9 +172,7 @@ function Partners() {
               placeholder="Project Name"
               _placeholder={{ opacity: 1, color: "gray.300" }}
             />
-            {errors.name && (
-              <FormErrorMessage>{errors.name.message}</FormErrorMessage>
-            )}
+            {errors.name && <FormErrorMessage>{errors.name.message}</FormErrorMessage>}
           </FormControl>
 
           <FormControl isInvalid={!!errors.socials} marginBottom={4}>
@@ -243,9 +183,7 @@ function Partners() {
               placeholder="twitter/discord/tg/other"
               _placeholder={{ opacity: 1, color: "gray.300" }}
             />
-            {errors.socials && (
-              <FormErrorMessage>{errors.socials.message}</FormErrorMessage>
-            )}
+            {errors.socials && <FormErrorMessage>{errors.socials.message}</FormErrorMessage>}
           </FormControl>
 
           <FormControl isInvalid={!!errors.contact_discord} marginBottom={4}>
@@ -256,11 +194,7 @@ function Partners() {
               placeholder="Discord handle that is registered in the Gorilla Moverz discord server"
               _placeholder={{ opacity: 1, color: "gray.300" }}
             />
-            {errors.contact_discord && (
-              <FormErrorMessage>
-                {errors.contact_discord.message}
-              </FormErrorMessage>
-            )}
+            {errors.contact_discord && <FormErrorMessage>{errors.contact_discord.message}</FormErrorMessage>}
           </FormControl>
 
           <FormControl isInvalid={!!errors.description} marginBottom={4}>
@@ -271,9 +205,7 @@ function Partners() {
               placeholder="Please tell us about your project"
               _placeholder={{ opacity: 1, color: "gray.300" }}
             />
-            {errors.description && (
-              <FormErrorMessage>{errors.description.message}</FormErrorMessage>
-            )}
+            {errors.description && <FormErrorMessage>{errors.description.message}</FormErrorMessage>}
           </FormControl>
 
           <FormControl isInvalid={!!errors.benefits_partner} marginBottom={4}>
@@ -284,11 +216,7 @@ function Partners() {
               placeholder="Please tell us what you think we can offer your project/community"
               _placeholder={{ opacity: 1, color: "gray.300" }}
             />
-            {errors.benefits_partner && (
-              <FormErrorMessage>
-                {errors.benefits_partner.message}
-              </FormErrorMessage>
-            )}
+            {errors.benefits_partner && <FormErrorMessage>{errors.benefits_partner.message}</FormErrorMessage>}
           </FormControl>
 
           <FormControl isInvalid={!!errors.benefits_gorillaz} marginBottom={4}>
@@ -299,11 +227,7 @@ function Partners() {
               placeholder="And what your project can offer ours"
               _placeholder={{ opacity: 1, color: "gray.300" }}
             />
-            {errors.benefits_gorillaz && (
-              <FormErrorMessage>
-                {errors.benefits_gorillaz.message}
-              </FormErrorMessage>
-            )}
+            {errors.benefits_gorillaz && <FormErrorMessage>{errors.benefits_gorillaz.message}</FormErrorMessage>}
           </FormControl>
 
           <FormControl isInvalid={!!errors.comments} marginBottom={4}>
@@ -314,17 +238,10 @@ function Partners() {
               placeholder="Are there any other things you would like to mention?"
               _placeholder={{ opacity: 1, color: "gray.300" }}
             />
-            {errors.comments && (
-              <FormErrorMessage>{errors.comments.message}</FormErrorMessage>
-            )}
+            {errors.comments && <FormErrorMessage>{errors.comments.message}</FormErrorMessage>}
           </FormControl>
 
-          <Button
-            colorScheme="green"
-            marginBottom={2}
-            type="submit"
-            disabled={!isValid}
-          >
+          <Button colorScheme="green" marginBottom={2} type="submit" disabled={!isValid}>
             Submit
           </Button>
         </form>

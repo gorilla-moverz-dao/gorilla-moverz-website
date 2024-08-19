@@ -52,6 +52,18 @@ function Media() {
       url: "https://www.youtube.com/embed/Vn22zJktpOs?si=hP0FiFZojW_DLv3m",
       preview: "https://img.youtube.com/vi/Vn22zJktpOs/0.jpg",
     },
+    {
+      title: "Movecast Episode #5",
+      description: "Satay Finance - Unleashing DeFi Simplicity",
+      url: "https://www.youtube.com/embed/3WNnaAVH8Sc?si=yUMDfK_LDkQCR8oR",
+      preview: "https://img.youtube.com/vi/3WNnaAVH8Sc/0.jpg",
+    },
+    {
+      title: "Movecast Episode #6",
+      description: "Lasting Community Design - Cooper Scanlon (Movement Labs)",
+      url: "https://www.youtube.com/embed/OydX5_kQG-M?si=ji_k772KbNph4F3i",
+      preview: "https://img.youtube.com/vi/OydX5_kQG-M/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
@@ -88,16 +100,10 @@ function Media() {
         Media
       </PageTitle>
 
-      <SimpleGrid
-        spacing={4}
-        templateColumns="repeat(auto-fill, minmax(49%, 420px))"
-      >
+      <SimpleGrid spacing={4} templateColumns="repeat(auto-fill, minmax(49%, 420px))">
         {episodes.map((episode) => (
           <Card key={episode.url}>
-            <CardBody
-              onClick={() => openEpisodeModal(episode)}
-              cursor={"pointer"}
-            >
+            <CardBody onClick={() => openEpisodeModal(episode)} cursor={"pointer"}>
               <Image src={episode.preview}></Image>
               <Stack mt="6" spacing="3">
                 <Heading size="md" color="green.600">

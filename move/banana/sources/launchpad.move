@@ -385,6 +385,14 @@ module GorillaMoverz::launchpad {
         config.pending_admin_addr
     }
 
+    #[view]
+    public fun is_allowlisted(sender: address, collection_obj: Object<Collection>): bool {
+        let stage = string::utf8(ALLOWLIST_MINT_STAGE_CATEGORY);
+        let stage_index = mint_stage::find_mint_stage_index_by_name(collection_obj, stage);
+
+        mint_stage::is_allowlisted(collection_obj, stage_index, sender)
+    }
+
     // Get mint fee collector address
     #[view]
     public fun get_mint_fee_collector(): address acquires Config {

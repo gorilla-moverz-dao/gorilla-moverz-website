@@ -1,7 +1,4 @@
-import {
-  InputTransactionData,
-  WalletContextState,
-} from "@aptos-labs/wallet-adapter-react";
+import { InputTransactionData, WalletContextState } from "@aptos-labs/wallet-adapter-react";
 import movementClient from "../services/movement-client";
 import { MODULE_ADDRESS } from "../constants";
 import { UserTransactionResponse } from "@aptos-labs/ts-sdk";
@@ -38,10 +35,7 @@ export class ContractClient {
     const transaction: InputTransactionData = {
       data: {
         function: `${MODULE_ADDRESS}::${type}::mint`,
-        functionArguments: [
-          this.accountAddress,
-          (amount * Math.pow(10, 9)).toString(),
-        ],
+        functionArguments: [this.accountAddress, (amount * Math.pow(10, 9)).toString()],
       },
     };
 
@@ -53,22 +47,20 @@ export class ContractClient {
     return r;
   }
 
-  async withdraw(nft: string) {
+  async farm(nft: string, partnerNfts: string[]) {
     const transaction: InputTransactionData = {
       data: {
-        function: `${this.bananaFarm}::withdraw`,
-        functionArguments: [nft],
+        function: `${this.bananaFarm}::farm`,
+        functionArguments: [nft, partnerNfts],
       },
     };
 
     const response = await this.signAndSubmitTransaction(transaction);
-    const r = await movementClient.waitForTransaction({
+    const r = (await movementClient.waitForTransaction({
       transactionHash: response.hash,
-    }) as UserTransactionResponse;
+    })) as UserTransactionResponse;
 
-    const amount =
-      r.events?.find((i) => i.type === "0x1::fungible_asset::Deposit")?.data
-        .amount / Math.pow(10, 9);
+    const amount = r.events?.find((i) => i.type === "0x1::fungible_asset::Deposit")?.data.amount / Math.pow(10, 9);
 
     return amount;
   }

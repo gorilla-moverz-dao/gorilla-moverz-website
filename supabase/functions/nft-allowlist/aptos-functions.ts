@@ -1,10 +1,4 @@
-import {
-  Account,
-  Aptos,
-  AptosConfig,
-  Ed25519PrivateKey,
-  Network,
-} from "npm:@aptos-labs/ts-sdk@^1.18.1";
+import { Account, Aptos, AptosConfig, Ed25519PrivateKey, Network } from "npm:@aptos-labs/ts-sdk@^1.18.1";
 
 const aptosConfig = new AptosConfig({
   network: Network.TESTNET,
@@ -21,10 +15,7 @@ export async function addAllowlistAddresses(address: string, guildId: string) {
     sender: signer.accountAddress,
     data: {
       function: `${addr}::launchpad::add_allowlist_addresses`,
-      functionArguments: [
-        [address],
-        guildId,
-      ],
+      functionArguments: [[address], guildId],
     },
   });
 

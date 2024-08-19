@@ -1,21 +1,7 @@
 import { FC, FormEvent, useState } from "react";
-import {
-  InputTransactionData,
-  truncateAddress,
-  useWallet,
-} from "@aptos-labs/wallet-adapter-react";
+import { InputTransactionData, truncateAddress, useWallet } from "@aptos-labs/wallet-adapter-react";
 import { useMintData } from "../../hooks/useMintData";
-import {
-  Box,
-  Button,
-  Divider,
-  Flex,
-  Heading,
-  IconButton,
-  Image,
-  Progress,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Button, Divider, Flex, Heading, IconButton, Image, Progress, Text } from "@chakra-ui/react";
 import movementClient from "../../services/movement-client";
 import { MODULE_ADDRESS, NETWORK } from "../../constants";
 import { formatDate } from "../../helpers/date-functions";
@@ -23,17 +9,22 @@ import { clampNumber } from "../../helpers/clampNumber";
 import { FaCopy, FaLink } from "react-icons/fa6";
 import { useOwnedNFTs } from "../../hooks/useOwnedNFTs";
 import { WalletSelector } from "../WalletSelector";
+import useBananaFarmCollection from "./useBananaFarmCollection";
 
-interface HeroSectionProps {}
+interface Props {
+  collectionId: string;
+}
 
-export const HeroSection: React.FC<HeroSectionProps> = () => {
-  const { data, refetch: refetchMint } = useMintData();
+function HeroSection({ collectionId }: Props) {
+  const { data, refetch: refetchMint } = useMintData(collectionId);
   const { account, signAndSubmitTransaction } = useWallet();
   const { refetch: refetchOwned } = useOwnedNFTs();
+  const col = useBananaFarmCollection(collectionId);
 
   const { collection, totalMinted = 0, maxSupply = 1 } = data ?? {};
 
   if (!collection) return <p>Loading...</p>;
+  if (!col) return <p>Loading...</p>;
 
   const mintNft = async (e: FormEvent) => {
     e.preventDefault();
@@ -58,7 +49,7 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
           src={
             collection?.cdn_asset_uris?.cdn_image_uri ??
             collection?.cdn_asset_uris?.cdn_animation_uri ??
-            "/images/bananafarm/collection.png"
+            "/nfts/" + col.slug + "/collection.png"
           }
           rounded={4}
         />
@@ -71,9 +62,18 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
           <Box paddingRight={4}>
             <form onSubmit={mintNft}>
               {account?.address && (
-                <Button type="submit" disabled={!data?.isMintActive}>
-                  Mint
-                </Button>
+                <>
+                  {data?.isAllowlisted && (
+                    <Button type="submit" disabled={!data?.isMintActive || !data.isAllowlisted}>
+                      Mint
+                    </Button>
+                  )}
+                  {!data?.isAllowlisted && (
+                    <Button type="button" onClick={() => window.open(col.discord_link ?? "", "blank")}>
+                      Get on the allowlist
+                    </Button>
+                  )}
+                </>
               )}
 
               {!account?.address && <WalletSelector />}
@@ -81,20 +81,14 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
           </Box>
 
           <Box flex={1}>
-            {clampNumber(totalMinted)} /{" "}
-            {clampNumber(maxSupply, undefined, 10000)} Minted
+            {clampNumber(totalMinted)} / {clampNumber(maxSupply, undefined, 10000)} Minted
             <Progress value={(totalMinted / maxSupply) * 100} className="h-2" />
           </Box>
         </Flex>
 
         <Divider paddingTop={4} paddingBottom={4} />
 
-        <Flex
-          justifyContent="space-between"
-          alignItems="center"
-          paddingBottom={2}
-          paddingTop={2}
-        >
+        <Flex justifyContent="space-between" alignItems="center" paddingBottom={2} paddingTop={2}>
           <Box>Collection Address</Box>
 
           <div className="flex gap-x-2">
@@ -108,11 +102,7 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
             target="_blank"
             href={`https://explorer.aptoslabs.com/account/${collection?.collection_id}?network=${NETWORK}`}
           >
-            <IconButton
-              icon={<FaLink />}
-              aria-label="Copy address"
-              className="dark:invert"
-            />
+            <IconButton icon={<FaLink />} aria-label="Copy address" className="dark:invert" />
           </a>
         </Flex>
 
@@ -124,23 +114,19 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
             </div>
           )}
 
-          {data?.endDate &&
-            new Date() < data.endDate &&
-            !data.isMintInfinite && (
-              <div className="flex gap-x-2 justify-between flex-wrap">
-                <p className="body-sm-semibold">Minting ends</p>
-                <p className="body-sm">{formatDate(data.endDate)}</p>
-              </div>
-            )}
-
-          {data?.endDate && new Date() > data.endDate && (
-            <p className="body-sm-semibold">Minting has ended</p>
+          {data?.endDate && new Date() < data.endDate && !data.isMintInfinite && (
+            <div className="flex gap-x-2 justify-between flex-wrap">
+              <p className="body-sm-semibold">Minting ends</p>
+              <p className="body-sm">{formatDate(data.endDate)}</p>
+            </div>
           )}
+
+          {data?.endDate && new Date() > data.endDate && <p className="body-sm-semibold">Minting has ended</p>}
         </div>
       </Box>
     </Flex>
   );
-};
+}
 
 const AddressButton: FC<{ address: string }> = ({ address }) => {
   const [copied, setCopied] = useState(false);
@@ -156,11 +142,8 @@ const AddressButton: FC<{ address: string }> = ({ address }) => {
     <>
       {copied ? "Copied!" : <>{truncateAddress(address)}</>}
       &nbsp;
-      <IconButton
-        icon={<FaCopy />}
-        aria-label="Copy address"
-        onClick={onCopy}
-      ></IconButton>
+      <IconButton icon={<FaCopy />} aria-label="Copy address" onClick={onCopy}></IconButton>
     </>
   );
 };
+export default HeroSection;
