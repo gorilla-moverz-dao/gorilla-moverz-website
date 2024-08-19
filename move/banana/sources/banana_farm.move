@@ -280,16 +280,16 @@ module GorillaMoverz::banana_farm {
         debug::print(&collection::name(partner_collection));
 
         assert!(!primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_FROZEN);
-        withdraw(user1, nft);
+        farm(user1, nft, vector[]);
         assert!(primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_NOT_FROZEN);
 
         let balance = primary_fungible_store::balance(user1_address, asset);
         debug::print(&balance);
-        assert!(primary_fungible_store::balance(user1_address, asset) == 1_000_000_000, 6);
+        assert!(primary_fungible_store::balance(user1_address, asset) == 10_000_000_000, 6);
 
         // Withdraw again, should work even though funds are frozen. 
         timestamp::update_global_time_for_test_secs(650);
-        withdraw(user1, nft); 
+        farm(user1, nft, vector[]);
         // Transfer via banana module is disabled because user1 is not creator/owner
         GorillaMoverz::banana::transfer(user1, user1_address, user2_address, 1_000_000);
     }
@@ -317,12 +317,12 @@ module GorillaMoverz::banana_farm {
         debug::print(&collection::name(partner_collection));
 
         assert!(!primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_FROZEN);
-        withdraw(user1, nft); // Should work for frozen account
+        farm(user1, nft, vector[]); // Should work for frozen account
         assert!(primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_NOT_FROZEN);
 
         let balance = primary_fungible_store::balance(user1_address, asset);
         debug::print(&balance);
-        assert!(primary_fungible_store::balance(user1_address, asset) == 1_000_000_000, 6);
+        assert!(primary_fungible_store::balance(user1_address, asset) == 10_000_000_000, 6);
     
         // Transfer via fungible_asset is disabled due to freeze
         let user1_wallet = primary_fungible_store::primary_store(user1_address, asset);
