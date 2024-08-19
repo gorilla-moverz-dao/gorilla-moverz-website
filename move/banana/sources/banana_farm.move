@@ -96,11 +96,8 @@ module GorillaMoverz::banana_farm {
         table::upsert(&mut treasury.last_farmed, account, now);
         
         let store_signer = &object::generate_signer_for_extending(&treasury.store_extend_ref);
-        // let coins = fungible_asset::withdraw(store_signer, treasury.coins, amount);
-        // primary_fungible_store::deposit(account, coins);
 
-        let store_address = object::object_address(&treasury.coins);
-        GorillaMoverz::banana::transfer(store_signer, store_address, account, amount);
+        GorillaMoverz::banana::withdraw_to(store_signer, amount, treasury.coins, account);
 
         // Make sure the account is frozen
         if (!fungible_asset::is_frozen(store)) {

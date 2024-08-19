@@ -2,7 +2,7 @@
 /// deployer will be creating a new managed fungible asset with the hardcoded supply config, name, symbol, and decimals.
 /// The address of the asset can be obtained via get_metadata(). As a simple version, it only deals with primary stores.
 module GorillaMoverz::banana {
-    use aptos_framework::fungible_asset::{Self, MintRef, TransferRef, BurnRef, Metadata, FungibleAsset};
+    use aptos_framework::fungible_asset::{Self, MintRef, TransferRef, BurnRef, Metadata, FungibleAsset, FungibleStore};
     use aptos_framework::object::{Self, Object};
     use aptos_framework::primary_fungible_store;
     use std::error;
@@ -128,17 +128,16 @@ module GorillaMoverz::banana {
         fungible_asset::deposit_with_ref(transfer_ref, to_wallet, fa);
     }
 
-    /// Withdraw to an account as the owner of metadata object ignoring `frozen` field.
-    public fun withdraw_to(admin: &signer, amount: u64, to: address, ) acquires ManagedFungibleAsset {
-        let asset = get_metadata();
-        let from = signer::address_of(admin);
-        let transfer_ref = &authorized_borrow_refs(admin, asset).transfer_ref;
-        let from_wallet = primary_fungible_store::primary_store(from, asset);
-        let to_wallet = primary_fungible_store::ensure_primary_store_exists(to, asset);
-        let fa = fungible_asset::withdraw_with_ref(transfer_ref, from_wallet, amount);
-        fungible_asset::deposit(to_wallet, fa);
-    }
 
+    /// Withdraw as the owner of metadata object ignoring `frozen` field.
+    public(friend) fun withdraw_to(admin: &signer, amount: u64, coins: Object<FungibleStore>, to: address) acquires ManagedFungibleAsset {
+        let fa = fungible_asset::withdraw(admin, coins, amount);
+
+        let asset = get_metadata();
+        let transfer_ref = &borrow_global<ManagedFungibleAsset>(object::object_address(&asset)).transfer_ref;
+        let to_wallet = primary_fungible_store::ensure_primary_store_exists(to, asset);
+        fungible_asset::deposit_with_ref(transfer_ref, to_wallet, fa);
+    }
 
     /// Borrow the immutable reference of the refs of `metadata`.
     /// This validates that the signer is the metadata object's owner.
