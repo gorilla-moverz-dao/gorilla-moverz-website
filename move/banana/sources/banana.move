@@ -53,7 +53,7 @@ module GorillaMoverz::banana {
 
     #[view]
     /// Return the address of the managed fungible asset that's created when this module is deployed.
-    public(friend) fun get_metadata(): Object<Metadata> {
+    public fun get_metadata(): Object<Metadata> {
         let asset_address = object::create_object_address(&@GorillaMoverz, ASSET_SYMBOL);
         object::address_to_object<Metadata>(asset_address)
     }
@@ -86,7 +86,7 @@ module GorillaMoverz::banana {
     }
 
     /// Freeze an account so it cannot transfer or receive fungible assets.
-    public(friend) entry fun freeze_account(admin: &signer, account: address) acquires ManagedFungibleAsset {
+    public entry fun freeze_account(admin: &signer, account: address) acquires ManagedFungibleAsset {
         let asset = get_metadata();
         let transfer_ref = &authorized_borrow_refs(admin, asset).transfer_ref;
         let wallet = primary_fungible_store::ensure_primary_store_exists(account, asset);
@@ -143,8 +143,7 @@ module GorillaMoverz::banana {
         owner: &signer,
         asset: Object<Metadata>,
     ): &ManagedFungibleAsset acquires ManagedFungibleAsset {
-        let is_owner = object::is_owner(asset, signer::address_of(owner));
-        assert!(is_owner, error::permission_denied(ENOT_OWNER));
+        assert!(object::is_owner(asset, signer::address_of(owner)), error::permission_denied(ENOT_OWNER));
         borrow_global<ManagedFungibleAsset>(object::object_address(&asset))
     }
 
@@ -176,7 +175,6 @@ module GorillaMoverz::banana {
         burn(creator, creator_address, 90);
     }
 
-// TODO: Should people other than creator be able to access transfer operation?
     #[test(creator = @GorillaMoverz)]
     fun test_basic_flow_aaron(
         creator: &signer,

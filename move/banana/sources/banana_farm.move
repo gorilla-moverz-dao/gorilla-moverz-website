@@ -193,6 +193,8 @@ module GorillaMoverz::banana_farm {
 
 
     #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300, user2 = @0x400)]
+    #[expected_failure(abort_code = 327681, location = GorillaMoverz::banana)]
+
     fun test_basic_flow(
         aptos_framework: &signer,
         creator: &signer,
@@ -219,6 +221,9 @@ module GorillaMoverz::banana_farm {
         assert!(launchpad::is_allowlisted(user2_address, main_collection) == true, 2);
         let nft_user2 = launchpad::test_mint_nft(user2_address, main_collection);
         farm(user2, nft_user2, vector[]);
+
+        // Transfer via banana module is disabled because user1 is not creator/owner
+        GorillaMoverz::banana::transfer(user1, user1_address, user2_address, 1_000_000);
     }
 
      #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300)]
@@ -259,7 +264,7 @@ module GorillaMoverz::banana_farm {
 
     #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300, user2 = @0x400)]
     #[expected_failure(abort_code = 327681, location = GorillaMoverz::banana)]
-    fun test_basic_flow_frozen(
+    fun test_frozen_banana_transfer_disabled(
         aptos_framework: &signer,
         creator: &signer,
         allowlist_manager: &signer,
@@ -296,7 +301,7 @@ module GorillaMoverz::banana_farm {
 
     #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300, user2 = @0x400)]
     #[expected_failure(abort_code = 327683, location = aptos_framework::fungible_asset)]
-    fun test_basic_flow_frozen_2(
+    fun test_frozen_fa_transfer_disabled(
         aptos_framework: &signer,
         creator: &signer,
         allowlist_manager: &signer,
