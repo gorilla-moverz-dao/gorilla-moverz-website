@@ -69,7 +69,7 @@ module GorillaMoverz::banana {
     }// <:!:mint_to
 
     /// Transfer as the owner of metadata object ignoring `frozen` field.
-    public(friend) entry fun transfer(admin: &signer, from: address, to: address, amount: u64) acquires ManagedFungibleAsset {
+    public entry fun transfer(admin: &signer, from: address, to: address, amount: u64) acquires ManagedFungibleAsset {
         let asset = get_metadata();
         let transfer_ref = &authorized_borrow_refs(admin, asset).transfer_ref;
         let from_wallet = primary_fungible_store::primary_store(from, asset);

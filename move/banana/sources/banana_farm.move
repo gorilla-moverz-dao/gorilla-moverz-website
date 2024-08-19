@@ -278,12 +278,6 @@ module GorillaMoverz::banana_farm {
         let nft = launchpad::test_mint_nft(user1_address, main_collection);
         let asset = GorillaMoverz::banana::get_metadata();
 
-
-        debug::print(&main_collection);
-        debug::print(&collection::creator(main_collection));
-        debug::print(&collection::name(main_collection));
-        debug::print(&collection::name(partner_collection));
-
         assert!(!primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_FROZEN);
         farm(user1, nft, vector[]);
         assert!(primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_NOT_FROZEN);
@@ -314,12 +308,6 @@ module GorillaMoverz::banana_farm {
         let (main_collection, partner_collection) = test_setup_farm(aptos_framework, creator, allowlist_manager, user1);
         let nft = launchpad::test_mint_nft(user1_address, main_collection);
         let asset = GorillaMoverz::banana::get_metadata();
-
-
-        debug::print(&main_collection);
-        debug::print(&collection::creator(main_collection));
-        debug::print(&collection::name(main_collection));
-        debug::print(&collection::name(partner_collection));
 
         assert!(!primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_FROZEN);
         farm(user1, nft, vector[]); // Should work for frozen account
