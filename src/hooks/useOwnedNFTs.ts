@@ -1,7 +1,7 @@
 import movementClient from "../services/movement-client";
 import { useQuery } from "@tanstack/react-query";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
-import useBananaFarmCollections from "../components/farmer/useBananaFarmCollections";
+import useBananaFarmCollections from "../components/banana-farm/useBananaFarmCollections";
 
 export interface Token {
   token_name: string;

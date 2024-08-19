@@ -26,6 +26,8 @@ async function main() {
 
   await mintFACoin("banana", admin, admin, mint_amount);
 
+  await deposit(admin, deposit_amount);
+
   const collectionId = await createCollection(admin, {
     collectionName: "Farmer | Gorilla Moverz",
     collectionDescription:
@@ -44,8 +46,6 @@ async function main() {
     allowlistManager: admin.accountAddress.toString(),
   });
   console.log("Partner Collection Id: ", partnerCollectionId);
-
-  await deposit(admin, deposit_amount);
 }
 
 main().catch((error) => console.error(error));

@@ -1,5 +1,5 @@
 import { useOwnedNFTs } from "../../hooks/useOwnedNFTs";
-import { Box, Button, Flex, Image, Spinner, Text, useToast } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Image, Spinner, Text, useToast } from "@chakra-ui/react";
 import PageTitle from "../PageTitle";
 import HeroSection from "./HeroSection";
 import { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ import useAssets from "../../hooks/useAssets";
 import useFarmData from "./useFarmData";
 import Countdown from "./Countdown";
 import useBananaFarmCollection from "./useBananaFarmCollection";
+import BoxBlurred from "../BoxBlurred";
 
 interface Props {
   collectionId: string;
@@ -67,11 +68,9 @@ function FarmerNFT({ collectionId, enableFarming }: Props) {
   if (!farmerNFT) {
     return (
       <>
-        <PageTitle size="lg" paddingTop={4}>
-          No Farmer NFT found
-        </PageTitle>
-        <Text>Please mint your NFT to participate.</Text>
-
+        <Heading as="h1" size={"xl"} paddingBottom={16} textAlign={"right"} paddingTop={4}>
+          No NFT found!
+        </Heading>
         <HeroSection collectionId={collectionId} />
       </>
     );
@@ -87,12 +86,12 @@ function FarmerNFT({ collectionId, enableFarming }: Props) {
     <>
       {farmerNFT && (
         <>
-          <PageTitle size="lg" paddingTop={4}>
+          <Heading as="h1" size={"xl"} paddingBottom={16} textAlign={"right"} paddingTop={4}>
             Your Farmer
-          </PageTitle>
+          </Heading>
 
-          <Flex direction={{ base: "column", md: "row" }} gap={4}>
-            <Box flex={1}>
+          <Flex direction={{ base: "column", md: "row" }} gap={6}>
+            <Box flex={2}>
               {imageUrl && <Image rounded={8} src={imageUrl} />}
               {!imageUrl && (
                 <>
@@ -102,44 +101,48 @@ function FarmerNFT({ collectionId, enableFarming }: Props) {
               )}
             </Box>
 
-            <Box flex={1}>
-              <PageTitle size="lg" paddingTop={0}>
-                {farmerNFT.current_token_data.current_collection.collection_name} | #
-                {farmerNFT.current_token_data.token_name}
-              </PageTitle>
-              <Text paddingBottom={4}>{farmerNFT.current_token_data.current_collection.description}</Text>
+            <Box flex={3}>
+              <BoxBlurred>
+                <Box padding={4}>
+                  <PageTitle size="lg" paddingTop={0}>
+                    {farmerNFT.current_token_data.current_collection.collection_name} | #
+                    {farmerNFT.current_token_data.token_name}
+                  </PageTitle>
+                  <Text paddingBottom={4}>{farmerNFT.current_token_data.current_collection.description}</Text>
 
-              <Assets />
+                  <Assets />
 
-              {enableFarming ? (
-                <>
-                  {account && farmed_data && (
-                    <Box paddingTop={4}>
-                      <Button
-                        onClick={() => withdraw(farmerNFT.current_token_data.token_data_id, partnerNFTIds)}
-                        colorScheme={farmed_data.remainingTime > 0 ? "gray" : "green"}
-                        disabled={farmed_data.remainingTime > 0}
-                      >
-                        <Countdown seconds={farmed_data.remainingTime > 0 ? farmed_data.remainingTime : 0} />
-                      </Button>
-                      <Text paddingTop={2}>
-                        <i>
-                          Last Farmed:&nbsp;
-                          {farmed_data.lastFarmedDate && farmed_data.lastFarmedDate.getDate() > 0
-                            ? farmed_data.lastFarmedDate.toLocaleString()
-                            : "Never"}
-                        </i>
-                      </Text>
+                  {enableFarming ? (
+                    <>
+                      {account && farmed_data && (
+                        <Box paddingTop={4}>
+                          <Button
+                            onClick={() => withdraw(farmerNFT.current_token_data.token_data_id, partnerNFTIds)}
+                            colorScheme={farmed_data.remainingTime > 0 ? "gray" : "green"}
+                            disabled={farmed_data.remainingTime > 0}
+                          >
+                            <Countdown seconds={farmed_data.remainingTime > 0 ? farmed_data.remainingTime : 0} />
+                          </Button>
+                          <Text paddingTop={2}>
+                            <i>
+                              Last Farmed:&nbsp;
+                              {farmed_data.lastFarmedDate && farmed_data.lastFarmedDate.getDate() > 0
+                                ? farmed_data.lastFarmedDate.toLocaleString()
+                                : "Never"}
+                            </i>
+                          </Text>
 
-                      {partnerNFTIds.length > 0 && (
-                        <Text>You have {partnerNFTIds.length} Partner NFTs that will boost your farm. </Text>
+                          {partnerNFTIds.length > 0 && (
+                            <Text>You have {partnerNFTIds.length} Partner NFTs that will boost your farm. </Text>
+                          )}
+                        </Box>
                       )}
-                    </Box>
+                    </>
+                  ) : (
+                    <Text paddingTop={4}>Farm bananas in the banana farm an enjoy the boost!</Text>
                   )}
-                </>
-              ) : (
-                <Text paddingTop={4}>Farm bananas in the banana farm an enjoy the boost!</Text>
-              )}
+                </Box>
+              </BoxBlurred>
             </Box>
           </Flex>
         </>

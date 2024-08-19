@@ -21,7 +21,11 @@ function BananaFarmCollections() {
 
   return (
     <div>
-      <SimpleGrid spacing={4} templateColumns="repeat(auto-fill, minmax(49%, 420px))">
+      <Heading as="h1" size={"xl"} paddingBottom={16} textAlign={"right"} paddingTop={4}>
+        Partner NFTs
+      </Heading>
+
+      <SimpleGrid spacing={4} templateColumns="repeat(auto-fill, minmax(30%, 320px))">
         {collections?.map((collection) => (
           <Link key={collection.id} to={`./?collectionId=${collection.collection_address}`}>
             <Card key={collection.id}>
