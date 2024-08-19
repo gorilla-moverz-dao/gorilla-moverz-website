@@ -8,10 +8,10 @@ import GorillaNFT from "./pages/GorillaNFT";
 import Media from "./pages/Media";
 import BananaFarm from "./pages/BananaFarm";
 import Lighthouse from "./pages/Lighthouse";
-import CollectionCreate from "./components/banana-farm-collection/CollectionCreate";
-import BananaFarmCollections from "./components/farmer/BananaFarmCollections";
-import Leaderboard from "./components/farmer/Leaderboard";
-import FarmerNFT from "./components/farmer/FarmerNFT";
+import CollectionCreate from "./components/banana-farm/CollectionCreate";
+import BananaFarmCollections from "./components/banana-farm/BananaFarmCollections";
+import Leaderboard from "./components/banana-farm/Leaderboard";
+import FarmerNFT from "./components/banana-farm/FarmerNFT";
 import { FARM_COLLECTION_ID } from "./constants";
 
 const router = createBrowserRouter([
@@ -33,9 +33,9 @@ const router = createBrowserRouter([
           { index: true, element: <FarmerNFT collectionId={FARM_COLLECTION_ID} enableFarming={true} /> },
           { path: "partner", element: <BananaFarmCollections /> },
           { path: "leaderboard", element: <Leaderboard /> },
+          { path: "create", element: <CollectionCreate /> },
         ],
       },
-      { path: "bananas/create", element: <CollectionCreate /> },
     ],
   },
 ]);

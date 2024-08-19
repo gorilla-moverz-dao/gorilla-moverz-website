@@ -1,5 +1,5 @@
 import { truncateAddress } from "@aptos-labs/wallet-adapter-react";
-import { useLeaderboard } from "../../hooks/useLeaderboard";
+import { useLeaderboard } from "./useLeaderboard";
 import PageTitle from "../PageTitle";
 import { Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 

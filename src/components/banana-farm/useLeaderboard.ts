@@ -1,6 +1,6 @@
-import movementClient from "../services/movement-client";
+import movementClient from "../../services/movement-client";
 import { useQuery } from "@tanstack/react-query";
-import { BANANA_CONTRACT_ADDRESS, EXCLUDE_LEADERBOARD } from "../constants";
+import { BANANA_CONTRACT_ADDRESS, EXCLUDE_LEADERBOARD } from "../../constants";
 
 export interface CurrentTokenData {
   owner_address: string;
