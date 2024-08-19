@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import ErrorPage from "./pages/ErrorPage";
 import Layout from "./pages/Layout";
 import HomePage from "./pages/HomePage";
@@ -30,7 +30,8 @@ const router = createBrowserRouter([
         path: "bananas",
         element: <BananaFarm />,
         children: [
-          { index: true, element: <FarmerNFT collectionId={FARM_COLLECTION_ID} enableFarming={true} /> },
+          { index: true, element: <Navigate to="farm" /> },
+          { path: "farm", element: <FarmerNFT collectionId={FARM_COLLECTION_ID} enableFarming={true} /> },
           { path: "partner", element: <BananaFarmCollections /> },
           { path: "leaderboard", element: <Leaderboard /> },
           { path: "create", element: <CollectionCreate /> },

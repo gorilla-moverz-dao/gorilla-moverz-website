@@ -4,9 +4,9 @@ import movementClient from "../../services/movement-client";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Box, Button, FormControl, FormErrorMessage, FormLabel, Input, Textarea } from "@chakra-ui/react";
-import { WalletSelector } from "../WalletSelector";
+import { Box, Button, FormControl, FormErrorMessage, FormLabel, Heading, Input, Textarea } from "@chakra-ui/react";
 import { dateToSeconds } from "../../helpers/date-functions";
+import BoxBlurred from "../BoxBlurred";
 
 export const CreateCollectionSchema = z.object({
   collectionName: z.string().min(1, { message: "Field is required" }),
@@ -77,69 +77,74 @@ function CollectionCreate() {
 
   return (
     <>
-      <Box paddingBottom={4}>
-        <WalletSelector />
-      </Box>
+      <Heading as="h1" size={"xl"} paddingBottom={10} textAlign={"right"} paddingTop={4}>
+        Create a Collection
+      </Heading>
+      <BoxBlurred>
+        <Box padding={4}>
+          <form onSubmit={handleSubmit(createCollection)}>
+            <FormControl isInvalid={!!errors.collectionName} marginBottom={4}>
+              <FormLabel>Collection Name</FormLabel>
+              <Input
+                {...register("collectionName")}
+                id="collectionName"
+                placeholder="Collection name"
+                _placeholder={{ opacity: 1, color: "gray.300" }}
+              />
+              {errors.collectionName && <FormErrorMessage>{errors.collectionName.message}</FormErrorMessage>}
+            </FormControl>
 
-      <form onSubmit={handleSubmit(createCollection)}>
-        <FormControl isInvalid={!!errors.collectionName} marginBottom={4}>
-          <FormLabel>Collection Name</FormLabel>
-          <Input
-            {...register("collectionName")}
-            id="collectionName"
-            placeholder="Collection name"
-            _placeholder={{ opacity: 1, color: "gray.300" }}
-          />
-          {errors.collectionName && <FormErrorMessage>{errors.collectionName.message}</FormErrorMessage>}
-        </FormControl>
+            <FormControl isInvalid={!!errors.collectionDescription} marginBottom={4}>
+              <FormLabel>Collection description</FormLabel>
+              <Textarea
+                {...register("collectionDescription")}
+                id="collectionDescription"
+                placeholder="Description of the NFT Collection"
+                _placeholder={{ opacity: 1, color: "gray.300" }}
+              />
+              {errors.collectionDescription && (
+                <FormErrorMessage>{errors.collectionDescription.message}</FormErrorMessage>
+              )}
+            </FormControl>
 
-        <FormControl isInvalid={!!errors.collectionDescription} marginBottom={4}>
-          <FormLabel>Collection description</FormLabel>
-          <Textarea
-            {...register("collectionDescription")}
-            id="collectionDescription"
-            placeholder="Description of the NFT Collection"
-            _placeholder={{ opacity: 1, color: "gray.300" }}
-          />
-          {errors.collectionDescription && <FormErrorMessage>{errors.collectionDescription.message}</FormErrorMessage>}
-        </FormControl>
+            <FormControl isInvalid={!!errors.projectUri} marginBottom={4}>
+              <FormLabel>Project uri</FormLabel>
+              <Input
+                {...register("projectUri", { value: "https://gorilla-moverz.xyz/nfts/farmer/collection.json" })}
+                id="projectUri"
+                _placeholder={{ opacity: 1, color: "gray.300" }}
+              />
+              {errors.projectUri && <FormErrorMessage>{errors.projectUri.message}</FormErrorMessage>}
+            </FormControl>
 
-        <FormControl isInvalid={!!errors.projectUri} marginBottom={4}>
-          <FormLabel>Project uri</FormLabel>
-          <Input
-            {...register("projectUri", { value: "https://gorilla-moverz.xyz/nfts/farmer/collection.json" })}
-            id="projectUri"
-            _placeholder={{ opacity: 1, color: "gray.300" }}
-          />
-          {errors.projectUri && <FormErrorMessage>{errors.projectUri.message}</FormErrorMessage>}
-        </FormControl>
+            <FormControl isInvalid={!!errors.maxSupply} marginBottom={4}>
+              <FormLabel>Max supply</FormLabel>
+              <Input
+                {...register("maxSupply", { valueAsNumber: true })}
+                id="maxSupply"
+                value={"4000"}
+                _placeholder={{ opacity: 1, color: "gray.300" }}
+              />
+              {errors.maxSupply && <FormErrorMessage>{errors.maxSupply.message}</FormErrorMessage>}
+            </FormControl>
 
-        <FormControl isInvalid={!!errors.maxSupply} marginBottom={4}>
-          <FormLabel>Max supply</FormLabel>
-          <Input
-            {...register("maxSupply", { valueAsNumber: true })}
-            id="maxSupply"
-            value={"4000"}
-            _placeholder={{ opacity: 1, color: "gray.300" }}
-          />
-          {errors.maxSupply && <FormErrorMessage>{errors.maxSupply.message}</FormErrorMessage>}
-        </FormControl>
+            <FormControl isInvalid={!!errors.allowlistManager} marginBottom={4}>
+              <FormLabel>Allowlist manager</FormLabel>
+              <Input
+                {...register("allowlistManager")}
+                id="allowlistManager"
+                value={"0x" + MODULE_ADDRESS}
+                _placeholder={{ opacity: 1, color: "gray.300" }}
+              />
+              {errors.allowlistManager && <FormErrorMessage>{errors.allowlistManager.message}</FormErrorMessage>}
+            </FormControl>
 
-        <FormControl isInvalid={!!errors.allowlistManager} marginBottom={4}>
-          <FormLabel>Allowlist manager</FormLabel>
-          <Input
-            {...register("allowlistManager")}
-            id="allowlistManager"
-            value={"0x" + MODULE_ADDRESS}
-            _placeholder={{ opacity: 1, color: "gray.300" }}
-          />
-          {errors.allowlistManager && <FormErrorMessage>{errors.allowlistManager.message}</FormErrorMessage>}
-        </FormControl>
-
-        <Button colorScheme="green" marginBottom={2} type="submit" disabled={!isValid}>
-          Create Collection
-        </Button>
-      </form>
+            <Button colorScheme="green" marginBottom={2} type="submit" disabled={!isValid}>
+              Create Collection
+            </Button>
+          </form>
+        </Box>
+      </BoxBlurred>
     </>
   );
 }

@@ -1,50 +1,102 @@
-import { Box, Flex, Tab, TabList, Tabs } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { WalletSelector } from "../components/WalletSelector";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import { MODULE_ADDRESS } from "../constants";
+import BananaFarmBackground from "../components/banana-farm/BananaFarmBackground";
 
 function BananaFarm() {
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const [activeTab, setActiveTab] = useState(1);
-  const path = location.pathname
-    .split("/")
-    .filter((i) => !!i)
-    .pop();
+  const { account } = useWallet();
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   const tabs = [
-    { id: "", name: "Banana farm" },
+    { id: "farm", name: "Banana farm" },
     { id: "partner", name: "Partner NFTs" },
     { id: "leaderboard", name: "Leaderboard" },
   ];
 
+  if (account?.address === "0x" + MODULE_ADDRESS) {
+    tabs.push({ id: "create", name: "Create collection" });
+  }
+
   useEffect(() => {
-    const index = tabs.findIndex((tab) => tab.id === path);
-    setActiveTab(index === -1 ? 0 : index);
-  }, [path]);
+    if (account?.address) {
+      onOpen();
+    }
+  }, [account]);
 
   return (
     <div>
-      <Flex flexDir="column">
-        <Box paddingBottom={4}>
-          <WalletSelector />
-        </Box>
+      <Modal size="6xl" isCentered isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay style={{ backdropFilter: "blur(5px)" }} />
+        <ModalContent>
+          <ModalHeader></ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Box zIndex={-1} position="absolute" top={0} left={0} right={0} bottom={0} overflow={"hidden"} rounded={8}>
+              <BananaFarmBackground />
+            </Box>
+            <Flex flexDir="column" minHeight={700}>
+              <HStack alignSelf={"end"}>
+                {tabs.map((tab) => (
+                  <NavLink key={tab.id} to={tab.id}>
+                    {({ isActive }) => (
+                      <Button
+                        style={{ width: "100%" }}
+                        colorScheme={isActive ? "green" : "gray"}
+                        backdropFilter={"blur(5px)"}
+                        border={"1px solid rgba(255, 255, 255, 0.1)"}
+                        textShadow={!isActive ? "1px 1px 1px rgba(0, 0, 0, 0.5)" : ""}
+                        onClick={() => {
+                          navigate(tab.id);
+                        }}
+                      >
+                        {tab.name}
+                      </Button>
+                    )}
+                  </NavLink>
+                ))}
+              </HStack>
 
-        <Tabs isLazy colorScheme="green" index={activeTab}>
-          <TabList>
-            {tabs.map((tab) => (
-              <Tab key={tab.id} onClick={() => navigate(tab.id)}>
-                {tab.name}
-              </Tab>
-            ))}
-          </TabList>
-        </Tabs>
+              <Box padding={2}>
+                <Outlet />
+              </Box>
+            </Flex>
+          </ModalBody>
 
-        <Box padding={2}>
-          <Outlet />
-        </Box>
-      </Flex>
+          <ModalFooter></ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Box paddingBottom={4}>
+        <WalletSelector />
+
+        {account ? (
+          <Box paddingTop={4}>
+            <Button onClick={onOpen} colorScheme="green">
+              Open Banana Farm
+            </Button>
+          </Box>
+        ) : (
+          <Text paddingTop={4}>Please connect your wallet to access the Banana Farm</Text>
+        )}
+      </Box>
     </div>
   );
 }
