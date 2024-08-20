@@ -1,7 +1,7 @@
-import movementClient from "../services/movement-client";
+import movementClient from "../../services/movement-client";
 import { useQuery } from "@tanstack/react-query";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
-import useBananaFarmCollections from "../components/banana-farm/useBananaFarmCollections";
+import useFarmCollections from "./useFarmCollections";
 
 export interface Token {
   token_name: string;
@@ -31,9 +31,9 @@ interface NFTsQueryResult {
   current_token_ownerships_v2: Array<CurrentTokenData>;
 }
 
-export function useOwnedNFTs() {
+export function useFarmOwnedNFTs() {
   const { account } = useWallet();
-  const { data: collections, isLoading } = useBananaFarmCollections();
+  const { data: collections, isLoading } = useFarmCollections();
 
   return useQuery({
     queryKey: ["owned_nfts", account?.address],

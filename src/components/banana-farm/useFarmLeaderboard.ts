@@ -11,7 +11,7 @@ interface NFTsQueryResult {
   current_fungible_asset_balances: Array<CurrentTokenData>;
 }
 
-export function useLeaderboard() {
+export function useFarmLeaderboard() {
   return useQuery({
     queryKey: ["leaderboard"],
     refetchInterval: 1000 * 30,

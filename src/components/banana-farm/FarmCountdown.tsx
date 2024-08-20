@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function Countdown({ seconds }: { seconds: number }) {
+export default function FarmCountdown({ seconds }: { seconds: number }) {
   const [timeLeft, setTimeLeft] = useState({
     mins: Math.floor(seconds / 60),
     secs: seconds % 60,

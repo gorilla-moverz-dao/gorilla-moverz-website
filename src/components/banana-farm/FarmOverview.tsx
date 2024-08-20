@@ -1,15 +1,15 @@
-import { useOwnedNFTs } from "../../hooks/useOwnedNFTs";
+import { useFarmOwnedNFTs } from "./useFarmOwnedNFTs";
 import { Box, Button, Flex, Image, Spinner, Text, useToast } from "@chakra-ui/react";
 import PageTitle from "../PageTitle";
-import HeroSection from "./HeroSection";
+import FarmCollectionMint from "./FarmCollectionMint";
 import { useEffect, useState } from "react";
 import Assets from "../Assets";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import useContractClient from "../../hooks/useContracts";
 import useAssets from "../../hooks/useAssets";
 import useFarmData from "./useFarmData";
-import Countdown from "./Countdown";
-import useBananaFarmCollection from "./useBananaFarmCollection";
+import FarmCountdown from "./FarmCountdown";
+import useFarmCollection from "./useFarmCollection";
 import BoxBlurred from "../BoxBlurred";
 
 interface Props {
@@ -17,9 +17,9 @@ interface Props {
   enableFarming: boolean;
 }
 
-function FarmerNFT({ collectionId, enableFarming }: Props) {
+function FarmerOverview({ collectionId, enableFarming }: Props) {
   const { account } = useWallet();
-  const { data: ownedNFTs, isLoading } = useOwnedNFTs();
+  const { data: ownedNFTs, isLoading } = useFarmOwnedNFTs();
   const farmerNFT = ownedNFTs?.find((nft) => nft.current_token_data.collection_id === collectionId);
   const [imageUrl, setImageUrl] = useState<string>("");
 
@@ -29,7 +29,7 @@ function FarmerNFT({ collectionId, enableFarming }: Props) {
 
   const { data: farmed_data, refetch: refetchFarmed } = useFarmData();
 
-  const collection = useBananaFarmCollection(collectionId);
+  const collection = useFarmCollection(collectionId);
 
   const withdraw = async (farmerNFT: string, partnerNFTs: string[]) => {
     try {
@@ -68,7 +68,7 @@ function FarmerNFT({ collectionId, enableFarming }: Props) {
   if (!farmerNFT) {
     return (
       <>
-        <HeroSection collectionId={collectionId} />
+        <FarmCollectionMint collectionId={collectionId} />
       </>
     );
   }
@@ -115,7 +115,7 @@ function FarmerNFT({ collectionId, enableFarming }: Props) {
                           colorScheme={farmed_data.remainingTime > 0 ? "gray" : "green"}
                           disabled={farmed_data.remainingTime > 0}
                         >
-                          <Countdown seconds={farmed_data.remainingTime > 0 ? farmed_data.remainingTime : 0} />
+                          <FarmCountdown seconds={farmed_data.remainingTime > 0 ? farmed_data.remainingTime : 0} />
                         </Button>
                         <Text paddingTop={2}>
                           <i>
@@ -144,4 +144,4 @@ function FarmerNFT({ collectionId, enableFarming }: Props) {
   );
 }
 
-export default FarmerNFT;
+export default FarmerOverview;

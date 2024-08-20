@@ -1,10 +1,10 @@
 import { truncateAddress } from "@aptos-labs/wallet-adapter-react";
-import { useLeaderboard } from "./useLeaderboard";
+import { useFarmLeaderboard } from "./useFarmLeaderboard";
 import { Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import BoxBlurred from "../BoxBlurred";
 
-function Leaderboard() {
-  const { data, isLoading } = useLeaderboard();
+function FarmLeaderboard() {
+  const { data, isLoading } = useFarmLeaderboard();
 
   if (isLoading) return <Spinner />;
 
@@ -34,4 +34,4 @@ function Leaderboard() {
   );
 }
 
-export default Leaderboard;
+export default FarmLeaderboard;
