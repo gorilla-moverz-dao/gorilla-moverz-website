@@ -45,7 +45,7 @@ function HeroSection({ collectionId }: Props) {
 
   return (
     <Flex direction={{ base: "column", md: "row" }} gap={4}>
-      <Box flex={1}>
+      <Box flex={2}>
         <Image
           src={
             collection?.cdn_asset_uris?.cdn_image_uri ??
@@ -53,80 +53,79 @@ function HeroSection({ collectionId }: Props) {
             "/nfts/" + col.slug + "/collection.png"
           }
           rounded={4}
+          style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.8)" }}
         />
       </Box>
-      <Box flex={1}>
-        <BoxBlurred>
-          <Box padding={4}>
-            <Heading>{collection?.collection_name}</Heading>
-            <Text>{collection?.description}</Text>
+      <Box flex={3}>
+        <BoxBlurred padding={4}>
+          <Heading>{collection?.collection_name}</Heading>
+          <Text>{collection?.description}</Text>
 
-            <Flex>
-              <Box paddingRight={4}>
-                <form onSubmit={mintNft}>
-                  {account?.address && (
-                    <>
-                      {data?.isAllowlisted && (
-                        <Button type="submit" disabled={!data?.isMintActive || !data.isAllowlisted}>
-                          Mint
-                        </Button>
-                      )}
-                      {!data?.isAllowlisted && (
-                        <Button type="button" onClick={() => window.open(col.discord_link ?? "", "blank")}>
-                          Get on the allowlist
-                        </Button>
-                      )}
-                    </>
-                  )}
+          <Flex>
+            <Box paddingRight={4}>
+              <form onSubmit={mintNft}>
+                {account?.address && (
+                  <>
+                    {data?.isAllowlisted && (
+                      <Button type="submit" disabled={!data?.isMintActive || !data.isAllowlisted}>
+                        Mint
+                      </Button>
+                    )}
+                    {!data?.isAllowlisted && (
+                      <Button type="button" onClick={() => window.open(col.discord_link ?? "", "blank")}>
+                        Get on the allowlist
+                      </Button>
+                    )}
+                  </>
+                )}
 
-                  {!account?.address && <WalletSelector />}
-                </form>
-              </Box>
+                {!account?.address && <WalletSelector />}
+              </form>
+            </Box>
 
-              <Box flex={1}>
-                {clampNumber(totalMinted)} / {clampNumber(maxSupply, undefined, 10000)} Minted
-                <Progress value={(totalMinted / maxSupply) * 100} className="h-2" />
-              </Box>
-            </Flex>
+            <Box flex={1}>
+              {clampNumber(totalMinted)} / {clampNumber(maxSupply, undefined, 10000)} Minted
+              <Progress value={(totalMinted / maxSupply) * 100} className="h-2" />
+            </Box>
+          </Flex>
 
-            <Divider paddingTop={4} paddingBottom={4} />
+          <Divider paddingTop={4} paddingBottom={4} />
 
-            <Flex justifyContent="space-between" alignItems="center" paddingBottom={2} paddingTop={2}>
-              <Box>Collection Address</Box>
+          <Flex justifyContent="space-between" alignItems="center" paddingBottom={2} paddingTop={2}>
+            <Box>Collection Address</Box>
 
-              <div className="flex gap-x-2">
-                <AddressButton address={collection?.collection_id ?? ""} />
-              </div>
-            </Flex>
-
-            <Flex justifyContent="space-between">
-              View on Explorer{" "}
-              <a
-                target="_blank"
-                href={`https://explorer.aptoslabs.com/account/${collection?.collection_id}?network=${NETWORK}`}
-              >
-                <IconButton icon={<FaLink />} aria-label="Copy address" className="dark:invert" />
-              </a>
-            </Flex>
-
-            <div>
-              {data?.startDate && new Date() < data.startDate && (
-                <div className="flex gap-x-2 justify-between flex-wrap">
-                  <p className="body-sm-semibold">Minting starts</p>
-                  <p className="body-sm">{formatDate(data.startDate)}</p>
-                </div>
-              )}
-
-              {data?.endDate && new Date() < data.endDate && !data.isMintInfinite && (
-                <div className="flex gap-x-2 justify-between flex-wrap">
-                  <p className="body-sm-semibold">Minting ends</p>
-                  <p className="body-sm">{formatDate(data.endDate)}</p>
-                </div>
-              )}
-
-              {data?.endDate && new Date() > data.endDate && <p className="body-sm-semibold">Minting has ended</p>}
+            <div className="flex gap-x-2">
+              <AddressButton address={collection?.collection_id ?? ""} />
             </div>
-          </Box>
+          </Flex>
+
+          <Flex justifyContent="space-between">
+            View on Explorer{" "}
+            <a
+              target="_blank"
+              href={`https://explorer.aptoslabs.com/account/${collection?.collection_id}?network=${NETWORK}`}
+            >
+              <IconButton icon={<FaLink />} aria-label="Copy address" className="dark:invert" />
+            </a>
+          </Flex>
+
+          <div>
+            {data?.startDate && new Date() < data.startDate && (
+              <div className="flex gap-x-2 justify-between flex-wrap">
+                <p className="body-sm-semibold">Minting starts</p>
+                <p className="body-sm">{formatDate(data.startDate)}</p>
+              </div>
+            )}
+
+            {data?.endDate && new Date() < data.endDate && !data.isMintInfinite && (
+              <div className="flex gap-x-2 justify-between flex-wrap">
+                <p className="body-sm-semibold">Minting ends</p>
+                <p className="body-sm">{formatDate(data.endDate)}</p>
+              </div>
+            )}
+
+            {data?.endDate && new Date() > data.endDate && <p className="body-sm-semibold">Minting has ended</p>}
+          </div>
         </BoxBlurred>
       </Box>
     </Flex>

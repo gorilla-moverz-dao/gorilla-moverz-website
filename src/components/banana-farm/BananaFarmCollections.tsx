@@ -21,14 +21,18 @@ function BananaFarmCollections() {
 
   return (
     <div>
-      <Heading as="h1" size={"xl"} paddingBottom={16} textAlign={"right"} paddingTop={4}>
-        Partner NFTs
-      </Heading>
-
       <SimpleGrid spacing={4} templateColumns="repeat(auto-fill, minmax(30%, 320px))">
         {collections?.map((collection) => (
           <Link key={collection.id} to={`./?collectionId=${collection.collection_address}`}>
-            <Card key={collection.id}>
+            <Card
+              key={collection.id}
+              style={{
+                backdropFilter: "blur(20px)",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                border: "1px solid rgba(255, 255, 255, 0.28)",
+                borderRadius: 8,
+              }}
+            >
               <CardBody cursor={"pointer"}>
                 <Image src={`/nfts/${collection.slug}/collection.png`}></Image>
                 <Stack mt="6" spacing="3">

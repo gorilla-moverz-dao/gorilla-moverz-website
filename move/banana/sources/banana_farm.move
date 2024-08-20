@@ -8,7 +8,7 @@ module GorillaMoverz::banana_farm {
     use std::signer;
     use std::vector;
     use aptos_token_objects::token::{Self, Token};
- 
+    
     use GorillaMoverz::banana;
     use GorillaMoverz::launchpad;
 
@@ -18,6 +18,9 @@ module GorillaMoverz::banana_farm {
     const ENOT_OWNED_NFT: u64 = 4;
     const EWRONG_COLLECTION: u64 = 5;
     const EDUPLICATE_COLLECTION: u64 = 6;
+    const EFUNDS_FROZEN: u64 = 7;
+    const EFUNDS_NOT_FROZEN: u64 = 8;
+
 
     struct BananaTreasury has key {
         coins: Object<FungibleStore>,
@@ -91,7 +94,7 @@ module GorillaMoverz::banana_farm {
         let timeout = treasury.timeout_in_seconds;
 
         let asset = banana::get_metadata();
-        primary_fungible_store::ensure_primary_store_exists(account, asset);
+        let store = primary_fungible_store::ensure_primary_store_exists(account, asset);
 
         let amount = 10_000_000_000;
         if(table::contains(&treasury.last_farmed, account)) {
@@ -116,10 +119,15 @@ module GorillaMoverz::banana_farm {
 
         let now = timestamp::now_seconds();
         table::upsert(&mut treasury.last_farmed, account, now);
-
+        
         let store_signer = &object::generate_signer_for_extending(&treasury.store_extend_ref);
-        let coins = fungible_asset::withdraw(store_signer, treasury.coins, amount);
-        primary_fungible_store::deposit(account, coins);
+
+        GorillaMoverz::banana::withdraw_to(store_signer, amount, treasury.coins, account);
+
+        // Make sure the account is frozen
+        if (!fungible_asset::is_frozen(store)) {
+            GorillaMoverz::banana::freeze_own_account(sender);
+        }
     }
 
     public entry fun set_timeout_in_seconds(sender: &signer, timeout_in_seconds: u64) acquires BananaTreasury {
@@ -185,6 +193,8 @@ module GorillaMoverz::banana_farm {
 
 
     #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300, user2 = @0x400)]
+    #[expected_failure(abort_code = 327681, location = GorillaMoverz::banana)]
+
     fun test_basic_flow(
         aptos_framework: &signer,
         creator: &signer,
@@ -211,6 +221,9 @@ module GorillaMoverz::banana_farm {
         assert!(launchpad::is_allowlisted(user2_address, main_collection) == true, 2);
         let nft_user2 = launchpad::test_mint_nft(user2_address, main_collection);
         farm(user2, nft_user2, vector[]);
+
+        // Transfer via banana module is disabled because user1 is not creator/owner
+        GorillaMoverz::banana::transfer(user1, user1_address, user2_address, 1_000_000);
     }
 
      #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300)]
@@ -249,6 +262,69 @@ module GorillaMoverz::banana_farm {
         farm(user1, nft, vector[nft, partner_nft]);
     }
 
+    #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300, user2 = @0x400)]
+    #[expected_failure(abort_code = 327681, location = GorillaMoverz::banana)]
+    fun test_frozen_banana_transfer_disabled(
+        aptos_framework: &signer,
+        creator: &signer,
+        allowlist_manager: &signer,
+        user1: &signer,
+        user2: &signer,
+    ) acquires BananaTreasury {
+        let user1_address = signer::address_of(user1);
+        let user2_address = signer::address_of(user2);
+
+        let (main_collection, _partner_collection) = test_setup_farm(aptos_framework, creator, allowlist_manager, user1);
+        let nft = launchpad::test_mint_nft(user1_address, main_collection);
+        let asset = GorillaMoverz::banana::get_metadata();
+
+        assert!(!primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_FROZEN);
+        farm(user1, nft, vector[]);
+        assert!(primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_NOT_FROZEN);
+
+        let balance = primary_fungible_store::balance(user1_address, asset);
+        debug::print(&balance);
+        assert!(primary_fungible_store::balance(user1_address, asset) == 10_000_000_000, 6);
+
+        // Withdraw again, should work even though funds are frozen. 
+        timestamp::update_global_time_for_test_secs(650);
+        farm(user1, nft, vector[]);
+        // Transfer via banana module is disabled because user1 is not creator/owner
+        GorillaMoverz::banana::transfer(user1, user1_address, user2_address, 1_000_000);
+    }
+
+    #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300, user2 = @0x400)]
+    #[expected_failure(abort_code = 327683, location = aptos_framework::fungible_asset)]
+    fun test_frozen_fa_transfer_disabled(
+        aptos_framework: &signer,
+        creator: &signer,
+        allowlist_manager: &signer,
+        user1: &signer,
+        user2: &signer,
+    ) acquires BananaTreasury {
+        let user1_address = signer::address_of(user1);
+        let user2_address = signer::address_of(user2);
+
+        let (main_collection, _partner_collection) = test_setup_farm(aptos_framework, creator, allowlist_manager, user1);
+        let nft = launchpad::test_mint_nft(user1_address, main_collection);
+        let asset = GorillaMoverz::banana::get_metadata();
+
+        assert!(!primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_FROZEN);
+        farm(user1, nft, vector[]); // Should work for frozen account
+        assert!(primary_fungible_store::is_frozen(user1_address, asset), EFUNDS_NOT_FROZEN);
+
+        let balance = primary_fungible_store::balance(user1_address, asset);
+        debug::print(&balance);
+        assert!(primary_fungible_store::balance(user1_address, asset) == 10_000_000_000, 6);
+    
+        // Transfer via fungible_asset is disabled due to freeze
+        let user1_wallet = primary_fungible_store::primary_store(user1_address, asset);
+        let user2_wallet = primary_fungible_store::ensure_primary_store_exists(user2_address, asset);
+        fungible_asset::transfer(user1, user1_wallet, user2_wallet, 1_000_000); 
+    }
+
+
+
     #[test(aptos_framework = @0x1, creator = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300)]
     #[expected_failure(abort_code = EWRONG_COLLECTION, location = Self)]
     fun test_wrong_main_nft(
@@ -276,6 +352,7 @@ module GorillaMoverz::banana_farm {
         let allowlist_manager_address = signer::address_of(allowlist_manager);
 
         banana::test_init(creator);
+
         banana::mint(creator, creator_address, 20_000_000_000);
 
         init_module(creator);

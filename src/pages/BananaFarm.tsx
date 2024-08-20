@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Flex,
+  Heading,
   HStack,
   Modal,
   ModalBody,
@@ -25,15 +26,16 @@ function BananaFarm() {
   const { account } = useWallet();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const tabs = [
+  const navigationItems = [
     { id: "farm", name: "Banana farm" },
     { id: "partner", name: "Partner NFTs" },
     { id: "leaderboard", name: "Leaderboard" },
   ];
 
   if (account?.address === "0x" + MODULE_ADDRESS) {
-    tabs.push({ id: "create", name: "Create collection" });
+    navigationItems.push({ id: "create", name: "Create collection" });
   }
+  const activeNavigation = navigationItems.find((tab) => window.location.pathname.includes(`bananas/${tab.id}`));
 
   useEffect(() => {
     if (account?.address) {
@@ -52,9 +54,9 @@ function BananaFarm() {
             <Box zIndex={-1} position="absolute" top={0} left={0} right={0} bottom={0} overflow={"hidden"} rounded={8}>
               <BananaFarmBackground />
             </Box>
-            <Flex flexDir="column" minHeight={700}>
+            <Flex flexDir="column" minHeight={700} paddingTop={4}>
               <HStack alignSelf={"end"}>
-                {tabs.map((tab) => (
+                {navigationItems.map((tab) => (
                   <NavLink key={tab.id} to={tab.id}>
                     {({ isActive }) => (
                       <Button
@@ -75,6 +77,10 @@ function BananaFarm() {
               </HStack>
 
               <Box padding={2}>
+                <Heading as="h1" size={"xl"} paddingBottom={12} textAlign={"right"} paddingTop={4}>
+                  {activeNavigation?.name}
+                </Heading>
+
                 <Outlet />
               </Box>
             </Flex>

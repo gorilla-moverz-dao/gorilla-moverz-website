@@ -2,13 +2,14 @@
 /// deployer will be creating a new managed fungible asset with the hardcoded supply config, name, symbol, and decimals.
 /// The address of the asset can be obtained via get_metadata(). As a simple version, it only deals with primary stores.
 module GorillaMoverz::banana {
-    use aptos_framework::fungible_asset::{Self, MintRef, TransferRef, BurnRef, Metadata, FungibleAsset};
+    use aptos_framework::fungible_asset::{Self, MintRef, TransferRef, BurnRef, Metadata, FungibleAsset, FungibleStore};
     use aptos_framework::object::{Self, Object};
     use aptos_framework::primary_fungible_store;
     use std::error;
     use std::signer;
     use std::string::utf8;
     use std::option;
+    friend GorillaMoverz::banana_farm;
 
     /// Only fungible asset metadata owner can make changes.
     const ENOT_OWNER: u64 = 1;
@@ -36,7 +37,7 @@ module GorillaMoverz::banana {
             utf8(b"https://gorilla-moverz.xyz/images/banana.png"), /* icon */
             utf8(b"https://gorilla-moverz.xyz"), /* project */
         );
-
+        
         // Create mint/burn/transfer refs to allow creator to manage the fungible asset.
         let mint_ref = fungible_asset::generate_mint_ref(constructor_ref);
         let burn_ref = fungible_asset::generate_burn_ref(constructor_ref);
@@ -75,7 +76,7 @@ module GorillaMoverz::banana {
         let to_wallet = primary_fungible_store::ensure_primary_store_exists(to, asset);
         fungible_asset::transfer_with_ref(transfer_ref, from_wallet, to_wallet, amount);
     }
-
+    
     /// Burn fungible assets as the owner of metadata object.
     public entry fun burn(admin: &signer, from: address, amount: u64) acquires ManagedFungibleAsset {
         let asset = get_metadata();
@@ -88,6 +89,15 @@ module GorillaMoverz::banana {
     public entry fun freeze_account(admin: &signer, account: address) acquires ManagedFungibleAsset {
         let asset = get_metadata();
         let transfer_ref = &authorized_borrow_refs(admin, asset).transfer_ref;
+        let wallet = primary_fungible_store::ensure_primary_store_exists(account, asset);
+        fungible_asset::set_frozen_flag(transfer_ref, wallet, true);
+    }
+
+    /// Freeze an account so it cannot transfer or receive fungible assets.
+    public(friend) entry fun freeze_own_account(sender: &signer) acquires ManagedFungibleAsset {
+        let asset = get_metadata();
+        let account = signer::address_of(sender);
+        let transfer_ref = &borrow_global<ManagedFungibleAsset>(object::object_address(&asset)).transfer_ref;
         let wallet = primary_fungible_store::ensure_primary_store_exists(account, asset);
         fungible_asset::set_frozen_flag(transfer_ref, wallet, true);
     }
@@ -112,6 +122,17 @@ module GorillaMoverz::banana {
     public fun deposit(admin: &signer, to: address, fa: FungibleAsset) acquires ManagedFungibleAsset {
         let asset = get_metadata();
         let transfer_ref = &authorized_borrow_refs(admin, asset).transfer_ref;
+        let to_wallet = primary_fungible_store::ensure_primary_store_exists(to, asset);
+        fungible_asset::deposit_with_ref(transfer_ref, to_wallet, fa);
+    }
+
+
+    /// Withdraw as the owner of metadata object ignoring `frozen` field.
+    public(friend) fun withdraw_to(admin: &signer, amount: u64, coins: Object<FungibleStore>, to: address) acquires ManagedFungibleAsset {
+        let fa = fungible_asset::withdraw(admin, coins, amount);
+
+        let asset = get_metadata();
+        let transfer_ref = &borrow_global<ManagedFungibleAsset>(object::object_address(&asset)).transfer_ref;
         let to_wallet = primary_fungible_store::ensure_primary_store_exists(to, asset);
         fungible_asset::deposit_with_ref(transfer_ref, to_wallet, fa);
     }
@@ -153,6 +174,51 @@ module GorillaMoverz::banana {
         assert!(!primary_fungible_store::is_frozen(creator_address, asset), 7);
         burn(creator, creator_address, 90);
     }
+
+    #[test(creator = @GorillaMoverz)]
+    fun test_basic_flow_aaron(
+        creator: &signer,
+    ) acquires ManagedFungibleAsset {
+        init_module(creator);
+        let creator_address = signer::address_of(creator);
+        let aaron_address = @0xface;
+
+        mint(creator, aaron_address, 100);
+        let asset = get_metadata();
+        assert!(primary_fungible_store::balance(aaron_address, asset) == 100, 4);
+        freeze_account(creator, aaron_address);
+        assert!(primary_fungible_store::is_frozen(aaron_address, asset), 5);
+        transfer(creator, aaron_address, creator_address, 10);
+        assert!(primary_fungible_store::balance(creator_address, asset) == 10, 6);
+
+        unfreeze_account(creator, aaron_address);
+        assert!(!primary_fungible_store::is_frozen(aaron_address, asset), 7);
+        burn(creator, creator_address, 10);
+    }
+
+    #[test(creator = @GorillaMoverz, aaron = @0xface)]
+    #[expected_failure(abort_code = 327683, location = aptos_framework::fungible_asset)]
+    fun test_frozen_not_allowed_flow(
+        creator: &signer,
+        aaron: &signer
+    ) acquires ManagedFungibleAsset {
+        init_module(creator);
+        let creator_address = signer::address_of(creator);
+        let aaron_address = @0xface;
+
+        mint(creator, creator_address, 100);
+        mint(creator, aaron_address, 100);
+        let asset = get_metadata();
+        assert!(primary_fungible_store::balance(creator_address, asset) == 100, 4);
+        freeze_account(creator, creator_address);
+        assert!(primary_fungible_store::is_frozen(creator_address, asset), 5);
+        transfer(creator, creator_address, aaron_address, 10);
+
+        let aaron_wallet = primary_fungible_store::primary_store(aaron_address, asset);
+        let creator_wallet = primary_fungible_store::ensure_primary_store_exists(creator_address, asset);
+        fungible_asset::transfer(aaron, aaron_wallet, creator_wallet, 10); 
+    }
+
 
     #[test(creator = @GorillaMoverz, aaron = @0xface)]
     #[expected_failure(abort_code = 0x50001, location = Self)]
