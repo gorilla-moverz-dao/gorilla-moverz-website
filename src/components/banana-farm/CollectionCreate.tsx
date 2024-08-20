@@ -4,7 +4,7 @@ import movementClient from "../../services/movement-client";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Box, Button, FormControl, FormErrorMessage, FormLabel, Heading, Input, Textarea } from "@chakra-ui/react";
+import { Box, Button, FormControl, FormErrorMessage, FormLabel, Input, Textarea } from "@chakra-ui/react";
 import { dateToSeconds } from "../../helpers/date-functions";
 import BoxBlurred from "../BoxBlurred";
 
@@ -77,9 +77,6 @@ function CollectionCreate() {
 
   return (
     <>
-      <Heading as="h1" size={"xl"} paddingBottom={10} textAlign={"right"} paddingTop={4}>
-        Create a Collection
-      </Heading>
       <BoxBlurred>
         <Box padding={4}>
           <form onSubmit={handleSubmit(createCollection)}>

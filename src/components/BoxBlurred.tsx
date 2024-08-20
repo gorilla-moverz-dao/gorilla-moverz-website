@@ -1,4 +1,6 @@
-function BoxBlurred({ children }: { children: React.ReactNode }) {
+import { Box } from "@chakra-ui/react";
+
+function BoxBlurred({ children, padding }: { children: React.ReactNode; padding?: number }) {
   return (
     <div
       style={{
@@ -8,7 +10,7 @@ function BoxBlurred({ children }: { children: React.ReactNode }) {
         borderRadius: "8px",
       }}
     >
-      {children}
+      <Box padding={padding}>{children}</Box>
     </div>
   );
 }
