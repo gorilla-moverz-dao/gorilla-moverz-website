@@ -274,7 +274,7 @@ module GorillaMoverz::banana_farm {
         let user1_address = signer::address_of(user1);
         let user2_address = signer::address_of(user2);
 
-        let (main_collection, partner_collection) = test_setup_farm(aptos_framework, creator, allowlist_manager, user1);
+        let (main_collection, _partner_collection) = test_setup_farm(aptos_framework, creator, allowlist_manager, user1);
         let nft = launchpad::test_mint_nft(user1_address, main_collection);
         let asset = GorillaMoverz::banana::get_metadata();
 
@@ -305,7 +305,7 @@ module GorillaMoverz::banana_farm {
         let user1_address = signer::address_of(user1);
         let user2_address = signer::address_of(user2);
 
-        let (main_collection, partner_collection) = test_setup_farm(aptos_framework, creator, allowlist_manager, user1);
+        let (main_collection, _partner_collection) = test_setup_farm(aptos_framework, creator, allowlist_manager, user1);
         let nft = launchpad::test_mint_nft(user1_address, main_collection);
         let asset = GorillaMoverz::banana::get_metadata();
 
