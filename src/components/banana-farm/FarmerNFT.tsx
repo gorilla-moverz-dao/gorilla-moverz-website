@@ -85,7 +85,9 @@ function FarmerNFT({ collectionId, enableFarming }: Props) {
         <>
           <Flex direction={{ base: "column", md: "row" }} gap={6}>
             <Box flex={2}>
-              {imageUrl && <Image rounded={8} src={imageUrl} />}
+              {imageUrl && (
+                <Image rounded={8} src={imageUrl} style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.8)" }} />
+              )}
               {!imageUrl && (
                 <>
                   <Spinner />

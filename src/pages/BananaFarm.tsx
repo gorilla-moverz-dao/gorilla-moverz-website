@@ -35,7 +35,7 @@ function BananaFarm() {
   if (account?.address === "0x" + MODULE_ADDRESS) {
     navigationItems.push({ id: "create", name: "Create collection" });
   }
-  const activeNavigation = navigationItems.find((tab) => window.location.pathname.endsWith(tab.id));
+  const activeNavigation = navigationItems.find((tab) => window.location.pathname.includes(`bananas/${tab.id}`));
 
   useEffect(() => {
     if (account?.address) {

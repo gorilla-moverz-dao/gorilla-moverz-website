@@ -45,7 +45,7 @@ function HeroSection({ collectionId }: Props) {
 
   return (
     <Flex direction={{ base: "column", md: "row" }} gap={4}>
-      <Box flex={1}>
+      <Box flex={2}>
         <Image
           src={
             collection?.cdn_asset_uris?.cdn_image_uri ??
@@ -53,9 +53,10 @@ function HeroSection({ collectionId }: Props) {
             "/nfts/" + col.slug + "/collection.png"
           }
           rounded={4}
+          style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.8)" }}
         />
       </Box>
-      <Box flex={1}>
+      <Box flex={3}>
         <BoxBlurred padding={4}>
           <Heading>{collection?.collection_name}</Heading>
           <Text>{collection?.description}</Text>
