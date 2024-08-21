@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../../services/supabase-client";
 
-const useBananaFarmCollections = () => {
+const useFarmCollections = () => {
   return useQuery({
     queryKey: ["banana_farm_collections"],
     queryFn: async () => {
@@ -18,4 +18,4 @@ const useBananaFarmCollections = () => {
   });
 };
 
-export default useBananaFarmCollections;
+export default useFarmCollections;

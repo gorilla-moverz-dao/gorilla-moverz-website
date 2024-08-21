@@ -18,7 +18,7 @@ export const CreateCollectionSchema = z.object({
 
 export type CreateCollection = z.infer<typeof CreateCollectionSchema>;
 
-function CollectionCreate() {
+function FarmCreateCollection() {
   const { account, signAndSubmitTransaction } = useWallet();
   const {
     register,
@@ -146,4 +146,4 @@ function CollectionCreate() {
   );
 }
 
-export default CollectionCreate;
+export default FarmCreateCollection;

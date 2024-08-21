@@ -1,7 +1,7 @@
 import { Box, Image } from "@chakra-ui/react";
 import { MouseParallax } from "react-just-parallax";
 
-function BananaFarmBackground() {
+function FarmParallax() {
   return (
     <>
       <Box position={"absolute"} top={-10} left={-10} right={-10} bottom={-10} overflow={"hidden"}>
@@ -33,4 +33,4 @@ function BananaFarmBackground() {
   );
 }
 
-export default BananaFarmBackground;
+export default FarmParallax;

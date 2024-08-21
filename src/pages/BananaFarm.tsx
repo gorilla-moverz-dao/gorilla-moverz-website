@@ -19,7 +19,7 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { MODULE_ADDRESS } from "../constants";
-import BananaFarmBackground from "../components/banana-farm/BananaFarmBackground";
+import FarmParallax from "../components/banana-farm/FarmParallax";
 
 function BananaFarm() {
   const navigate = useNavigate();
@@ -52,7 +52,7 @@ function BananaFarm() {
           <ModalCloseButton />
           <ModalBody>
             <Box zIndex={-1} position="absolute" top={0} left={0} right={0} bottom={0} overflow={"hidden"} rounded={8}>
-              <BananaFarmBackground />
+              <FarmParallax />
             </Box>
             <Flex flexDir="column" minHeight={700} paddingTop={4}>
               <HStack alignSelf={"end"}>

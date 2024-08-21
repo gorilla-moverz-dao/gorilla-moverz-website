@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import ErrorPage from "./pages/ErrorPage";
 import Layout from "./pages/Layout";
 import HomePage from "./pages/HomePage";
@@ -8,11 +8,8 @@ import GorillaNFT from "./pages/GorillaNFT";
 import Media from "./pages/Media";
 import BananaFarm from "./pages/BananaFarm";
 import Lighthouse from "./pages/Lighthouse";
-import CollectionCreate from "./components/banana-farm/CollectionCreate";
-import BananaFarmCollections from "./components/banana-farm/BananaFarmCollections";
-import Leaderboard from "./components/banana-farm/Leaderboard";
-import FarmerNFT from "./components/banana-farm/FarmerNFT";
-import { FARM_COLLECTION_ID } from "./constants";
+
+import { farmRoutes } from "./components/banana-farm/routes";
 
 const router = createBrowserRouter([
   {
@@ -29,13 +26,7 @@ const router = createBrowserRouter([
       {
         path: "bananas",
         element: <BananaFarm />,
-        children: [
-          { index: true, element: <Navigate to="farm" /> },
-          { path: "farm", element: <FarmerNFT collectionId={FARM_COLLECTION_ID} enableFarming={true} /> },
-          { path: "partner", element: <BananaFarmCollections /> },
-          { path: "leaderboard", element: <Leaderboard /> },
-          { path: "create", element: <CollectionCreate /> },
-        ],
+        children: farmRoutes,
       },
     ],
   },

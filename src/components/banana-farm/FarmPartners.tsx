@@ -1,10 +1,10 @@
 import { Link, useSearchParams } from "react-router-dom";
-import useBananaFarmCollections from "./useBananaFarmCollections";
-import FarmerNFT from "./FarmerNFT";
+import useFarmCollections from "./useFarmCollections";
+import FarmerOverview from "./FarmOverview";
 import { Card, CardBody, Heading, SimpleGrid, Stack, Image } from "@chakra-ui/react";
 
-function BananaFarmCollections() {
-  const { data, error } = useBananaFarmCollections();
+function FarmPartners() {
+  const { data, error } = useFarmCollections();
   const collections = data?.filter((collection) => collection.slug !== "farmer");
   const [searchParams] = useSearchParams();
   const collectionId = searchParams.get("collectionId");
@@ -14,7 +14,7 @@ function BananaFarmCollections() {
   if (collectionId) {
     return (
       <div>
-        <FarmerNFT collectionId={collectionId} enableFarming={false} />
+        <FarmerOverview collectionId={collectionId} enableFarming={false} />
       </div>
     );
   }
@@ -49,4 +49,4 @@ function BananaFarmCollections() {
   );
 }
 
-export default BananaFarmCollections;
+export default FarmPartners;

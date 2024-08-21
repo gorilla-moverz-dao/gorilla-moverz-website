@@ -7,20 +7,20 @@ import { MODULE_ADDRESS, NETWORK } from "../../constants";
 import { formatDate } from "../../helpers/date-functions";
 import { clampNumber } from "../../helpers/clampNumber";
 import { FaCopy, FaLink } from "react-icons/fa6";
-import { useOwnedNFTs } from "../../hooks/useOwnedNFTs";
+import { useFarmOwnedNFTs } from "./useFarmOwnedNFTs";
 import { WalletSelector } from "../WalletSelector";
-import useBananaFarmCollection from "./useBananaFarmCollection";
+import useFarmCollection from "./useFarmCollection";
 import BoxBlurred from "../BoxBlurred";
 
 interface Props {
   collectionId: string;
 }
 
-function HeroSection({ collectionId }: Props) {
+function FarmCollectionMint({ collectionId }: Props) {
   const { data, refetch: refetchMint } = useMintData(collectionId);
   const { account, signAndSubmitTransaction } = useWallet();
-  const { refetch: refetchOwned } = useOwnedNFTs();
-  const col = useBananaFarmCollection(collectionId);
+  const { refetch: refetchOwned } = useFarmOwnedNFTs();
+  const col = useFarmCollection(collectionId);
 
   const { collection, totalMinted = 0, maxSupply = 1 } = data ?? {};
 
@@ -150,4 +150,4 @@ const AddressButton: FC<{ address: string }> = ({ address }) => {
     </>
   );
 };
-export default HeroSection;
+export default FarmCollectionMint;
