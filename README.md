@@ -11,6 +11,23 @@
  
  TODO: write some short intro here
 
+
+
+# Diagram
+
+![diagram](assets/diagram.png)
+
+# Screenshots
+
+| Screenshot 1                      | Screenshot 2              |
+| --------------------------------- | --------------------------------- |
+| ![dashboard 1](/public/images/background.jpg) | ![dashboard 2](/public/images/background.jpg) |
+
+|  Screenshot 3                          | Screenshot 4                      |
+| --------------------------------- | --------------------------------- |
+| ![dashboard 3](/public/images/background.jpg) | ![dashboard 4](/public/images/background.jpg) |
+
+
 # Banana Farm
 
 ## Game play
