@@ -66,6 +66,7 @@ export type Database = {
           collection_address: string
           created_at: string
           discord_guild_id: string | null
+          discord_help: string | null
           discord_link: string | null
           id: number
           name: string
@@ -75,6 +76,7 @@ export type Database = {
           collection_address: string
           created_at?: string
           discord_guild_id?: string | null
+          discord_help?: string | null
           discord_link?: string | null
           id?: number
           name: string
@@ -84,6 +86,7 @@ export type Database = {
           collection_address?: string
           created_at?: string
           discord_guild_id?: string | null
+          discord_help?: string | null
           discord_link?: string | null
           id?: number
           name?: string

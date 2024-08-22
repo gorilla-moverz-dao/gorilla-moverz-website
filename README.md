@@ -58,7 +58,7 @@ To contribute to the Banana Farm see [CONTRIBUTING.md](CONTRIBUTING.md)
 insert into public.banana_farm_collections
 (name, slug, collection_address, discord_link, discord_guild_id)
 values
-('Banana Farmer | Gorilla Moverz', 'farmer', '0xba47e8a4111d53d81773e920b55c4152976a47ea4b002777cd81e8eb6ed9e4e2', 'https://discord.gg/uPhU2EjMEp', '1204497818987921518'),
+('Banana Farmer | Gorilla Moverz', 'farmer', '0xba47e8a4111d53d81773e920b55c4152976a47ea4b002777cd81e8eb6ed9e4e2', 'https://discord.gg/uPhU2EjMEp', '1204497818987921518')
 ```
 
 ```
