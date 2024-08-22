@@ -1,8 +1,15 @@
 # Gorilla Moverz
 
-Website of Gorilla Moverz!
 
-[gorilla-moverz.xyz](https://gorilla-moverz.xyz)
+<h4 align="center">
+  <a href="https://gorilla-moverz.xyz">Website</a> | 
+  <a href="https://www.youtube.com/watch?v=PjMEkM_0yog">Demo video</a>
+
+
+![logo](public/images/bananafarm/banana-farm-logo.png)
+</h4>
+ 
+ TODO: write some short intro here
 
 # Banana Farm
 
@@ -70,3 +77,14 @@ SELECT
 ```
 
 - Install the discord bot in the partners discord
+
+
+# Links 
+[Website](https://gorilla-moverz.xyz)
+[Github]()
+[Demo video](https://www.youtube.com/watch?v=PjMEkM_0yog)
+
+# Team
+
+- [Urs Lee](https://x.com/ursleee)
+- [arjanjohan](https://x.com/arjanjohan)
