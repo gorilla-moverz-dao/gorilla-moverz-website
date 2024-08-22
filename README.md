@@ -19,13 +19,13 @@
 
 # Screenshots
 
-| Screenshot 1                      | Screenshot 2              |
+| Main page                    | Mint Farmer NFT               |
 | --------------------------------- | --------------------------------- |
-| ![dashboard 1](/public/images/background.jpg) | ![dashboard 2](/public/images/background.jpg) |
+| ![screenshot 1](public/screenshots/banana1.png) | ![screenshot 2](public/screenshots/banana2.png) |
 
-|  Screenshot 3                          | Screenshot 4                      |
+| Farmer NFT mint3ed                       | Farming bananas                      |
 | --------------------------------- | --------------------------------- |
-| ![dashboard 3](/public/images/background.jpg) | ![dashboard 4](/public/images/background.jpg) |
+| ![screenshot 3](public/screenshots/banana3.png) | ![screenshot 4](public/screenshots/banana4.png) |
 
 
 # Banana Farm
