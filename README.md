@@ -1,4 +1,4 @@
-# Gorilla Moverz
+# 🍌 Gorilla Moverz: Banana Farm
 
 
 <h4 align="center">
@@ -9,9 +9,15 @@
 ![logo](public/images/bananafarm/banana-farm-logo.png)
 </h4>
  
- TODO: write some short intro here
+🍌 Banana Farm, is an innovative and interactive NFT-based farming game where users mint NFTs, known as Farmers, to cultivate virtual bananas. The game operates on a time-based farming mechanism where bananas can be harvested after specified intervals, with the frequency and amount dependent on the time elapsed since the last harvest.
 
+⚙️ Built using NextJS, Move, and Typescript.
 
+- 👨‍🌾 **NFT Farming:** Users mint a Farmer NFT to start farming virtual bananas, creating an engaging and rewarding gameplay loop.
+- ⏱️ **Dynamic Timeouts:** Admins can adjust farming intervals, adding a layer of strategy and unpredictability to the game.
+- 🏆 **Leaderboard:** A competitive ranking system based on the number of bananas farmed, encouraging players to strive for the top.
+- 🗒️ **Whitelist Minting:** Users gain access to mint Farmers by joining a Discord server, fostering community growth and exclusivity.
+- 🤝 **Partner NFTs:** Special NFTs that give users farming bonuses, incentivizing collaboration and participation in partner communities.
 
 # Diagram
 
