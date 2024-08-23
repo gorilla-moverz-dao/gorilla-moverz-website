@@ -22,7 +22,7 @@ function FarmAlert({ title, text, url, onClose }: { title: string; text: string;
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent className="gorillaz-modal">
         <ModalHeader>{title}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
