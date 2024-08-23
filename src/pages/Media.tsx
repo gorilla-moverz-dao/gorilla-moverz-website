@@ -64,6 +64,12 @@ function Media() {
       url: "https://www.youtube.com/embed/OydX5_kQG-M?si=ji_k772KbNph4F3i",
       preview: "https://img.youtube.com/vi/OydX5_kQG-M/0.jpg",
     },
+    {
+      title: "Movecast Episode #7",
+      description: "The Keys to Business Development in web3 - Torab (Movement Labs)",
+      url: "https://www.youtube.com/embed/v7FtGKCmqxQ?si=zW0N4gbNWDNQA28t",
+      preview: "https://img.youtube.com/vi/v7FtGKCmqxQ/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
@@ -76,7 +82,7 @@ function Media() {
     <>
       <Modal size="6xl" isCentered isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent className="gorillaz-modal">
           <ModalHeader>{selectedEpisode?.description}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
@@ -102,8 +108,8 @@ function Media() {
 
       <SimpleGrid spacing={4} templateColumns="repeat(auto-fill, minmax(49%, 420px))">
         {episodes.map((episode) => (
-          <Card key={episode.url}>
-            <CardBody onClick={() => openEpisodeModal(episode)} cursor={"pointer"}>
+          <Card key={episode.url} className="gorillaz-card">
+            <CardBody onClick={() => openEpisodeModal(episode)}>
               <Image src={episode.preview}></Image>
               <Stack mt="6" spacing="3">
                 <Heading size="md" color="green.600">

@@ -48,7 +48,7 @@ function Partners() {
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent className="gorillaz-modal">
           <ModalHeader>Form submitted</ModalHeader>
           <ModalCloseButton />
           <ModalBody>

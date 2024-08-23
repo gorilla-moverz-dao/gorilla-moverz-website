@@ -54,3 +54,23 @@ p {
 h1 {
   text-shadow: 1px 1px 3px #000;
 }
+
+/* Chakra UI utilities */
+.gorillaz-modal {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(50px);
+}
+
+.gorillaz-card {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(20px);
+  border-color: rgba(255, 255, 255, 0.28) !important;
+  border-width: 1px !important;
+  border-radius: 8px !important;
+}
+
+.gorillaz-card:hover {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
