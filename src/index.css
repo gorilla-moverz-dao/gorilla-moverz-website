@@ -69,6 +69,9 @@ h1 {
   border-width: 1px !important;
   border-radius: 8px !important;
 }
+.gorillaz-card .chakra-heading {
+  text-shadow: 2px 2px 5px black;
+}
 
 .gorillaz-card:hover {
   border-color: rgba(255, 255, 255, 0.5) !important;
