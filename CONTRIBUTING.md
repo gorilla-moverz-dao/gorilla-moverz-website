@@ -91,3 +91,28 @@ Run supabase functions and run ngrok to debug it:
 ```
 ngrok http 54321
 ```
+
+## How to add a Partner NFT
+
+- Setup wallet for the allowlist manager (if own bot should be deployed for the partner)
+- Copy `/public/nfts/partner1`and adapt the images and descriptions
+- Deploy Website (to have the images available)
+- Open the form and create a partner collection: http://localhost:5173/bananas/create
+- Add the db entries for the farm (adapt the values):
+
+```
+insert into public.banana_farm_collections
+(name, slug, collection_address, discord_link, discord_guild_id)
+values
+('Banana Farmer | Gorilla Moverz', 'farmer', '0xba47e8a4111d53d81773e920b55c4152976a47ea4b002777cd81e8eb6ed9e4e2', 'https://discord.gg/uPhU2EjMEp', '1204497818987921518'),
+```
+
+```
+insert into public.banana_farm_nfts (image, collection_id, nft_number)
+SELECT
+  'partner-' || (random() * 1 + 1)::int || '.png' AS image,
+  2 as collection_id,
+  generate_series(1, 2000) as nft_number;
+```
+
+- Install the discord bot in the partners discord
