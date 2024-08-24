@@ -4,6 +4,7 @@ import {
   Flex,
   Heading,
   HStack,
+  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -91,17 +92,42 @@ function BananaFarm() {
       </Modal>
 
       <Box paddingBottom={4}>
-        <WalletSelector />
+        <HStack>
+          <img src="/images/bananafarm/banana-farm-logo.png" width={320} />
 
-        {account ? (
-          <Box paddingTop={4}>
-            <Button onClick={onOpen} colorScheme="green">
-              Open Banana Farm
-            </Button>
+          <Box>
+            {account ? (
+              <Box paddingTop={4}>
+                <Button onClick={onOpen} colorScheme="green">
+                  Open Banana Farm
+                </Button>
+              </Box>
+            ) : (
+              <>
+                <Text paddingTop={2}>Please connect your wallet to access the Banana Farm</Text>
+                <Text paddingTop={2}>
+                  Use Petra Wallet or Nightly and connect to Aptos Testnet
+                  <br /> <b>until Movement deployment is ready</b>
+                </Text>
+              </>
+            )}
+
+            <Text paddingTop={2}>
+              🎬{" "}
+              <Link
+                isExternal
+                href="https://www.youtube.com/watch?v=PjMEkM_0yog&lc=Ugx8JA7BEGUaUd_wLX54AaABAg"
+                target="_blank"
+              >
+                <b>View How to Video</b>
+              </Link>
+            </Text>
+
+            <Box paddingTop={4}>
+              <WalletSelector />
+            </Box>
           </Box>
-        ) : (
-          <Text paddingTop={4}>Please connect your wallet to access the Banana Farm</Text>
-        )}
+        </HStack>
       </Box>
     </div>
   );
