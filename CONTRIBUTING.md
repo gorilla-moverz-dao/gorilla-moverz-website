@@ -1,37 +1,50 @@
 # Contributing to Banana Farm
 
+## Mission
+
+Welcome to Banana Farm! Our mission is to create an engaging farming experience on the Movement blockchain, where users can use NFT's to farm fungible assets (Banana's) in a fun way. We aim to build a robust ecosystem that empowers users and developers alike. Contributions should focus on enhancing the user experience, improving the security and scalability of the platform, and expanding the functionality of the Banana Farm ecosystem.
+
 ## Prerequisites
 
-- APTOS CLI: https://aptos.dev/en/build/cli
-- Supabase: https://supabase.com/docs/guides/cli/getting-started
-- ngrok: https://ngrok.com/ (To debug the discord bot)
-- npm
+- [APTOS CLI](https://aptos.dev/en/build/cli)
+- [Supabase](https://supabase.com/docs/guides/cli/getting-started)
+- [ngrok](https://ngrok.com/) - To debug the discord bot
+- [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 
 ## Getting started
 
-- Run `npm install` to install node packages
+1. Clone the repository and navigate to the project directory.
+2.  Run `npm install` to install node packages
 
 ## Deploy contracts and setup data
 
-To deploy the contracts, initalize a config first (use Aptos Testnet for now) and deploys the contracts.
+To deploy the contracts and set up the necessary data:
 
+1. Navigate to the contract directory:
 ```
 cd move/banana
+```
+
+2. Initialize your Aptos configuration. This will generate a new wallet and private key.
+```
 aptos init
+```
+
+3. Copy the generated account address to  the move.toml file.
+
+4. Deploy the contracts:
+```
 aptos move deploy
 ```
 
-TODO: Check Move.toml
-
-This creates a new wallet.
-
-Then run the setup script in the main directly:
+5. Navigate back to the project root and run the setup script:
 
 ```
+cd ../..
 npm run deploy:bananafarm
 ```
 
-This does the following:
+This script does the following:
 
 - Mints the banana token and sends it to the admin
 - Deposits the minted bananas into the banana farm treasury
@@ -39,13 +52,11 @@ This does the following:
 - Creates a Partner Collection
 
 -> Save the console output. We need the generated collectionIds to update the src/constants.ts and the supabase/seed.sql
-TODO: Explain exactly what to do or automate it.
+// TODO: Explain exactly what to do or automate it.
 
 ## Setup discord bot
 
-Follow https://supabase.com/docs/guides/functions/examples/discord-bot
-
-Use the following command to setup the slash commands (instead of the command in the tutorial):
+Follow the steps in [this Supabase Discord Bot tutorial](https://supabase.com/docs/guides/functions/examples/discord-bot), but with the following command to setup the slash commands (instead of the command in the tutorial):
 
 ```
 BOT_TOKEN='replace_me_with_bot_token'
@@ -59,9 +70,9 @@ curl -X POST \
 
 ## Setup local Supabase
 
-Start https://supabase.com/docs/guides/cli/local-development#start-supabase-services
+Follow [the Supabase Services tutorial](https://supabase.com/docs/guides/cli/local-development#start-supabase-services) and add the following steps after:
 
-Create supabase/.env.local file and adapt it
+1. Create supabase/.env.local file and adapt it
 
 ```
 DISCORD_BOT_TOKEN=
@@ -71,7 +82,7 @@ APTOS_PK=[Private Key of the allowlist manager: Should not be the admin of the c
 ACCOUNT_ADDRESS=[The account address the banana farm is deployed]
 ```
 
-Run it
+2. Run it
 
 ```
 supabase start
@@ -80,6 +91,7 @@ supabase functions serve --env-file ./supabase/.env.local
 
 ## Run dApp
 
+To start the frontend of the dApp:
 ```
 npm run dev
 ```
@@ -87,18 +99,22 @@ npm run dev
 ## Debug Discord Bot
 
 Run supabase functions and run ngrok to debug it:
-
+// TODO: should there also be a command for `Run supabase functions`?
 ```
 ngrok http 54321
 ```
 
 ## How to add a Partner NFT
 
-- Setup wallet for the allowlist manager (if own bot should be deployed for the partner)
-- Copy `/public/nfts/partner1`and adapt the images and descriptions
-- Deploy Website (to have the images available)
-- Open the form and create a partner collection: http://localhost:5173/bananas/create
-- Add the db entries for the farm (adapt the values):
+1. Setup wallet for the allowlist manager (if own bot should be deployed for the partner)
+
+2. Copy `/public/nfts/partner1`and adapt the images and descriptions
+
+3. Deploy Website (to have the images available)
+
+4. Open the form and create a partner collection: http://localhost:5173/bananas/create
+
+5. Add the db entries for the farm (adapt the values):
 
 ```
 insert into public.banana_farm_collections
@@ -115,4 +131,4 @@ SELECT
   generate_series(1, 2000) as nft_number;
 ```
 
-- Install the discord bot in the partners discord
+6. Install the discord bot in the partners discord
