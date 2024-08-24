@@ -148,6 +148,12 @@ function Partners() {
               <img style={{ maxWidth: "300px", width: "300px" }} src="/partners/satay.svg" alt="Satay Finance" />
             </Link>
           </GridItem>
+
+          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
+            <Link href="https://www.movewiffrens.xyz/" target="_blank" isExternal>
+              <img style={{ maxWidth: "300px", width: "300px" }} src="/partners/movewiffrens.svg" alt="Movewiffrends" />
+            </Link>
+          </GridItem>
         </SimpleGrid>
 
         <PageTitle size="lg" paddingTop={12}>
