@@ -47,7 +47,7 @@ async function home(request: Request) {
     if (transactionResult.success) {
       await supabaseClient.from("banana_farm_allowlist").insert({
         discord_user_id: post.member.user.id,
-        discord_user_name: post.member.user.id,
+        discord_user_name: post.member.user.username,
         wallet_address: address,
         guild_id: post.guild_id,
       });
