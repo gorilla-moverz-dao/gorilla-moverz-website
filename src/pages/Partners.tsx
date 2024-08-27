@@ -48,7 +48,7 @@ function Partners() {
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent className="gorillaz-modal">
           <ModalHeader>Form submitted</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
@@ -146,6 +146,12 @@ function Partners() {
           <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
             <Link href="https://www.satay.finance/" target="_blank" isExternal>
               <img style={{ maxWidth: "300px", width: "300px" }} src="/partners/satay.svg" alt="Satay Finance" />
+            </Link>
+          </GridItem>
+
+          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
+            <Link href="https://www.movewiffrens.xyz/" target="_blank" isExternal>
+              <img style={{ maxWidth: "300px", width: "300px" }} src="/partners/movewiffrens.svg" alt="Movewiffrends" />
             </Link>
           </GridItem>
         </SimpleGrid>

@@ -24,16 +24,8 @@ function FarmPartners() {
       <SimpleGrid spacing={4} templateColumns="repeat(auto-fill, minmax(30%, 320px))">
         {collections?.map((collection) => (
           <Link key={collection.id} to={`./?collectionId=${collection.collection_address}`}>
-            <Card
-              key={collection.id}
-              style={{
-                backdropFilter: "blur(20px)",
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                border: "1px solid rgba(255, 255, 255, 0.28)",
-                borderRadius: 8,
-              }}
-            >
-              <CardBody cursor={"pointer"}>
+            <Card key={collection.id} className="gorillaz-card">
+              <CardBody>
                 <Image src={`/nfts/${collection.slug}/collection.png`}></Image>
                 <Stack mt="6" spacing="3">
                   <Heading size="md" color="green.600">
