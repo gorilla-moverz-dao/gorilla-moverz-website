@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/react";
 import { NavLink, Outlet } from "react-router-dom";
 import {
   Box,
@@ -100,6 +101,7 @@ function Layout() {
             <BoxBlurred>
               <Box padding={4}>
                 <Outlet />
+                <Analytics />
               </Box>
             </BoxBlurred>
           </Box>
