@@ -21,17 +21,17 @@
 
 # Diagram
 
-![diagram](assets/diagram.png)
+![diagram](public/assets/diagram.png)
 
 # Screenshots
 
-| Main page                    | Mint Farmer NFT               |
+| Main page                    | Partner NFT overview               |
 | --------------------------------- | --------------------------------- |
-| ![screenshot 1](public/screenshots/banana1.png) | ![screenshot 2](public/screenshots/banana2.png) |
+| ![screenshot 1](public/screenshots/banana1.png) | ![screenshot 2](public/screenshots/banana5.png) |
 
-| Farmer NFT mint3ed                       | Farming bananas                      |
+| Farmer NFT minted                       | Farming bananas                      |
 | --------------------------------- | --------------------------------- |
-| ![screenshot 3](public/screenshots/banana3.png) | ![screenshot 4](public/screenshots/banana4.png) |
+| ![screenshot 3](public/screenshots/banana6.png) | ![screenshot 4](public/screenshots/banana3.png) |
 
 
 # Local Development
@@ -44,6 +44,7 @@ We completed everything we set out to do for the scope of this hackathon. Any ad
 
 # Links 
 - [Website](https://gorilla-moverz.xyz)
+- [Deployed Move Module](https://explorer.aptoslabs.com/account/0x054211d69a169a86cb370b0492a20382160c5cb62f3a0524c15f2678c20a7c1e/modules/code/banana?network=testnet)
 - [Github](https://github.com/gorilla-moverz-dao/gorilla-moverz-website/)
 - [Demo video](https://www.youtube.com/watch?v=PjMEkM_0yog)
 
