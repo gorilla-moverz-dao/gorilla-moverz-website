@@ -32,6 +32,10 @@
 | ----------------------------------------------- | ----------------------------------------------- |
 | ![screenshot 3](public/screenshots/banana6.png) | ![screenshot 4](public/screenshots/banana3.png) |
 
+# Component Overview
+
+An overview of the main components can be found in [COMPONENTS.md](COMPONENTS.md).
+
 # Local Development
 
 The instructions to setup a local environment for the Banana farm can be found in [CONTRIBUTING.md](CONTRIBUTING.md). This also includes the steps needed to add a Partner NFT.
