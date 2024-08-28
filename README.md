@@ -32,6 +32,10 @@
 | ----------------------------------------------- | ----------------------------------------------- |
 | ![screenshot 3](public/screenshots/banana6.png) | ![screenshot 4](public/screenshots/banana3.png) |
 
+# Component Overview
+
+An overview of the main components can be found in [COMPONENTS.md](COMPONENTS.md).
+
 # Local Development
 
 The instructions to setup a local environment for the Banana farm can be found in [CONTRIBUTING.md](CONTRIBUTING.md). This also includes the steps needed to add a Partner NFT.
@@ -44,7 +48,6 @@ We completed everything we set out to do for the scope of this hackathon. Any ad
 
 - [Website](https://gorilla-moverz.xyz)
 - [Deployed Move Module](https://explorer.aptoslabs.com/account/0x054211d69a169a86cb370b0492a20382160c5cb62f3a0524c15f2678c20a7c1e/modules/code/banana?network=testnet)
-- [Gitbook documentation](https://arjanjohan.gitbook.io/banana-farm)
 - [Github](https://github.com/gorilla-moverz-dao/gorilla-moverz-website/)
 - [Demo video](https://www.youtube.com/watch?v=PjMEkM_0yog)
 
