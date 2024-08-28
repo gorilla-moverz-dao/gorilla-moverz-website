@@ -11,6 +11,15 @@ It uses:
 - SupabaseJS to fetch data from the database
 - Tanstack React Query to fetch and cache data
 
+## Move Modules
+
+- [banana.move](move/banana/sources/banana.move) Banana coin as a fungible asset
+- [launchpad.move](move/banana/sources/launchpad.move) NFT launchpad to create collections and mint NFTs
+- [banana_farm.move](move/banana/sources/banana_farm.move)
+  - Banana farm that holds the bananas in treasury.
+  - Has a farm() function that verifies the possession of the farmer & partner nfts and gives the players banana coins after a timeout that can be controlled by the admin.
+  - When distributing coins it locks the banana coins in players wallet, so it can't be transferred to other wallets (and cheat the leaderboard)
+
 ## Setup script
 
 Setup script to run after deploying the Smart Contracts:
@@ -38,7 +47,7 @@ The supabase database contains the following tables:
 
 ## Supabase edge functions
 
-- [discord-nft-allowlist](supabase/functions/discord-nft-allowlist/) Hosts the discord bot to put addresses to the allowlist (async, calls nft-allowlist to do the actual job), because the bot need to respond within 3 seconds. Only pre-checks are done here.
+- [discord-nft-allowlist](supabase/functions/discord-nft-allowlist/) Hosts the discord bot to put addresses to the allowlist (async, calls nft-allowlist to do the actual job), because the bot needs to respond within 3 seconds. Only pre-checks are done here.
 - [nft-allowlist](supabase/functions//nft-allowlist/) Puts addresses to the allowlist (uses the Aptos TS Client to interact with the allowlist)
 - [discord-webhook](supabase/functions/discord-webhook/) Webhook that is called when inserting data into the partner table. Posts a message to a discord channel to infom about new partner requests
 - [nft-banana-farmer](supabase/functions/nft-banana-farmer/) Serves the NFT metadata. Served here to easy extend. Can be replaced with IPFS or similar for mainnet.
