@@ -2,7 +2,7 @@
 
 <h4 align="center">
   <a href="https://gorilla-moverz.xyz">Website</a> | 
-  <a href="https://www.youtube.com/watch?v=PjMEkM_0yog">Demo video</a>
+  <a href="https://www.youtube.com/watch?v=C_ahuRpoStU">Demo video</a>
 
 ![logo](public/images/bananafarm/banana-farm-logo.png)
 
@@ -49,7 +49,7 @@ We completed everything we set out to do for the scope of this hackathon. Any ad
 - [Website](https://gorilla-moverz.xyz)
 - [Deployed Move Module](https://explorer.aptoslabs.com/account/0x054211d69a169a86cb370b0492a20382160c5cb62f3a0524c15f2678c20a7c1e/modules/code/banana?network=testnet)
 - [Github](https://github.com/gorilla-moverz-dao/gorilla-moverz-website/)
-- [Demo video](https://www.youtube.com/watch?v=PjMEkM_0yog)
+- [Demo video](https://www.youtube.com/watch?v=C_ahuRpoStU)
 
 # Team
 
