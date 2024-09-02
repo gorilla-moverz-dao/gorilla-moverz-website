@@ -109,6 +109,7 @@ async function blockMultipleEntries(guild_id: string, column: "discord_user_id" 
     .select("*")
     .eq("guild_id", guild_id)
     .eq(column, value)
+    .eq("deleted", false)
     .maybeSingle();
   if (error) {
     throw new Error(error.message);

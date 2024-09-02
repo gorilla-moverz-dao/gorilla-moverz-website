@@ -37,6 +37,7 @@ export type Database = {
       banana_farm_allowlist: {
         Row: {
           created_at: string
+          deleted: boolean
           discord_user_id: string
           discord_user_name: string
           guild_id: string
@@ -45,6 +46,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          deleted?: boolean
           discord_user_id: string
           discord_user_name: string
           guild_id: string
@@ -53,6 +55,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          deleted?: boolean
           discord_user_id?: string
           discord_user_name?: string
           guild_id?: string
