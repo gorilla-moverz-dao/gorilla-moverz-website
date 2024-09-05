@@ -1,14 +1,13 @@
-import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { MODULE_ADDRESS } from "../../constants";
-import { aptosClient, createEntryPayload, launchpadABI } from "../../services/movement-client";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Box, Button, FormControl, FormErrorMessage, FormLabel, Input, Textarea } from "@chakra-ui/react";
 import { dateToSeconds } from "../../helpers/date-functions";
 import BoxBlurred from "../BoxBlurred";
+import useMovement from "../../hooks/useMovement";
 
-export const CreateCollectionSchema = z.object({
+const CreateCollectionSchema = z.object({
   collectionName: z.string().min(1, { message: "Field is required" }),
   collectionDescription: z.string().min(1, { message: "Field is required" }),
   projectUri: z.string().min(1, { message: "Field is required" }),
@@ -16,10 +15,10 @@ export const CreateCollectionSchema = z.object({
   allowlistManager: z.string().min(1, { message: "Field is required" }),
 });
 
-export type CreateCollection = z.infer<typeof CreateCollectionSchema>;
+type CreateCollection = z.infer<typeof CreateCollectionSchema>;
 
 function FarmCreateCollection() {
-  const { account, signAndSubmitTransaction } = useWallet();
+  const { address, signAndAwaitTransaction, createEntryPayload, launchpadABI } = useMovement();
   const {
     register,
     handleSubmit,
@@ -30,16 +29,16 @@ function FarmCreateCollection() {
 
   const createCollection = async (collection: CreateCollection) => {
     try {
-      if (!account) throw new Error("Please connect your wallet");
-      if (account.address !== "0x" + MODULE_ADDRESS) throw new Error("Wrong account");
+      if (!address) throw new Error("Please connect your wallet");
+      if (address !== "0x" + MODULE_ADDRESS) throw new Error("Wrong account");
 
       const mintFeePerNFT = 0;
       const mintLimitPerAccount = 1;
       const preMintAmount = 0;
       const royaltyPercentage = 0;
 
-      const response = await signAndSubmitTransaction({
-        data: createEntryPayload(launchpadABI, {
+      const response = await signAndAwaitTransaction(
+        createEntryPayload(launchpadABI, {
           function: `create_collection`,
           typeArguments: [],
           functionArguments: [
@@ -61,12 +60,8 @@ function FarmCreateCollection() {
             mintFeePerNFT,
           ],
         }),
-      });
-
-      const committedTransactionResponse = await aptosClient.waitForTransaction({
-        transactionHash: response.hash,
-      });
-      if (committedTransactionResponse.success) {
+      );
+      if (response.success) {
         alert("Collection created successfully");
       }
     } catch (error) {

@@ -4,13 +4,12 @@ import PageTitle from "../PageTitle";
 import FarmCollectionMint from "./FarmCollectionMint";
 import { useEffect, useState } from "react";
 import Assets from "../Assets";
-import { useWallet } from "@aptos-labs/wallet-adapter-react";
-import useContractClient from "../../hooks/useContracts";
 import useAssets from "../../hooks/useAssets";
 import useFarmData from "./useFarmData";
 import FarmCountdown from "./FarmCountdown";
 import useFarmCollection from "./useFarmCollection";
 import BoxBlurred from "../BoxBlurred";
+import useBananaFarm from "../../hooks/useBananaFarm";
 
 interface Props {
   collectionId: `0x${string}`;
@@ -18,12 +17,11 @@ interface Props {
 }
 
 function FarmerOverview({ collectionId, enableFarming }: Props) {
-  const { account } = useWallet();
   const { data: ownedNFTs, isLoading } = useFarmOwnedNFTs();
   const farmerNFT = ownedNFTs?.find((nft) => nft.current_token_data.collection_id === collectionId);
   const [imageUrl, setImageUrl] = useState<string>("");
 
-  const contractClient = useContractClient();
+  const { address, farm } = useBananaFarm();
   const { refetch: refetchAssets } = useAssets();
   const toast = useToast();
 
@@ -31,9 +29,9 @@ function FarmerOverview({ collectionId, enableFarming }: Props) {
 
   const collection = useFarmCollection(collectionId);
 
-  const farm = async (farmerNFT: `0x${string}`, partnerNFTs: `0x${string}`[]) => {
+  const farmNFT = async (farmerNFT: `0x${string}`, partnerNFTs: `0x${string}`[]) => {
     try {
-      const amount = await contractClient.farm(farmerNFT, partnerNFTs);
+      const amount = await farm(farmerNFT, partnerNFTs);
       refetchFarmed();
 
       toast({
@@ -108,10 +106,10 @@ function FarmerOverview({ collectionId, enableFarming }: Props) {
 
                 {enableFarming ? (
                   <>
-                    {account && farmed_data && (
+                    {address && farmed_data && (
                       <Box paddingTop={4}>
                         <Button
-                          onClick={() => farm(farmerNFT.current_token_data.token_data_id, partnerNFTIds)}
+                          onClick={() => farmNFT(farmerNFT.current_token_data.token_data_id, partnerNFTIds)}
                           colorScheme={farmed_data.remainingTime > 0 ? "gray" : "green"}
                           disabled={farmed_data.remainingTime > 0}
                         >

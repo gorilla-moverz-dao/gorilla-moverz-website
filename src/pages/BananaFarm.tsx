@@ -18,13 +18,13 @@ import {
 import { WalletSelector } from "../components/WalletSelector";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { MODULE_ADDRESS } from "../constants";
 import FarmParallax from "../components/banana-farm/FarmParallax";
+import useMovement from "../hooks/useMovement";
 
 function BananaFarm() {
   const navigate = useNavigate();
-  const { account } = useWallet();
+  const { address } = useMovement();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const navigationItems = [
@@ -33,16 +33,16 @@ function BananaFarm() {
     { id: "leaderboard", name: "Leaderboard" },
   ];
 
-  if (account?.address === "0x" + MODULE_ADDRESS) {
+  if (address === "0x" + MODULE_ADDRESS) {
     navigationItems.push({ id: "create", name: "Create collection" });
   }
   const activeNavigation = navigationItems.find((tab) => window.location.pathname.includes(`bananas/${tab.id}`));
 
   useEffect(() => {
-    if (account?.address) {
+    if (address) {
       onOpen();
     }
-  }, [account]);
+  }, [address]);
 
   return (
     <div>
@@ -96,7 +96,7 @@ function BananaFarm() {
           <img src="/images/bananafarm/banana-farm-logo.png" width={320} />
 
           <Box>
-            {account ? (
+            {address ? (
               <Box paddingTop={4}>
                 <Button onClick={onOpen} colorScheme="green">
                   Open Banana Farm

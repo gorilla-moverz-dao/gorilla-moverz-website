@@ -1,14 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import useContractClient from "./useContracts";
-import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import useMovement from "./useMovement";
 
 const useAssets = () => {
-  const contractClient = useContractClient();
-  const { account } = useWallet();
+  const { address, getAccountCoinsData } = useMovement();
 
   return useQuery({
-    queryKey: ["assets", account?.address],
-    queryFn: () => contractClient.getAccountCoinsData(),
+    queryKey: ["assets", address],
+    queryFn: () => getAccountCoinsData(),
     enabled: true,
   });
 };
