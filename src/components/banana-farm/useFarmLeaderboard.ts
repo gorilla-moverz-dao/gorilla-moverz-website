@@ -1,4 +1,4 @@
-import movementClient from "../../services/movement-client";
+import { aptosClient } from "../../services/movement-client";
 import { useQuery } from "@tanstack/react-query";
 import { BANANA_CONTRACT_ADDRESS, EXCLUDE_LEADERBOARD } from "../../constants";
 
@@ -17,7 +17,7 @@ export function useFarmLeaderboard() {
     refetchInterval: 1000 * 30,
     queryFn: async () => {
       try {
-        const res = await movementClient.queryIndexer<NFTsQueryResult>({
+        const res = await aptosClient.queryIndexer<NFTsQueryResult>({
           query: {
             variables: {
               asset_type: BANANA_CONTRACT_ADDRESS,

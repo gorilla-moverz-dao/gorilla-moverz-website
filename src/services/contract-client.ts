@@ -1,17 +1,14 @@
-import { InputTransactionData, WalletContextState } from "@aptos-labs/wallet-adapter-react";
-import movementClient from "../services/movement-client";
-import { MODULE_ADDRESS } from "../constants";
+import { WalletContextState } from "@aptos-labs/wallet-adapter-react";
+import { aptosClient, bananaFarmABI, bananaFarmClient, createEntryPayload } from "../services/movement-client";
 import { UserTransactionResponse } from "@aptos-labs/ts-sdk";
 
 export class ContractClient {
-  accountAddress?: string;
+  accountAddress?: `0x${string}`;
   signAndSubmitTransaction: WalletContextState["signAndSubmitTransaction"] =
     {} as WalletContextState["signAndSubmitTransaction"];
 
-  private bananaFarm = `${MODULE_ADDRESS}::banana_farm` as const;
-
   async getTokenBalance(address: string, assetType: string) {
-    const data = await movementClient.getCurrentFungibleAssetBalances({
+    const data = await aptosClient.getCurrentFungibleAssetBalances({
       options: {
         where: {
           owner_address: { _eq: address },
@@ -25,38 +22,21 @@ export class ContractClient {
   async getAccountCoinsData() {
     if (!this.accountAddress) return [];
 
-    const tokens = await movementClient.getAccountCoinsData({
+    const tokens = await aptosClient.getAccountCoinsData({
       accountAddress: this.accountAddress,
     });
     return tokens;
   }
 
-  async mint(type: string, amount: number) {
-    const transaction: InputTransactionData = {
-      data: {
-        function: `${MODULE_ADDRESS}::${type}::mint`,
-        functionArguments: [this.accountAddress, (amount * Math.pow(10, 9)).toString()],
-      },
-    };
-
-    const response = await this.signAndSubmitTransaction(transaction);
-    const r = await movementClient.waitForTransaction({
-      transactionHash: response.hash,
-    });
-
-    return r;
-  }
-
-  async farm(nft: string, partnerNfts: string[]) {
-    const transaction: InputTransactionData = {
-      data: {
-        function: `${this.bananaFarm}::farm`,
+  async farm(nft: `0x${string}`, partnerNfts: `0x${string}`[]) {
+    const response = await this.signAndSubmitTransaction({
+      data: createEntryPayload(bananaFarmABI, {
+        function: "farm",
         functionArguments: [nft, partnerNfts],
-      },
-    };
-
-    const response = await this.signAndSubmitTransaction(transaction);
-    const r = (await movementClient.waitForTransaction({
+        typeArguments: [],
+      }),
+    });
+    const r = (await aptosClient.waitForTransaction({
       transactionHash: response.hash,
     })) as UserTransactionResponse;
 
@@ -66,33 +46,27 @@ export class ContractClient {
   }
 
   async getTreasuryTimeout() {
-    const response = await movementClient.view<[string]>({
-      payload: {
-        function: `${this.bananaFarm}::get_treasury_timeout`,
-        functionArguments: [],
-      },
+    const response = await bananaFarmClient.view.get_treasury_timeout({
+      typeArguments: [],
+      functionArguments: [],
     });
 
     return parseInt(response[0]);
   }
 
   async getCollectionAddress() {
-    const response = await movementClient.view<[string]>({
-      payload: {
-        function: `${this.bananaFarm}::collection_address`,
-        functionArguments: [],
-      },
+    const response = await bananaFarmClient.view.collection_address({
+      typeArguments: [],
+      functionArguments: [],
     });
 
     return response[0];
   }
 
   async getLastFarmed() {
-    const response = await movementClient.view<[string]>({
-      payload: {
-        function: `${this.bananaFarm}::last_farmed`,
-        functionArguments: [this.accountAddress],
-      },
+    const response = await bananaFarmClient.view.last_farmed({
+      typeArguments: [],
+      functionArguments: [this.accountAddress!],
     });
     return response[0];
   }

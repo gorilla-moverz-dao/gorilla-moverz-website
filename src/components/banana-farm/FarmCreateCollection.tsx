@@ -1,6 +1,6 @@
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { MODULE_ADDRESS } from "../../constants";
-import movementClient from "../../services/movement-client";
+import { aptosClient, createEntryPayload, launchpadABI } from "../../services/movement-client";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -23,7 +23,6 @@ function FarmCreateCollection() {
   const {
     register,
     handleSubmit,
-    // reset,
     formState: { errors, isValid },
   } = useForm<CreateCollection>({
     resolver: zodResolver(CreateCollectionSchema),
@@ -40,8 +39,8 @@ function FarmCreateCollection() {
       const royaltyPercentage = 0;
 
       const response = await signAndSubmitTransaction({
-        data: {
-          function: `${MODULE_ADDRESS}::launchpad::create_collection`,
+        data: createEntryPayload(launchpadABI, {
+          function: `create_collection`,
           typeArguments: [],
           functionArguments: [
             collection.collectionDescription,
@@ -50,21 +49,21 @@ function FarmCreateCollection() {
             collection.maxSupply,
             royaltyPercentage,
             preMintAmount, // amount of NFT to pre-mint for myself
-            [MODULE_ADDRESS], // addresses in the allow list
+            [`0x${MODULE_ADDRESS}`], // addresses in the allow list
             dateToSeconds(new Date()), // allow list start time (in seconds)
             dateToSeconds(new Date(2026, 1, 1)), // allow list end time (in seconds)
             mintLimitPerAccount, // mint limit per address in the allow list
             undefined, // mint fee per NFT for the allow list
-            collection.allowlistManager,
+            collection.allowlistManager as `0x${string}`,
             undefined, // public mint start time (in seconds)
             undefined, // public mint end time (in seconds)
             mintLimitPerAccount, // mint limit per address in the public mint
             mintFeePerNFT,
           ],
-        },
+        }),
       });
 
-      const committedTransactionResponse = await movementClient.waitForTransaction({
+      const committedTransactionResponse = await aptosClient.waitForTransaction({
         transactionHash: response.hash,
       });
       if (committedTransactionResponse.success) {

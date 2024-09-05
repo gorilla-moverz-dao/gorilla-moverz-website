@@ -1,5 +1,5 @@
 import { FC, FormEvent, useState } from "react";
-import { InputTransactionData, truncateAddress, useWallet } from "@aptos-labs/wallet-adapter-react";
+import { truncateAddress, useWallet } from "@aptos-labs/wallet-adapter-react";
 import { useMintData } from "../../hooks/useMintData";
 import {
   Box,
@@ -13,8 +13,8 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import movementClient from "../../services/movement-client";
-import { MODULE_ADDRESS, NETWORK } from "../../constants";
+import { aptosClient, createEntryPayload, launchpadABI } from "../../services/movement-client";
+import { NETWORK } from "../../constants";
 import { formatDate } from "../../helpers/date-functions";
 import { clampNumber } from "../../helpers/clampNumber";
 import { FaCopy, FaLink } from "react-icons/fa6";
@@ -25,7 +25,7 @@ import BoxBlurred from "../BoxBlurred";
 import FarmAlert from "./FarmAlert";
 
 interface Props {
-  collectionId: string;
+  collectionId: `0x${string}`;
 }
 
 function FarmCollectionMint({ collectionId }: Props) {
@@ -51,14 +51,14 @@ function FarmCollectionMint({ collectionId }: Props) {
     e.preventDefault();
     if (!account || !data?.isMintActive) return;
 
-    const transaction: InputTransactionData = {
-      data: {
-        function: `${MODULE_ADDRESS}::launchpad::mint_nft`,
+    const response = await signAndSubmitTransaction({
+      data: createEntryPayload(launchpadABI, {
+        function: "mint_nft",
         functionArguments: [collection?.collection_id, 1],
-      },
-    };
-    const response = await signAndSubmitTransaction(transaction);
-    await movementClient.waitForTransaction({ transactionHash: response.hash });
+        typeArguments: [],
+      }),
+    });
+    await aptosClient.waitForTransaction({ transactionHash: response.hash });
     refetchOwned();
     refetchMint();
   };

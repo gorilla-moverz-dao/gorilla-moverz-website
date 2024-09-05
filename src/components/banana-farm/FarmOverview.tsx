@@ -13,7 +13,7 @@ import useFarmCollection from "./useFarmCollection";
 import BoxBlurred from "../BoxBlurred";
 
 interface Props {
-  collectionId: string;
+  collectionId: `0x${string}`;
   enableFarming: boolean;
 }
 
@@ -31,7 +31,7 @@ function FarmerOverview({ collectionId, enableFarming }: Props) {
 
   const collection = useFarmCollection(collectionId);
 
-  const withdraw = async (farmerNFT: string, partnerNFTs: string[]) => {
+  const farm = async (farmerNFT: `0x${string}`, partnerNFTs: `0x${string}`[]) => {
     try {
       const amount = await contractClient.farm(farmerNFT, partnerNFTs);
       refetchFarmed();
@@ -111,7 +111,7 @@ function FarmerOverview({ collectionId, enableFarming }: Props) {
                     {account && farmed_data && (
                       <Box paddingTop={4}>
                         <Button
-                          onClick={() => withdraw(farmerNFT.current_token_data.token_data_id, partnerNFTIds)}
+                          onClick={() => farm(farmerNFT.current_token_data.token_data_id, partnerNFTIds)}
                           colorScheme={farmed_data.remainingTime > 0 ? "gray" : "green"}
                           disabled={farmed_data.remainingTime > 0}
                         >

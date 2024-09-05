@@ -1,7 +1,5 @@
-import movementClient from "../services/movement-client";
-import { AccountAddress } from "@aptos-labs/ts-sdk";
+import { launchpadClient, aptosClient } from "../services/movement-client";
 import { useQuery } from "@tanstack/react-query";
-import { MODULE_ADDRESS } from "../constants";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 
 export interface Token {
@@ -15,7 +13,7 @@ export interface Token {
 
 export interface Collection {
   creator_address: string;
-  collection_id: string;
+  collection_id: `0x${string}`;
   collection_name: string;
   current_supply: number;
   max_supply: number;
@@ -54,21 +52,17 @@ interface MintData {
   isAllowlisted: boolean;
 }
 
-async function getStartAndEndTime(collection_id: string) {
-  const mintStageRes = await movementClient.view<[{ vec: [string] }]>({
-    payload: {
-      function: `${AccountAddress.from(MODULE_ADDRESS)}::launchpad::get_active_or_next_mint_stage`,
-      functionArguments: [collection_id],
-    },
+async function getStartAndEndTime(collection_id: `0x${string}`) {
+  const mintStageRes = await launchpadClient.view.get_active_or_next_mint_stage({
+    typeArguments: [],
+    functionArguments: [collection_id],
   });
 
   const mintStage = mintStageRes[0].vec[0];
 
-  const startAndEndRes = await movementClient.view<[string, string]>({
-    payload: {
-      function: `${AccountAddress.from(MODULE_ADDRESS)}::launchpad::get_mint_stage_start_and_end_time`,
-      functionArguments: [collection_id, mintStage],
-    },
+  const startAndEndRes = await launchpadClient.view.get_mint_stage_start_and_end_time({
+    typeArguments: [],
+    functionArguments: [collection_id, mintStage as string],
   });
 
   const [start, end] = startAndEndRes;
@@ -81,18 +75,16 @@ async function getStartAndEndTime(collection_id: string) {
   };
 }
 
-async function getIsAllowlisted(address: string, collection_id: string) {
+async function getIsAllowlisted(address: `0x${string}`, collection_id: `0x${string}`) {
   return (
-    await movementClient.view<[boolean]>({
-      payload: {
-        function: `${AccountAddress.from(MODULE_ADDRESS)}::launchpad::is_allowlisted`,
-        functionArguments: [address, collection_id],
-      },
+    await launchpadClient.view.is_allowlisted({
+      functionArguments: [address, collection_id],
+      typeArguments: [],
     })
   )[0];
 }
 
-export function useMintData(collection_id: string) {
+export function useMintData(collection_id: `0x${string}`) {
   const { account } = useWallet();
   const address = account?.address;
 
@@ -105,9 +97,9 @@ export function useMintData(collection_id: string) {
 
         const { startDate, endDate, isMintInfinite } = await getStartAndEndTime(collection_id);
 
-        const isAllowlisted = address ? await getIsAllowlisted(address, collection_id) : false;
+        const isAllowlisted = address ? await getIsAllowlisted(address as `0x${string}`, collection_id) : false;
 
-        const res = await movementClient.queryIndexer<MintQueryResult>({
+        const res = await aptosClient.queryIndexer<MintQueryResult>({
           query: {
             variables: {
               collection_id,

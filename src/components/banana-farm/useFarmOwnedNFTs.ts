@@ -1,4 +1,4 @@
-import movementClient from "../../services/movement-client";
+import { aptosClient } from "../../services/movement-client";
 import { useQuery } from "@tanstack/react-query";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import useFarmCollections from "./useFarmCollections";
@@ -6,7 +6,7 @@ import useFarmCollections from "./useFarmCollections";
 export interface Token {
   token_name: string;
   description: string;
-  token_data_id: string;
+  token_data_id: `0x${string}`;
   token_uri: string;
   collection_id: string;
   current_collection: {
@@ -45,7 +45,7 @@ export function useFarmOwnedNFTs() {
 
         const collectionIds = collections?.map((collection) => collection.collection_address);
 
-        const res = await movementClient.queryIndexer<NFTsQueryResult>({
+        const res = await aptosClient.queryIndexer<NFTsQueryResult>({
           query: {
             variables: {
               address: account?.address,
