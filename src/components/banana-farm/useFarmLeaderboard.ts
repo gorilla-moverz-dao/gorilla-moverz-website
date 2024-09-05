@@ -1,6 +1,6 @@
-import movementClient from "../../services/movement-client";
 import { useQuery } from "@tanstack/react-query";
 import { BANANA_CONTRACT_ADDRESS, EXCLUDE_LEADERBOARD } from "../../constants";
+import useMovement from "../../hooks/useMovement";
 
 export interface CurrentTokenData {
   owner_address: string;
@@ -12,12 +12,14 @@ interface NFTsQueryResult {
 }
 
 export function useFarmLeaderboard() {
+  const { queryIndexer } = useMovement();
+
   return useQuery({
     queryKey: ["leaderboard"],
     refetchInterval: 1000 * 30,
     queryFn: async () => {
       try {
-        const res = await movementClient.queryIndexer<NFTsQueryResult>({
+        const res = await queryIndexer<NFTsQueryResult>({
           query: {
             variables: {
               asset_type: BANANA_CONTRACT_ADDRESS,

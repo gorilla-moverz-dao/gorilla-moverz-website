@@ -1,12 +1,11 @@
-import movementClient from "../../services/movement-client";
 import { useQuery } from "@tanstack/react-query";
-import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import useMovement from "../../hooks/useMovement";
 import useFarmCollections from "./useFarmCollections";
 
 export interface Token {
   token_name: string;
   description: string;
-  token_data_id: string;
+  token_data_id: `0x${string}`;
   token_uri: string;
   collection_id: string;
   current_collection: {
@@ -32,23 +31,23 @@ interface NFTsQueryResult {
 }
 
 export function useFarmOwnedNFTs() {
-  const { account } = useWallet();
+  const { address, queryIndexer } = useMovement();
   const { data: collections, isLoading } = useFarmCollections();
 
   return useQuery({
-    queryKey: ["owned_nfts", account?.address],
+    queryKey: ["owned_nfts", address],
     refetchInterval: 1000 * 30,
     queryFn: async () => {
       try {
-        if (!account?.address) return null;
+        if (!address) return null;
         if (isLoading) return null;
 
         const collectionIds = collections?.map((collection) => collection.collection_address);
 
-        const res = await movementClient.queryIndexer<NFTsQueryResult>({
+        const res = await queryIndexer<NFTsQueryResult>({
           query: {
             variables: {
-              address: account?.address,
+              address,
               collectionIds,
             },
             query: `

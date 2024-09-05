@@ -1,14 +1,13 @@
-import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { MODULE_ADDRESS } from "../../constants";
-import movementClient from "../../services/movement-client";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Box, Button, FormControl, FormErrorMessage, FormLabel, Input, Textarea } from "@chakra-ui/react";
 import { dateToSeconds } from "../../helpers/date-functions";
 import BoxBlurred from "../BoxBlurred";
+import useMovement from "../../hooks/useMovement";
 
-export const CreateCollectionSchema = z.object({
+const CreateCollectionSchema = z.object({
   collectionName: z.string().min(1, { message: "Field is required" }),
   collectionDescription: z.string().min(1, { message: "Field is required" }),
   projectUri: z.string().min(1, { message: "Field is required" }),
@@ -16,14 +15,13 @@ export const CreateCollectionSchema = z.object({
   allowlistManager: z.string().min(1, { message: "Field is required" }),
 });
 
-export type CreateCollection = z.infer<typeof CreateCollectionSchema>;
+type CreateCollection = z.infer<typeof CreateCollectionSchema>;
 
 function FarmCreateCollection() {
-  const { account, signAndSubmitTransaction } = useWallet();
+  const { address, signAndAwaitTransaction, createEntryPayload, launchpadABI } = useMovement();
   const {
     register,
     handleSubmit,
-    // reset,
     formState: { errors, isValid },
   } = useForm<CreateCollection>({
     resolver: zodResolver(CreateCollectionSchema),
@@ -31,17 +29,17 @@ function FarmCreateCollection() {
 
   const createCollection = async (collection: CreateCollection) => {
     try {
-      if (!account) throw new Error("Please connect your wallet");
-      if (account.address !== "0x" + MODULE_ADDRESS) throw new Error("Wrong account");
+      if (!address) throw new Error("Please connect your wallet");
+      if (address !== "0x" + MODULE_ADDRESS) throw new Error("Wrong account");
 
       const mintFeePerNFT = 0;
       const mintLimitPerAccount = 1;
       const preMintAmount = 0;
       const royaltyPercentage = 0;
 
-      const response = await signAndSubmitTransaction({
-        data: {
-          function: `${MODULE_ADDRESS}::launchpad::create_collection`,
+      const response = await signAndAwaitTransaction(
+        createEntryPayload(launchpadABI, {
+          function: `create_collection`,
           typeArguments: [],
           functionArguments: [
             collection.collectionDescription,
@@ -50,24 +48,20 @@ function FarmCreateCollection() {
             collection.maxSupply,
             royaltyPercentage,
             preMintAmount, // amount of NFT to pre-mint for myself
-            [MODULE_ADDRESS], // addresses in the allow list
+            [`0x${MODULE_ADDRESS}`], // addresses in the allow list
             dateToSeconds(new Date()), // allow list start time (in seconds)
             dateToSeconds(new Date(2026, 1, 1)), // allow list end time (in seconds)
             mintLimitPerAccount, // mint limit per address in the allow list
             undefined, // mint fee per NFT for the allow list
-            collection.allowlistManager,
+            collection.allowlistManager as `0x${string}`,
             undefined, // public mint start time (in seconds)
             undefined, // public mint end time (in seconds)
             mintLimitPerAccount, // mint limit per address in the public mint
             mintFeePerNFT,
           ],
-        },
-      });
-
-      const committedTransactionResponse = await movementClient.waitForTransaction({
-        transactionHash: response.hash,
-      });
-      if (committedTransactionResponse.success) {
+        }),
+      );
+      if (response.success) {
         alert("Collection created successfully");
       }
     } catch (error) {
