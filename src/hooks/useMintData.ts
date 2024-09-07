@@ -53,7 +53,7 @@ interface MintData {
 }
 
 export function useMintData(collection_id: `0x${string}`) {
-  const { address, queryIndexer } = useMovement();
+  const { address, aptosClient } = useMovement();
   const { getStartAndEndTime, getIsAllowlisted } = useLaunchpad();
 
   return useQuery({
@@ -67,7 +67,7 @@ export function useMintData(collection_id: `0x${string}`) {
 
         const isAllowlisted = address ? await getIsAllowlisted(address as `0x${string}`, collection_id) : false;
 
-        const res = await queryIndexer<MintQueryResult>({
+        const res = await aptosClient.queryIndexer<MintQueryResult>({
           query: {
             variables: {
               collection_id,

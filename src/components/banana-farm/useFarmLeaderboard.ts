@@ -12,14 +12,14 @@ interface NFTsQueryResult {
 }
 
 export function useFarmLeaderboard() {
-  const { queryIndexer } = useMovement();
+  const { aptosClient } = useMovement();
 
   return useQuery({
     queryKey: ["leaderboard"],
     refetchInterval: 1000 * 30,
     queryFn: async () => {
       try {
-        const res = await queryIndexer<NFTsQueryResult>({
+        const res = await aptosClient.queryIndexer<NFTsQueryResult>({
           query: {
             variables: {
               asset_type: BANANA_CONTRACT_ADDRESS,

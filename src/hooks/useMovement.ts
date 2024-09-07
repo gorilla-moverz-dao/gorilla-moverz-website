@@ -36,7 +36,7 @@ const useMovement = () => {
     bananaFarmABI,
     launchpadClient,
     launchpadABI,
-    queryIndexer: aptosClient.queryIndexer,
+    aptosClient,
   };
 };
 

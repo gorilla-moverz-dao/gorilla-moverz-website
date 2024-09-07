@@ -31,7 +31,7 @@ interface NFTsQueryResult {
 }
 
 export function useFarmOwnedNFTs() {
-  const { address, queryIndexer } = useMovement();
+  const { address, aptosClient } = useMovement();
   const { data: collections, isLoading } = useFarmCollections();
 
   return useQuery({
@@ -44,7 +44,7 @@ export function useFarmOwnedNFTs() {
 
         const collectionIds = collections?.map((collection) => collection.collection_address);
 
-        const res = await queryIndexer<NFTsQueryResult>({
+        const res = await aptosClient.queryIndexer<NFTsQueryResult>({
           query: {
             variables: {
               address,
