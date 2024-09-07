@@ -14,7 +14,7 @@ function FarmPartners() {
   if (collectionId) {
     return (
       <div>
-        <FarmerOverview collectionId={collectionId} enableFarming={false} />
+        <FarmerOverview collectionId={collectionId as `0x${string}`} enableFarming={false} />
       </div>
     );
   }

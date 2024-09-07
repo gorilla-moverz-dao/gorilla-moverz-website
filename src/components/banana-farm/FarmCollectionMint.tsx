@@ -1,5 +1,5 @@
 import { FC, FormEvent, useState } from "react";
-import { InputTransactionData, truncateAddress, useWallet } from "@aptos-labs/wallet-adapter-react";
+import { truncateAddress } from "@aptos-labs/wallet-adapter-react";
 import { useMintData } from "../../hooks/useMintData";
 import {
   Box,
@@ -13,8 +13,7 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import movementClient from "../../services/movement-client";
-import { MODULE_ADDRESS, NETWORK } from "../../constants";
+import { NETWORK } from "../../constants";
 import { formatDate } from "../../helpers/date-functions";
 import { clampNumber } from "../../helpers/clampNumber";
 import { FaCopy, FaLink } from "react-icons/fa6";
@@ -23,14 +22,15 @@ import { WalletSelector } from "../WalletSelector";
 import useFarmCollection from "./useFarmCollection";
 import BoxBlurred from "../BoxBlurred";
 import FarmAlert from "./FarmAlert";
+import useLaunchpad from "../../hooks/useLaunchpad";
 
 interface Props {
-  collectionId: string;
+  collectionId: `0x${string}`;
 }
 
 function FarmCollectionMint({ collectionId }: Props) {
   const { data, refetch: refetchMint } = useMintData(collectionId);
-  const { account, signAndSubmitTransaction } = useWallet();
+  const { address, mintNFT } = useLaunchpad();
   const { refetch: refetchOwned } = useFarmOwnedNFTs();
   const col = useFarmCollection(collectionId);
 
@@ -39,7 +39,7 @@ function FarmCollectionMint({ collectionId }: Props) {
     /*col?.discord_help ??*/
     `Use the banana farm bot to add your address to allowlist using this command:\n\n**/bananafarm-allowlist address: [address]**\n\nThen you can mint.\n\nIf you have any issues, ask in discord.`.replace(
       "[address]",
-      account?.address ?? "[your address]",
+      address ?? "[your address]",
     );
 
   const { collection, totalMinted = 0, maxSupply = 1 } = data ?? {};
@@ -49,16 +49,9 @@ function FarmCollectionMint({ collectionId }: Props) {
 
   const mintNft = async (e: FormEvent) => {
     e.preventDefault();
-    if (!account || !data?.isMintActive) return;
+    if (!address || !data?.isMintActive) return;
 
-    const transaction: InputTransactionData = {
-      data: {
-        function: `${MODULE_ADDRESS}::launchpad::mint_nft`,
-        functionArguments: [collection?.collection_id, 1],
-      },
-    };
-    const response = await signAndSubmitTransaction(transaction);
-    await movementClient.waitForTransaction({ transactionHash: response.hash });
+    await mintNFT(collection?.collection_id);
     refetchOwned();
     refetchMint();
   };
@@ -94,7 +87,7 @@ function FarmCollectionMint({ collectionId }: Props) {
             <Flex>
               <Box paddingRight={4}>
                 <form onSubmit={mintNft}>
-                  {account?.address && (
+                  {address && (
                     <>
                       {data?.isAllowlisted && (
                         <Button type="submit" disabled={!data?.isMintActive || !data.isAllowlisted}>
@@ -109,7 +102,7 @@ function FarmCollectionMint({ collectionId }: Props) {
                     </>
                   )}
 
-                  {!account?.address && <WalletSelector />}
+                  {!address && <WalletSelector />}
                 </form>
               </Box>
 

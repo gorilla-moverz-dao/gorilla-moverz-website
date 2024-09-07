@@ -1,20 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
-import { useWallet } from "@aptos-labs/wallet-adapter-react";
-import useContractClient from "../../hooks/useContracts";
+import useBananaFarm from "../../hooks/useBananaFarm";
 
 const useFarmData = () => {
-  const { account } = useWallet();
-  const client = useContractClient();
+  const { address, getTreasuryTimeout, getLastFarmed } = useBananaFarm();
 
   return useQuery({
-    queryKey: ["last_farmed", account?.address],
+    queryKey: ["last_farmed", address],
     refetchInterval: 1000 * 60,
     queryFn: async () => {
-      if (!account?.address) return null;
+      if (!address) return null;
 
       try {
-        const treasuryTimeout = await client.getTreasuryTimeout();
-        const lastFarmed = await client.getLastFarmed();
+        const treasuryTimeout = await getTreasuryTimeout();
+        const lastFarmed = await getLastFarmed();
 
         const lastFarmedDate = lastFarmed !== "0" ? new Date(parseInt(lastFarmed) * 1000) : undefined;
 

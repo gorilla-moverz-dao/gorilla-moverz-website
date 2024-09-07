@@ -1,8 +1,6 @@
-import movementClient from "../services/movement-client";
-import { AccountAddress } from "@aptos-labs/ts-sdk";
 import { useQuery } from "@tanstack/react-query";
-import { MODULE_ADDRESS } from "../constants";
-import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import useMovement from "./useMovement";
+import useLaunchpad from "./useLaunchpad";
 
 export interface Token {
   token_name: string;
@@ -15,7 +13,7 @@ export interface Token {
 
 export interface Collection {
   creator_address: string;
-  collection_id: string;
+  collection_id: `0x${string}`;
   collection_name: string;
   current_supply: number;
   max_supply: number;
@@ -54,47 +52,9 @@ interface MintData {
   isAllowlisted: boolean;
 }
 
-async function getStartAndEndTime(collection_id: string) {
-  const mintStageRes = await movementClient.view<[{ vec: [string] }]>({
-    payload: {
-      function: `${AccountAddress.from(MODULE_ADDRESS)}::launchpad::get_active_or_next_mint_stage`,
-      functionArguments: [collection_id],
-    },
-  });
-
-  const mintStage = mintStageRes[0].vec[0];
-
-  const startAndEndRes = await movementClient.view<[string, string]>({
-    payload: {
-      function: `${AccountAddress.from(MODULE_ADDRESS)}::launchpad::get_mint_stage_start_and_end_time`,
-      functionArguments: [collection_id, mintStage],
-    },
-  });
-
-  const [start, end] = startAndEndRes;
-
-  return {
-    startDate: new Date(parseInt(start, 10) * 1000),
-    endDate: new Date(parseInt(end, 10) * 1000),
-    // isMintInfinite is true if the mint stage is 100 years later
-    isMintInfinite: parseInt(end, 10) === parseInt(start, 10) + 100 * 365 * 24 * 60 * 60,
-  };
-}
-
-async function getIsAllowlisted(address: string, collection_id: string) {
-  return (
-    await movementClient.view<[boolean]>({
-      payload: {
-        function: `${AccountAddress.from(MODULE_ADDRESS)}::launchpad::is_allowlisted`,
-        functionArguments: [address, collection_id],
-      },
-    })
-  )[0];
-}
-
-export function useMintData(collection_id: string) {
-  const { account } = useWallet();
-  const address = account?.address;
+export function useMintData(collection_id: `0x${string}`) {
+  const { address, aptosClient } = useMovement();
+  const { getStartAndEndTime, getIsAllowlisted } = useLaunchpad();
 
   return useQuery({
     queryKey: ["collection_info", address, collection_id],
@@ -105,9 +65,9 @@ export function useMintData(collection_id: string) {
 
         const { startDate, endDate, isMintInfinite } = await getStartAndEndTime(collection_id);
 
-        const isAllowlisted = address ? await getIsAllowlisted(address, collection_id) : false;
+        const isAllowlisted = address ? await getIsAllowlisted(address as `0x${string}`, collection_id) : false;
 
-        const res = await movementClient.queryIndexer<MintQueryResult>({
+        const res = await aptosClient.queryIndexer<MintQueryResult>({
           query: {
             variables: {
               collection_id,
