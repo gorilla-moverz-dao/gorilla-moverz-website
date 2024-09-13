@@ -1,6 +1,7 @@
-import { getSigner, submitAndWaitForTransaction } from "./aptos-helper";
+import { getSigner } from "./aptos-helper";
+import { bananaClient, bananaFarmClient, launchpadClient } from "../src/services/movement-client";
 import { convertToAmount, dateToSeconds, runCommand } from "./helper";
-import { Account, Aptos, AptosConfig, Network, UserTransactionResponse } from "@aptos-labs/ts-sdk";
+import { Account, UserTransactionResponse } from "@aptos-labs/ts-sdk";
 
 const moveDir = "move/banana/";
 const aptosYml = moveDir + ".aptos/config.yaml";
@@ -8,10 +9,6 @@ const mint_amount = 100_000_000;
 const deposit_amount = 10_000_000;
 const publish = false;
 
-const config = new AptosConfig({
-  network: Network.TESTNET,
-});
-const aptos = new Aptos(config);
 const admin = getSigner(aptosYml);
 
 async function main() {
@@ -36,6 +33,7 @@ async function main() {
     maxSupply: 4000,
     allowlistManager: admin.accountAddress.toString(),
   });
+
   await setCollectionAddress(admin, collectionId);
 
   const partnerCollectionId = await createCollection(admin, {
@@ -51,15 +49,12 @@ async function main() {
 main().catch((error) => console.error(error));
 
 async function mintFACoin(coin: string, signer: Account, receiver: Account, amount: number): Promise<string> {
-  const transaction = await aptos.transaction.build.simple({
-    sender: signer.accountAddress,
-    data: {
-      function: `${signer.accountAddress}::${coin}::mint`,
-      functionArguments: [receiver.accountAddress, convertToAmount(amount)],
-    },
+  const response = await bananaClient.entry.mint({
+    typeArguments: [],
+    functionArguments: [receiver.accountAddress.toString(), convertToAmount(amount)],
+    account: signer,
   });
 
-  const response = await submitAndWaitForTransaction(aptos, signer, transaction);
   console.log(`Minting ${coin} coin successful. - tx: `, response.hash);
   return response.hash;
 }
@@ -69,41 +64,38 @@ interface CollectionConfig {
   collectionDescription: string;
   slug: string;
   maxSupply: number;
-  allowlistManager: string;
+  allowlistManager: `0x${string}`;
 }
 
-async function createCollection(signer: Account, collection: CollectionConfig): Promise<string> {
+async function createCollection(signer: Account, collection: CollectionConfig): Promise<`0x${string}`> {
   const mintFeePerNFT = 0;
   const mintLimitPerAccount = 1;
   const preMintAmount = 0;
   const royaltyPercentage = 0;
 
-  const transaction = await aptos.transaction.build.simple({
-    sender: signer.accountAddress,
-    data: {
-      function: `${signer.accountAddress}::launchpad::create_collection`,
-      functionArguments: [
-        collection.collectionDescription,
-        collection.collectionName,
-        `https://gorilla-moverz.xyz/nfts/${collection.slug}/collection.json`,
-        collection.maxSupply,
-        royaltyPercentage,
-        preMintAmount, // amount of NFT to pre-mint for myself
-        [signer.accountAddress], // addresses in the allow list
-        dateToSeconds(new Date()), // allow list start time (in seconds)
-        dateToSeconds(new Date(2026, 1, 1)), // allow list end time (in seconds)
-        mintLimitPerAccount, // mint limit per address in the allow list
-        undefined, // mint fee per NFT for the allow list
-        collection.allowlistManager,
-        undefined, // public mint start time (in seconds)
-        undefined, // public mint end time (in seconds)
-        mintLimitPerAccount, // mint limit per address in the public mint
-        mintFeePerNFT,
-      ],
-    },
-  });
+  const response = (await launchpadClient.entry.create_collection({
+    typeArguments: [],
+    functionArguments: [
+      collection.collectionDescription,
+      collection.collectionName,
+      `https://gorilla-moverz.xyz/nfts/${collection.slug}/collection.json`,
+      collection.maxSupply,
+      royaltyPercentage,
+      preMintAmount,
+      [signer.accountAddress.toString()], // addresses in the allow list
+      dateToSeconds(new Date()), // allow list start time (in seconds)
+      dateToSeconds(new Date(2026, 1, 1)), // allow list end time (in seconds)
+      mintLimitPerAccount, // mint limit per address in the allow list
+      undefined, // mint fee per NFT for the allow list
+      collection.allowlistManager,
+      undefined, // public mint start time (in seconds)
+      undefined, // public mint end time (in seconds)
+      mintLimitPerAccount, // mint limit per address in the public mint
+      mintFeePerNFT,
+    ],
+    account: signer,
+  })) as UserTransactionResponse;
 
-  const response = (await submitAndWaitForTransaction(aptos, signer, transaction)) as UserTransactionResponse;
   const collectionCreated = response.events.find((e) => e.type.split("::")[2] === "CreateCollectionEvent");
   const collectionId = collectionCreated?.data.collection_obj.inner;
   console.log(`Collection created successful. - tx: `, collectionId);
@@ -111,29 +103,21 @@ async function createCollection(signer: Account, collection: CollectionConfig): 
 }
 
 async function deposit(signer: Account, amount: number): Promise<string> {
-  const transaction = await aptos.transaction.build.simple({
-    sender: signer.accountAddress,
-    data: {
-      function: `${signer.accountAddress}::banana_farm::deposit`,
-      functionArguments: [convertToAmount(amount)],
-    },
+  const response = await bananaFarmClient.entry.deposit({
+    typeArguments: [],
+    functionArguments: [convertToAmount(amount)],
+    account: signer,
   });
-
-  const response = await submitAndWaitForTransaction(aptos, signer, transaction);
   console.log(`Deposited ${amount} bananas to banana farm - tx: `, response.hash);
   return response.hash;
 }
 
-async function setCollectionAddress(signer: Account, collectionId: string): Promise<string> {
-  const transaction = await aptos.transaction.build.simple({
-    sender: signer.accountAddress,
-    data: {
-      function: `${signer.accountAddress}::banana_farm::set_collection_address`,
-      functionArguments: [collectionId],
-    },
+async function setCollectionAddress(signer: Account, collectionId: `0x${string}`): Promise<string> {
+  const response = await bananaFarmClient.entry.set_collection_address({
+    typeArguments: [],
+    functionArguments: [collectionId],
+    account: signer,
   });
-
-  const response = await submitAndWaitForTransaction(aptos, signer, transaction);
-  console.log(`Set collection Id to ${collectionId} - tx: `, response.hash);
+  console.log(`Set collection address to ${collectionId} - tx: `, response.hash);
   return response.hash;
 }
