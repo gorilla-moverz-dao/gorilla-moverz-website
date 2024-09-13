@@ -33,6 +33,69 @@ function Partners() {
   } = useForm<Partner>({ resolver: zodResolver(PartnerSchema) });
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const integrations = [
+    {
+      href: "https://movementlabs.xyz/",
+      src: "/partners/movement-logo-yellow-rgb.svg",
+      alt: "Movement Labs",
+    },
+    {
+      href: "https://razorwallet.xyz/",
+      src: "/partners/razor.png",
+      alt: "Razor DAO",
+    },
+    {
+      href: "https://www.henry.social/",
+      src: "/partners/henry_white_logo.png",
+      alt: "Henry Social",
+    },
+    {
+      href: "https://www.curvance.com/",
+      src: "/partners/curvance-logo-light.svg",
+      alt: "Curvance",
+    },
+    {
+      href: "https://www.brkt.gg/",
+      src: "/partners/brkt-logo.svg",
+      alt: "BRKT",
+    },
+    {
+      href: "https://interestprotocol.com/",
+      src: "/partners/interest-protocol-dark.svg",
+      alt: "Interest Protocol",
+    },
+    {
+      href: "https://www.upnetwork.xyz/",
+      src: "/partners/upnetwork-logo.png",
+      alt: "Up Network",
+    },
+    {
+      href: "https://t.co/wjbCLMmDFD",
+      src: "/partners/nexio.png",
+      alt: "Nexio",
+    },
+    {
+      href: "https://www.satay.finance/",
+      src: "/partners/satay.svg",
+      alt: "Satay Finance",
+    },
+    {
+      href: "https://www.movewiffrens.xyz/",
+      src: "/partners/movewiffrens.svg",
+      alt: "Movewiffrends",
+    },
+    {
+      href: "https://xebra.trade/",
+      src: "/partners/xebra.svg",
+      alt: "Xebra",
+    },
+    {
+      href: "https://v2.routex.io/",
+      src: "/partners/routex.png",
+      alt: "Route-X",
+    },
+  ];
+
   const onSubmit = async (partner: Partner) => {
     const { error } = await supabase.from("partner").insert([partner]);
 
@@ -79,81 +142,13 @@ function Partners() {
         </PageTitle>
 
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={5}>
-          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
-            <Link href="https://movementlabs.xyz/" target="_blank" isExternal>
-              <img
-                style={{ maxWidth: "300px", width: "100%" }}
-                src="/partners/movement-logo-yellow-rgb.svg"
-                alt="Movement Labs"
-              />
-            </Link>
-          </GridItem>
-
-          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
-            <Link href="https://razorwallet.xyz/" target="_blank" isExternal>
-              <img style={{ maxWidth: "300px", width: "100%" }} src="/partners/razor.png" alt="Razor DAO" />
-            </Link>
-          </GridItem>
-
-          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
-            <Link href="https://www.henry.social/" target="_blank" isExternal>
-              <img
-                style={{ maxWidth: "300px", width: "100%" }}
-                src="/partners/henry_white_logo.png"
-                alt="Henry Social"
-              />
-            </Link>
-          </GridItem>
-
-          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
-            <Link href="https://www.curvance.com/" target="_blank" isExternal>
-              <img
-                style={{ maxWidth: "300px", width: "100%" }}
-                src="/partners/curvance-logo-light.svg"
-                alt="Curvance"
-              />
-            </Link>
-          </GridItem>
-
-          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
-            <Link href="https://www.brkt.gg/" target="_blank" isExternal>
-              <img style={{ maxWidth: "300px", width: "300px" }} src="/partners/brkt-logo.svg" alt="BRKT" />
-            </Link>
-          </GridItem>
-
-          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
-            <Link href="https://interestprotocol.com/" target="_blank" isExternal>
-              <img
-                style={{ maxWidth: "300px", width: "300px" }}
-                src="/partners/interest-protocol-dark.svg"
-                alt="Interest Protocol"
-              />
-            </Link>
-          </GridItem>
-
-          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
-            <Link href="https://www.upnetwork.xyz/" target="_blank" isExternal>
-              <img style={{ maxWidth: "300px", width: "300px" }} src="/partners/upnetwork-logo.png" alt="Up Network" />
-            </Link>
-          </GridItem>
-
-          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
-            <Link href="https://t.co/wjbCLMmDFD" target="_blank" isExternal>
-              <img style={{ maxWidth: "300px", width: "300px" }} src="/partners/nexio.png" alt="Nexio" />
-            </Link>
-          </GridItem>
-
-          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
-            <Link href="https://www.satay.finance/" target="_blank" isExternal>
-              <img style={{ maxWidth: "300px", width: "300px" }} src="/partners/satay.svg" alt="Satay Finance" />
-            </Link>
-          </GridItem>
-
-          <GridItem verticalAlign={"center"} style={{ display: "flex", alignItems: "center" }}>
-            <Link href="https://www.movewiffrens.xyz/" target="_blank" isExternal>
-              <img style={{ maxWidth: "300px", width: "300px" }} src="/partners/movewiffrens.svg" alt="Movewiffrends" />
-            </Link>
-          </GridItem>
+          {integrations.map((partner, index) => (
+            <GridItem key={index} verticalAlign="center" style={{ display: "flex", alignItems: "center" }}>
+              <Link href={partner.href} target="_blank" isExternal>
+                <img style={{ maxWidth: "300px", width: "100%" }} src={partner.src} alt={partner.alt} />
+              </Link>
+            </GridItem>
+          ))}
         </SimpleGrid>
 
         <PageTitle size="lg" paddingTop={12}>
