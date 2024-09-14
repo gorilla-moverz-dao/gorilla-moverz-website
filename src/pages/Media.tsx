@@ -70,6 +70,12 @@ function Media() {
       url: "https://www.youtube.com/embed/v7FtGKCmqxQ?si=zW0N4gbNWDNQA28t",
       preview: "https://img.youtube.com/vi/v7FtGKCmqxQ/0.jpg",
     },
+    {
+      title: "Movecast Episode #8",
+      description: "How to Earn on SocialFi on Movement Labs | Movewiffrens",
+      url: "https://www.youtube.com/embed/t0vK6WHzb5w?si=N3-35pQ8fW5b4qqn",
+      preview: "https://img.youtube.com/vi/t0vK6WHzb5w/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 

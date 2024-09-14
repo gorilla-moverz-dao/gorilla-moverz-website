@@ -1,5 +1,7 @@
 import {
   Button,
+  Card,
+  CardBody,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -144,9 +146,17 @@ function Partners() {
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={5}>
           {integrations.map((partner, index) => (
             <GridItem key={index} verticalAlign="center" style={{ display: "flex", alignItems: "center" }}>
-              <Link href={partner.href} target="_blank" isExternal>
-                <img style={{ maxWidth: "300px", width: "100%" }} src={partner.src} alt={partner.alt} />
-              </Link>
+              <Card className="gorillaz-card" width="100%" height="100%" alignItems="center">
+                <CardBody style={{ alignContent: "center", justifyContent: "center", backgroundColor: "10px" }}>
+                  <Link href={partner.href} target="_blank" isExternal>
+                    <img
+                      style={{ maxWidth: "300px", width: "100%", maxHeight: "60px" }}
+                      src={partner.src}
+                      alt={partner.alt}
+                    />
+                  </Link>
+                </CardBody>
+              </Card>
             </GridItem>
           ))}
         </SimpleGrid>
