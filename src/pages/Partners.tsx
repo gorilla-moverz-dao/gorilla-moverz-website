@@ -25,7 +25,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PageTitle from "../components/PageTitle";
 import { supabase } from "../services/supabase-client";
-import BoxBlurred from "../components/BoxBlurred";
 
 function Partners() {
   const {
