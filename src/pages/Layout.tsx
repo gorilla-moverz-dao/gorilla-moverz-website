@@ -18,6 +18,7 @@ import NavBar from "../components/NavBar";
 import BoxBlurred from "../components/BoxBlurred";
 import { FiMenu } from "react-icons/fi";
 import SocialIcons from "../components/SocialIcons";
+import { Helmet } from "react-helmet";
 
 function Layout() {
   const [isMobile] = useMediaQuery("(max-width: 768px)");
@@ -25,6 +26,22 @@ function Layout() {
 
   return (
     <>
+      <Helmet>
+        <title>Gorilla Moverz</title>
+        <meta
+          name="description"
+          content="Gorilla Moverz: The Social Infrastructure project on Movement. We stimulate activity, promote initiatives, and support Movement testnet. Join our community shaping crypto's future. Apes together strong! 🦍🍌"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.gorilla-moverz.xyz/" />
+        <meta property="og:title" content="Gorilla Moverz" />
+        <meta
+          property="og:description"
+          content="Gorilla Moverz: The Social Infrastructure project on Movement. We stimulate activity, promote initiatives, and support testnets. Join our community shaping crypto's future. Apes together strong! 🦍🍌"
+        />
+        <meta property="og:image" content="https://www.gorilla-moverz.xyz/images/favicon.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Helmet>
       {isMobile && (
         <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
           <DrawerOverlay />
