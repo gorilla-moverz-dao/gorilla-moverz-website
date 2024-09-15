@@ -4,6 +4,10 @@
       "source": "/nfts/:slug/metadata/:match*",
       "destination": "https://pinphweythafvrejqfgm.supabase.co/functions/v1/nft-banana-farmer/:slug/:match*"
     },
+    {
+      "source": "/nft-founders-collection/:match*",
+      "destination": "https://pinphweythafvrejqfgm.supabase.co/storage/v1/object/public/nft-founders-collection/:match*"
+    },
     { "source": "/(.*)", "destination": "/" }
   ]
 }
