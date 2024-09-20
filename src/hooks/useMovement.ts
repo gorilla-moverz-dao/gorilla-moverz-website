@@ -6,8 +6,9 @@ import {
   launchpadABI,
   launchpadClient,
 } from "../services/movement-client";
-import { UserTransactionResponse } from "@aptos-labs/ts-sdk";
+import { AptosApiType, UserTransactionResponse } from "@aptos-labs/ts-sdk";
 import { createEntryPayload } from "@thalalabs/surf";
+import { request } from "graphql-request";
 
 const useMovement = () => {
   const { account, signAndSubmitTransaction } = useWallet();
@@ -37,6 +38,8 @@ const useMovement = () => {
     launchpadClient,
     launchpadABI,
     aptosClient,
+    graphqlRequest: request,
+    indexerUrl: aptosClient.config.getRequestUrl(AptosApiType.INDEXER),
   };
 };
 
