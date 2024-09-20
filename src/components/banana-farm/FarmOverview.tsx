@@ -18,7 +18,7 @@ interface Props {
 
 function FarmerOverview({ collectionId, enableFarming }: Props) {
   const { data: ownedNFTs, isLoading } = useFarmOwnedNFTs();
-  const farmerNFT = ownedNFTs?.find((nft) => nft.current_token_data.collection_id === collectionId);
+  const farmerNFT = ownedNFTs?.find((nft) => nft.current_token_data?.collection_id === collectionId);
   const [imageUrl, setImageUrl] = useState<string>("");
 
   const { address, farm } = useBananaFarm();
@@ -53,7 +53,7 @@ function FarmerOverview({ collectionId, enableFarming }: Props) {
 
   useEffect(() => {
     if (farmerNFT) {
-      fetch(farmerNFT.current_token_data.token_uri).then((res) => {
+      fetch(farmerNFT.current_token_data?.token_uri ?? "").then((res) => {
         res.json().then((data) => {
           setImageUrl(data.image);
         });
@@ -74,8 +74,8 @@ function FarmerOverview({ collectionId, enableFarming }: Props) {
   if (!ownedNFTs) return <Spinner />;
 
   const partnerNFTIds = ownedNFTs
-    ?.filter((nft) => nft.current_token_data.collection_id !== collectionId)
-    .map((nft) => nft.current_token_data.token_data_id);
+    ?.filter((nft) => nft.current_token_data?.collection_id !== collectionId)
+    .map((nft) => nft.current_token_data?.token_data_id as `0x${string}`);
 
   return (
     <>
@@ -97,10 +97,10 @@ function FarmerOverview({ collectionId, enableFarming }: Props) {
             <Box flex={3}>
               <BoxBlurred padding={4}>
                 <PageTitle size="lg" paddingTop={0}>
-                  {farmerNFT.current_token_data.current_collection.collection_name} | #
-                  {farmerNFT.current_token_data.token_name}
+                  {farmerNFT.current_token_data?.current_collection?.collection_name} | #
+                  {farmerNFT.current_token_data?.token_name}
                 </PageTitle>
-                <Text paddingBottom={4}>{farmerNFT.current_token_data.current_collection.description}</Text>
+                <Text paddingBottom={4}>{farmerNFT.current_token_data?.current_collection?.description}</Text>
 
                 <Assets />
 
@@ -109,7 +109,9 @@ function FarmerOverview({ collectionId, enableFarming }: Props) {
                     {address && farmed_data && (
                       <Box paddingTop={4}>
                         <Button
-                          onClick={() => farmNFT(farmerNFT.current_token_data.token_data_id, partnerNFTIds)}
+                          onClick={() =>
+                            farmNFT(farmerNFT.current_token_data?.token_data_id as `0x${string}`, partnerNFTIds)
+                          }
                           colorScheme={farmed_data.remainingTime > 0 ? "gray" : "green"}
                           disabled={farmed_data.remainingTime > 0}
                         >
