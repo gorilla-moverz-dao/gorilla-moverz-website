@@ -51,7 +51,7 @@ function FarmCollectionMint({ collectionId }: Props) {
     e.preventDefault();
     if (!address || !data?.isMintActive) return;
 
-    await mintNFT(collection?.collection_id);
+    await mintNFT(collection?.collection_id as `0x${string}`);
     refetchOwned();
     refetchMint();
   };
