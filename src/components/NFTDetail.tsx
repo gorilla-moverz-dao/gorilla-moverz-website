@@ -1,13 +1,16 @@
 import { useParams } from "react-router-dom";
 import { useNFT } from "../hooks/useNFT";
-import { Badge, Box, Flex, HStack, Image, Text } from "@chakra-ui/react";
+import { Badge, Box, Button, Flex, HStack, Image, Text } from "@chakra-ui/react";
 import BoxBlurred from "./BoxBlurred";
 import PageTitle from "./PageTitle";
 import { truncateAddress } from "@aptos-labs/wallet-adapter-react";
+import { QRCodeCanvas } from "qrcode.react";
+import { useState } from "react";
 
 function NFTDetail() {
   const { id } = useParams();
   const { data: nft, isLoading } = useNFT(id!);
+  const [showQRCode, setShowQRCode] = useState(false);
 
   if (isLoading) return <div>Loading...</div>;
   if (!nft) return <div>NFT not found</div>;
@@ -22,6 +25,25 @@ function NFTDetail() {
             style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.8)" }}
           />
         )}
+
+        <Box paddingTop={4}>
+          <Button marginBottom={2} onClick={() => setShowQRCode(!showQRCode)}>
+            {showQRCode ? "Hide QR Code" : "Show QR Code"}
+          </Button>
+          {showQRCode && (
+            <BoxBlurred>
+              <Box padding={4}>
+                <QRCodeCanvas
+                  style={{ paddingTop: 10 }}
+                  value={window.location.href}
+                  size={320}
+                  bgColor={"#00000000"}
+                  fgColor={"#dddddd"}
+                />
+              </Box>
+            </BoxBlurred>
+          )}
+        </Box>
       </Box>
 
       <Box flex={3}>
