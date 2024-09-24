@@ -3,6 +3,7 @@ import { useNFT } from "../hooks/useNFT";
 import { Badge, Box, Flex, HStack, Image, Text } from "@chakra-ui/react";
 import BoxBlurred from "./BoxBlurred";
 import PageTitle from "./PageTitle";
+import { truncateAddress } from "@aptos-labs/wallet-adapter-react";
 
 function NFTDetail() {
   const { id } = useParams();
@@ -30,7 +31,14 @@ function NFTDetail() {
           </PageTitle>
           <Text paddingBottom={4}>{nft.current_token_data?.current_collection?.description}</Text>
 
-          <Text>DNA: {nft.metadata?.dna}</Text>
+          <HStack paddingTop={2}>
+            <Badge fontSize={"14px"} width={"100px"} paddingX={2} borderRadius={"4px"} colorScheme={"gray"}>
+              DNA
+            </Badge>
+            <Badge fontSize={"14px"} paddingX={2} borderRadius={"4px"} colorScheme={"green"}>
+              {nft.metadata.dna}
+            </Badge>
+          </HStack>
 
           {nft.metadata.attributes.map((attribute) => (
             <>
@@ -44,6 +52,14 @@ function NFTDetail() {
               </HStack>
             </>
           ))}
+          <HStack paddingTop={2}>
+            <Badge fontSize={"14px"} width={"100px"} paddingX={2} borderRadius={"4px"} colorScheme={"gray"}>
+              Owner
+            </Badge>
+            <Badge fontSize={"14px"} paddingX={2} borderRadius={"4px"} colorScheme={"green"}>
+              {truncateAddress(nft.owner_address)}
+            </Badge>
+          </HStack>
         </BoxBlurred>
       </Box>
     </Flex>
