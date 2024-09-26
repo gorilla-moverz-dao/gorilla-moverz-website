@@ -10,6 +10,7 @@ import BananaFarm from "./pages/BananaFarm";
 import Lighthouse from "./pages/Lighthouse";
 
 import { farmRoutes } from "./components/banana-farm/routes";
+import NFTDetail from "./components/NFTDetail";
 
 const router = createBrowserRouter([
   {
@@ -19,7 +20,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "about", element: <About /> },
-      { path: "nfts", element: <GorillaNFT /> },
+      { path: "nfts", element: <GorillaNFT />, children: [{ path: "founder/:id", element: <NFTDetail /> }] },
       { path: "media", element: <Media /> },
       { path: "partners", element: <Partners /> },
       { path: "lighthouse", element: <Lighthouse /> },
