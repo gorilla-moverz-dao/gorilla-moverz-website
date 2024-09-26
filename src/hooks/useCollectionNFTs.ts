@@ -3,8 +3,12 @@ import useMovement from "./useMovement";
 import { graphql } from "../gql";
 
 const query = graphql(`
-  query GetCollectionNfts($collectionId: String!, $offset: Int!) {
-    current_token_datas_v2(where: { collection_id: { _eq: $collectionId } }, limit: 100, offset: $offset) {
+  query GetCollectionNfts($collectionId: String!, $offset: Int!, $filter: jsonb_comparison_exp) {
+    current_token_datas_v2(
+      where: { collection_id: { _eq: $collectionId }, token_properties: $filter }
+      limit: 100
+      offset: $offset
+    ) {
       description
       token_name
       token_data_id
@@ -19,24 +23,29 @@ const query = graphql(`
   }
 `);
 
-export function useCollectionNFTs(collectionId: string) {
-  const { address, graphqlRequest, indexerUrl } = useMovement();
+export function useCollectionNFTs(collectionId: string, filter: object) {
+  const { graphqlRequest, indexerUrl } = useMovement();
 
   return useQuery({
-    queryKey: ["collection_nfts", address],
+    queryKey: ["collection_nfts", collectionId, filter],
     queryFn: async () => {
       try {
-        if (!address) return null;
-
         const maxNfts = 369;
+        const pageSize = 100;
 
         const nfts = [];
-        for (let offset = 0; offset < maxNfts; offset += 100) {
+        for (let offset = 0; offset < maxNfts; offset += pageSize) {
           const res = await graphqlRequest(indexerUrl, query, {
             collectionId,
             offset,
+            filter,
           });
           nfts.push(...res.current_token_datas_v2);
+          // TODO: This is a temporary fix to stop the query from running to many times.
+          // We need to find a better way to paginate the query.
+          if (res.current_token_datas_v2.length < pageSize) {
+            break;
+          }
         }
 
         // sort numerically by token_name

@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
-import { useNFT } from "../hooks/useNFT";
+import { useNFT } from "../../hooks/useNFT";
 import { Badge, Box, Button, Flex, HStack, Image, Text } from "@chakra-ui/react";
-import BoxBlurred from "./BoxBlurred";
-import PageTitle from "./PageTitle";
+import BoxBlurred from "../BoxBlurred";
+import PageTitle from "../PageTitle";
 import { truncateAddress } from "@aptos-labs/wallet-adapter-react";
 import { QRCodeCanvas } from "qrcode.react";
 import { useState } from "react";
@@ -63,16 +63,14 @@ function NFTDetail() {
           </HStack>
 
           {nft.metadata.attributes.map((attribute) => (
-            <>
-              <HStack paddingTop={2}>
-                <Badge fontSize={"14px"} width={"100px"} paddingX={2} borderRadius={"4px"} colorScheme={"gray"}>
-                  {attribute.trait_type}
-                </Badge>
-                <Badge fontSize={"14px"} paddingX={2} borderRadius={"4px"} colorScheme={"green"}>
-                  {attribute.value}
-                </Badge>
-              </HStack>
-            </>
+            <HStack key={attribute.trait_type} paddingTop={2}>
+              <Badge fontSize={"14px"} width={"100px"} paddingX={2} borderRadius={"4px"} colorScheme={"gray"}>
+                {attribute.trait_type}
+              </Badge>
+              <Badge fontSize={"14px"} paddingX={2} borderRadius={"4px"} colorScheme={"green"}>
+                {attribute.value}
+              </Badge>
+            </HStack>
           ))}
           <HStack paddingTop={2}>
             <Badge fontSize={"14px"} width={"100px"} paddingX={2} borderRadius={"4px"} colorScheme={"gray"}>

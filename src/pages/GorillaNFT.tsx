@@ -1,5 +1,5 @@
 import PageTitle from "../components/PageTitle";
-import NFTBrowser from "../components/NFTBrowser";
+import NFTBrowser from "../components/nft-browser/NFTBrowser";
 import { Outlet, useLocation } from "react-router-dom";
 
 function GorillaNFT() {

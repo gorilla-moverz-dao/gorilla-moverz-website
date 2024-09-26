@@ -10,7 +10,7 @@ import BananaFarm from "./pages/BananaFarm";
 import BeaconEventsPage from "./pages/BeaconEventsPage";
 
 import { farmRoutes } from "./components/banana-farm/routes";
-import NFTDetail from "./components/NFTDetail";
+import NFTDetail from "./components/nft-browser/NFTDetail";
 
 const router = createBrowserRouter([
   {
