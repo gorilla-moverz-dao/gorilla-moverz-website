@@ -12,7 +12,7 @@ function NavBar({ onClose }: Props) {
     { to: "/", label: "Home" },
     { to: "/nfts", label: "Gorilla NFTs" },
     { to: "/media", label: "Media" },
-    { to: "/lighthouse", label: "Project Lighthouse" },
+    { to: "/beacon-events", label: "Beacon Events" },
     { to: "/partners", label: "Integrations" },
   ];
 
