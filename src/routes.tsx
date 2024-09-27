@@ -7,7 +7,7 @@ import Partners from "./pages/Partners";
 import GorillaNFT from "./pages/GorillaNFT";
 import Media from "./pages/Media";
 import BananaFarm from "./pages/BananaFarm";
-import Lighthouse from "./pages/Lighthouse";
+import BeaconEventsPage from "./pages/BeaconEventsPage";
 
 import { farmRoutes } from "./components/banana-farm/routes";
 
@@ -22,7 +22,7 @@ const router = createBrowserRouter([
       { path: "nfts", element: <GorillaNFT /> },
       { path: "media", element: <Media /> },
       { path: "partners", element: <Partners /> },
-      { path: "lighthouse", element: <Lighthouse /> },
+      { path: "beacon-events", element: <BeaconEventsPage /> },
       {
         path: "bananas",
         element: <BananaFarm />,
