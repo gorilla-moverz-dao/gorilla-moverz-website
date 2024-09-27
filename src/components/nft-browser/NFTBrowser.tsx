@@ -1,10 +1,11 @@
 import { Card, CardBody } from "@chakra-ui/card";
 import { FOUNDERS_COLLECTION_ID } from "../../constants";
-import { useCollectionNFTs } from "../../hooks/useCollectionNFTs";
-import { Heading, Image, SimpleGrid, Stack } from "@chakra-ui/react";
+import { Heading, Image, SimpleGrid, Spinner, Stack } from "@chakra-ui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import NFTFilter from "./NFTFilter";
+import { useInfiniteCollectionNFTs } from "../../hooks/useInfiniteCollectionNFTs";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 function NFTBrowser() {
   const searchParams = new URLSearchParams(useLocation().search);
@@ -26,36 +27,52 @@ function NFTBrowser() {
     navigate(`/nfts?filter=${queryString}`);
   };
 
-  const { data, isLoading } = useCollectionNFTs(FOUNDERS_COLLECTION_ID, {
+  const { data, isLoading, fetchNextPage, hasNextPage, refetch } = useInfiniteCollectionNFTs(FOUNDERS_COLLECTION_ID, {
     _contains: filter,
   });
 
   if (isLoading) return <div>Loading...</div>;
 
+  const itemsCount = data?.pages.reduce((acc, page) => acc + page.length, 0) || 0;
+
   return (
     <div>
       <NFTFilter filter={filter} onFilterChange={buildFilter} />
-      <SimpleGrid spacing={4} templateColumns="repeat(auto-fill, minmax(29%, 300px))">
-        {data &&
-          data.map((nft) => (
-            <Card
-              className="gorillaz-card"
-              key={nft.token_data_id}
-              onClick={() => {
-                navigate(`/nfts/founder/${nft.token_data_id}`);
-              }}
-            >
-              <CardBody>
-                <Image src={`${nft.cdn_asset_uris?.cdn_image_uri}`}></Image>
-                <Stack mt="6" spacing="3">
-                  <Heading size="md" color="green.600">
-                    Founders Collection #{nft.token_name}
-                  </Heading>
-                </Stack>
-              </CardBody>
-            </Card>
-          ))}
-      </SimpleGrid>
+      <InfiniteScroll
+        dataLength={itemsCount} //This is important field to render the next data
+        next={fetchNextPage}
+        hasMore={!!hasNextPage}
+        loader={<Spinner />}
+        refreshFunction={refetch}
+        pullDownToRefresh
+        pullDownToRefreshThreshold={50}
+        pullDownToRefreshContent={<h3 style={{ textAlign: "center" }}>&#8595; Pull down to refresh</h3>}
+        releaseToRefreshContent={<h3 style={{ textAlign: "center" }}>&#8593; Release to refresh</h3>}
+      >
+        <SimpleGrid spacing={4} templateColumns="repeat(auto-fill, minmax(29%, 300px))">
+          {data &&
+            data.pages.map((page) =>
+              page.map((nft) => (
+                <Card
+                  className="gorillaz-card"
+                  key={nft.token_data_id}
+                  onClick={() => {
+                    navigate(`/nfts/founder/${nft.token_data_id}`);
+                  }}
+                >
+                  <CardBody>
+                    <Image src={`${nft.cdn_asset_uris?.cdn_image_uri}`}></Image>
+                    <Stack mt="6" spacing="3">
+                      <Heading size="md" color="green.600">
+                        Founders Collection #{nft.token_name}
+                      </Heading>
+                    </Stack>
+                  </CardBody>
+                </Card>
+              )),
+            )}
+        </SimpleGrid>
+      </InfiniteScroll>
     </div>
   );
 }
