@@ -6,10 +6,11 @@ import PageTitle from "../PageTitle";
 import { truncateAddress } from "@aptos-labs/wallet-adapter-react";
 import { QRCodeCanvas } from "qrcode.react";
 import { useState } from "react";
+import { FOUNDERS_COLLECTION_ID } from "../../constants";
 
 function NFTDetail() {
   const { id } = useParams();
-  const { data: nft, isLoading } = useNFT(id!);
+  const { data: nft, isLoading } = useNFT(id!, FOUNDERS_COLLECTION_ID);
   const [showQRCode, setShowQRCode] = useState(false);
 
   if (isLoading) return <div>Loading...</div>;

@@ -14,8 +14,13 @@ interface NFTMetadata {
 }
 
 const query = graphql(`
-  query GetNft($id: String) {
-    current_token_ownerships_v2(where: { amount: { _gt: "0" }, current_token_data: { token_data_id: { _eq: $id } } }) {
+  query GetNft($id: String, $collectionId: String!) {
+    current_token_ownerships_v2(
+      where: {
+        amount: { _gt: "0" }
+        current_token_data: { collection_id: { _eq: $collectionId }, token_name: { _eq: $id } }
+      }
+    ) {
       current_token_data {
         collection_id
         largest_property_version_v1
@@ -41,7 +46,7 @@ const query = graphql(`
   }
 `);
 
-export function useNFT(id: string) {
+export function useNFT(id: string, collectionId: string) {
   const { graphqlRequest, indexerUrl } = useMovement();
 
   return useQuery({
@@ -50,6 +55,7 @@ export function useNFT(id: string) {
       try {
         const res = await graphqlRequest(indexerUrl, query, {
           id,
+          collectionId: collectionId,
         });
 
         const nft = res.current_token_ownerships_v2[0];

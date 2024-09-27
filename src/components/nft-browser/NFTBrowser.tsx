@@ -12,6 +12,7 @@ function NFTBrowser() {
   const filterFromQueryString = searchParams.get("filter");
   const [filter, setFilter] = useState(filterFromQueryString ? JSON.parse(filterFromQueryString) : {});
   const navigate = useNavigate();
+  const isDetailPageActive = useLocation().pathname.includes("nfts/founder");
 
   const buildFilter = (property: string, value: string) => {
     const newFilter = { ...filter };
@@ -41,7 +42,7 @@ function NFTBrowser() {
       <InfiniteScroll
         dataLength={itemsCount} //This is important field to render the next data
         next={fetchNextPage}
-        hasMore={!!hasNextPage}
+        hasMore={!!hasNextPage && !isDetailPageActive}
         loader={<Spinner />}
         refreshFunction={refetch}
         pullDownToRefresh
@@ -57,7 +58,7 @@ function NFTBrowser() {
                   className="gorillaz-card"
                   key={nft.token_data_id}
                   onClick={() => {
-                    navigate(`/nfts/founder/${nft.token_data_id}`);
+                    navigate(`/nfts/founder/${nft.token_name}`);
                   }}
                 >
                   <CardBody>
