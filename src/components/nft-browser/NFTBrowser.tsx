@@ -1,11 +1,12 @@
 import { Card, CardBody } from "@chakra-ui/card";
 import { FOUNDERS_COLLECTION_ID } from "../../constants";
-import { Heading, Image, SimpleGrid, Spinner, Stack } from "@chakra-ui/react";
+import { Heading, SimpleGrid, Spinner, Stack } from "@chakra-ui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import NFTFilter from "./NFTFilter";
 import { useInfiniteCollectionNFTs } from "../../hooks/useInfiniteCollectionNFTs";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 function NFTBrowser() {
   const searchParams = new URLSearchParams(useLocation().search);
@@ -63,7 +64,14 @@ function NFTBrowser() {
                   }}
                 >
                   <CardBody>
-                    <Image src={`${nft.cdn_asset_uris?.cdn_image_uri}`}></Image>
+                    <LazyLoadImage
+                      alt={nft.description}
+                      src={nft.cdn_asset_uris?.cdn_image_uri ?? ""}
+                      width={260}
+                      height={260}
+                      effect="blur"
+                      threshold={100}
+                    />
                     <Stack mt="6" spacing="3">
                       <Heading size="md" color="green.600">
                         Founders Collection #{nft.token_name}
