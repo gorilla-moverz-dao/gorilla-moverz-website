@@ -28,8 +28,9 @@ function NFTBrowser() {
     navigate(`/nfts?filter=${queryString}`);
   };
 
-  const { data, isLoading, fetchNextPage, hasNextPage, refetch } = useInfiniteCollectionNFTs(FOUNDERS_COLLECTION_ID, {
-    _contains: filter,
+  const { data, isLoading, fetchNextPage, hasNextPage, refetch } = useInfiniteCollectionNFTs({
+    collection_id: { _eq: FOUNDERS_COLLECTION_ID },
+    token_properties: { _contains: filter },
   });
 
   if (isLoading) return <div>Loading...</div>;
@@ -40,7 +41,7 @@ function NFTBrowser() {
     <div>
       <NFTFilter filter={filter} onFilterChange={buildFilter} />
       <InfiniteScroll
-        dataLength={itemsCount} //This is important field to render the next data
+        dataLength={itemsCount}
         next={fetchNextPage}
         hasMore={!!hasNextPage && !isDetailPageActive}
         loader={<Spinner />}

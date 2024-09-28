@@ -1,14 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import useMovement from "./useMovement";
 import { graphql } from "../gql";
+import { Current_Token_Datas_V2_Bool_Exp } from "../gql/graphql";
 
 const query = graphql(`
-  query GetCollectionNfts($collectionId: String!, $offset: Int!, $filter: jsonb_comparison_exp) {
-    current_token_datas_v2(
-      where: { collection_id: { _eq: $collectionId }, token_properties: $filter }
-      limit: 100
-      offset: $offset
-    ) {
+  query GetCollectionNfts($limit: Int!, $offset: Int!, $filter: current_token_datas_v2_bool_exp) {
+    current_token_datas_v2(where: $filter, limit: $limit, offset: $offset) {
       description
       token_name
       token_data_id
@@ -23,11 +20,11 @@ const query = graphql(`
   }
 `);
 
-export function useCollectionNFTs(collectionId: string, filter: object) {
+export function useCollectionNFTs(filter: Current_Token_Datas_V2_Bool_Exp) {
   const { graphqlRequest, indexerUrl } = useMovement();
 
   return useQuery({
-    queryKey: ["collection_nfts", collectionId, filter],
+    queryKey: ["collection_nfts", filter],
     queryFn: async () => {
       try {
         const maxNfts = 369;
@@ -36,7 +33,7 @@ export function useCollectionNFTs(collectionId: string, filter: object) {
         const nfts = [];
         for (let offset = 0; offset < maxNfts; offset += pageSize) {
           const res = await graphqlRequest(indexerUrl, query, {
-            collectionId,
+            limit: pageSize,
             offset,
             filter,
           });
