@@ -4,17 +4,17 @@ import { FaChevronDown } from "react-icons/fa6";
 const filterOptions = [
   {
     label: "Background",
-    property: "BG",
+    property: "Background",
     values: ["All", "Yellow", "Boxes", "Rough", "Margin", "Wrinkled", "Lines"],
   },
   {
     label: "Body",
-    property: "BODY",
+    property: "Body",
     values: ["All", "Friendly", "Cool", "Pink", "Alpha", "Vibrant"],
   },
   {
     label: "Clothing",
-    property: "CLOTHING",
+    property: "Clothing",
     values: [
       "All",
       "Move",
@@ -34,17 +34,17 @@ const filterOptions = [
   },
   {
     label: "Face",
-    property: "FACE",
+    property: "Face",
     values: ["All", "Neutral", "Angry", "Happy", "Stoic", "Annoyed"],
   },
   {
     label: "Headgear",
-    property: "HEADGEAR",
+    property: "Headgear",
     values: ["All", "Ninja", "Headset", "Hair", "Pirate", "Beanie", "Spartan", "Bandana", "Laurel", "Wizard"],
   },
   {
     label: "Unique",
-    property: "UNIQUE",
+    property: "Unique",
     values: [
       "All",
       "Spartan",

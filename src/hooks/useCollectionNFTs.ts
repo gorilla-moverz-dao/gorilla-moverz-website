@@ -46,7 +46,7 @@ export function useCollectionNFTs(filter: Current_Token_Datas_V2_Bool_Exp) {
         }
 
         // sort numerically by token_name
-        nfts.sort((a, b) => parseInt(a.token_name) - parseInt(b.token_name));
+        nfts.sort((a, b) => parseInt(a.token_name.split("#")[1]) - parseInt(b.token_name.split("#")[1]));
 
         return nfts;
       } catch (error) {

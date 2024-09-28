@@ -10,11 +10,13 @@ import { FOUNDERS_COLLECTION_ID } from "../../constants";
 
 function NFTDetail() {
   const { id } = useParams();
-  const { data: nft, isLoading } = useNFT(id!, FOUNDERS_COLLECTION_ID);
+  const { data: nft, isLoading } = useNFT("Gorilla Founder #" + id, FOUNDERS_COLLECTION_ID);
   const [showQRCode, setShowQRCode] = useState(false);
 
   if (isLoading) return <div>Loading...</div>;
   if (!nft) return <div>NFT not found</div>;
+
+  const properties = nft.current_token_data?.token_properties;
 
   return (
     <Flex direction={{ base: "column", md: "row" }} gap={6}>
@@ -50,31 +52,52 @@ function NFTDetail() {
       <Box flex={3}>
         <BoxBlurred padding={4}>
           <PageTitle size="lg" paddingTop={0}>
-            {nft.current_token_data?.current_collection?.collection_name} | #{nft.current_token_data?.token_name}
+            {nft.current_token_data?.token_name}
           </PageTitle>
           <Text paddingBottom={4}>{nft.current_token_data?.current_collection?.description}</Text>
 
           <HStack paddingTop={2}>
-            <Badge fontSize={"14px"} width={"100px"} paddingX={2} borderRadius={"4px"} colorScheme={"gray"}>
+            <Badge
+              textTransform={"none"}
+              fontSize={"14px"}
+              width={"120px"}
+              paddingX={2}
+              borderRadius={"4px"}
+              colorScheme={"gray"}
+            >
               DNA
             </Badge>
-            <Badge fontSize={"14px"} paddingX={2} borderRadius={"4px"} colorScheme={"green"}>
+            <Badge textTransform={"none"} fontSize={"14px"} paddingX={2} borderRadius={"4px"} colorScheme={"green"}>
               {nft.metadata.dna}
             </Badge>
           </HStack>
 
-          {nft.metadata.attributes.map((attribute) => (
-            <HStack key={attribute.trait_type} paddingTop={2}>
-              <Badge fontSize={"14px"} width={"100px"} paddingX={2} borderRadius={"4px"} colorScheme={"gray"}>
-                {attribute.trait_type}
+          {Object.keys(properties).map((key) => (
+            <HStack key={key} paddingTop={2}>
+              <Badge
+                textTransform={"none"}
+                fontSize={"14px"}
+                width={"120px"}
+                paddingX={2}
+                borderRadius={"4px"}
+                colorScheme={"gray"}
+              >
+                {key}
               </Badge>
-              <Badge fontSize={"14px"} paddingX={2} borderRadius={"4px"} colorScheme={"green"}>
-                {attribute.value}
+              <Badge textTransform={"none"} fontSize={"14px"} paddingX={2} borderRadius={"4px"} colorScheme={"green"}>
+                {properties[key]}
               </Badge>
             </HStack>
           ))}
           <HStack paddingTop={2}>
-            <Badge fontSize={"14px"} width={"100px"} paddingX={2} borderRadius={"4px"} colorScheme={"gray"}>
+            <Badge
+              textTransform={"none"}
+              fontSize={"14px"}
+              width={"120px"}
+              paddingX={2}
+              borderRadius={"4px"}
+              colorScheme={"gray"}
+            >
               Owner
             </Badge>
             <Badge fontSize={"14px"} paddingX={2} borderRadius={"4px"} colorScheme={"green"}>

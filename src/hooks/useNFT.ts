@@ -34,6 +34,7 @@ const query = graphql(`
         token_name
         token_data_id
         token_uri
+        token_properties
         cdn_asset_uris {
           cdn_image_uri
           asset_uri

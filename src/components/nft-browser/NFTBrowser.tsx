@@ -60,7 +60,7 @@ function NFTBrowser() {
                   className="gorillaz-card"
                   key={nft.token_data_id}
                   onClick={() => {
-                    navigate(`/nfts/founder/${nft.token_name}`);
+                    navigate(`/nfts/founder/${nft.token_name.split("#")[1]}`);
                   }}
                 >
                   <CardBody>
@@ -74,7 +74,7 @@ function NFTBrowser() {
                     />
                     <Stack mt="6" spacing="3">
                       <Heading size="md" color="green.600">
-                        Founders Collection #{nft.token_name}
+                        {nft.token_name}
                       </Heading>
                     </Stack>
                   </CardBody>
