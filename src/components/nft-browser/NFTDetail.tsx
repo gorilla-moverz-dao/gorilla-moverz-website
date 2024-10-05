@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useNFT } from "../../hooks/useNFT";
-import { Badge, Box, Button, Flex, HStack, Image, Text } from "@chakra-ui/react";
+import { Badge, Box, Button, Flex, HStack, Image, Spinner, Text } from "@chakra-ui/react";
 import BoxBlurred from "../BoxBlurred";
 import PageTitle from "../PageTitle";
 import { truncateAddress } from "@aptos-labs/wallet-adapter-react";
@@ -13,7 +13,7 @@ function NFTDetail() {
   const { data: nft, isLoading } = useNFT("Gorilla Founder #" + id, FOUNDERS_COLLECTION_ID);
   const [showQRCode, setShowQRCode] = useState(false);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Spinner />;
   if (!nft) return <div>NFT not found</div>;
 
   const properties = nft.current_token_data?.token_properties;
@@ -55,22 +55,6 @@ function NFTDetail() {
             {nft.current_token_data?.token_name}
           </PageTitle>
           <Text paddingBottom={4}>{nft.current_token_data?.current_collection?.description}</Text>
-
-          <HStack paddingTop={2}>
-            <Badge
-              textTransform={"none"}
-              fontSize={"14px"}
-              width={"120px"}
-              paddingX={2}
-              borderRadius={"4px"}
-              colorScheme={"gray"}
-            >
-              DNA
-            </Badge>
-            <Badge textTransform={"none"} fontSize={"14px"} paddingX={2} borderRadius={"4px"} colorScheme={"green"}>
-              {nft.metadata.dna}
-            </Badge>
-          </HStack>
 
           {Object.keys(properties).map((key) => (
             <HStack key={key} paddingTop={2}>

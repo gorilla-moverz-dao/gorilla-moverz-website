@@ -2,17 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import useMovement from "./useMovement";
 import { graphql } from "../gql";
 
-interface NFTMetadata {
-  name: string;
-  description: string;
-  image: string;
-  dna: string;
-  attributes: {
-    trait_type: string;
-    value: string;
-  }[];
-}
-
 const query = graphql(`
   query GetNft($id: String, $collectionId: String!) {
     current_token_ownerships_v2(
@@ -59,11 +48,7 @@ export function useNFT(id: string, collectionId: string) {
           collectionId: collectionId,
         });
 
-        const nft = res.current_token_ownerships_v2[0];
-        const metadata = await fetch(nft.current_token_data!.token_uri!);
-        const metadataJson = await metadata.json();
-
-        return { ...nft, metadata: metadataJson as NFTMetadata };
+        return res.current_token_ownerships_v2[0];
       } catch (error) {
         console.error(error);
         return null;

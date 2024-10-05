@@ -29,7 +29,7 @@ function NFTBrowser() {
     navigate(`/nfts?filter=${queryString}`);
   };
 
-  const { data, isLoading, fetchNextPage, hasNextPage, refetch } = useInfiniteCollectionNFTs({
+  const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteCollectionNFTs({
     collection_id: { _eq: FOUNDERS_COLLECTION_ID },
     token_properties: { _contains: filter },
   });
@@ -46,11 +46,6 @@ function NFTBrowser() {
         next={fetchNextPage}
         hasMore={!!hasNextPage && !isDetailPageActive}
         loader={<Spinner />}
-        refreshFunction={refetch}
-        pullDownToRefresh
-        pullDownToRefreshThreshold={50}
-        pullDownToRefreshContent={<h3 style={{ textAlign: "center" }}>&#8595; Pull down to refresh</h3>}
-        releaseToRefreshContent={<h3 style={{ textAlign: "center" }}>&#8593; Release to refresh</h3>}
       >
         <SimpleGrid spacing={4} templateColumns="repeat(auto-fill, minmax(29%, 300px))">
           {data &&
