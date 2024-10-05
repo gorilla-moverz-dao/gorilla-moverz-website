@@ -77,6 +77,12 @@ function Media() {
       url: "https://www.youtube.com/embed/t0vK6WHzb5w?si=N3-35pQ8fW5b4qqn",
       preview: "https://img.youtube.com/vi/t0vK6WHzb5w/0.jpg",
     },
+    {
+      title: "Movecast Episode #9",
+      description: "Bring DeFi back to Bitcoin on Movement Labs SDK - Nexio",
+      url: "https://www.youtube.com/embed/1a83Upmg9XA?si=c-bdMf5gP0PT7ibb",
+      preview: "https://img.youtube.com/vi/1a83Upmg9XA/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
