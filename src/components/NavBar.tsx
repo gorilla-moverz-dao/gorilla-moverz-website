@@ -11,7 +11,8 @@ function NavBar({ onClose }: Props) {
   const navigation = [
     { to: "/", label: "Home" },
     { to: "/nfts", label: "Gorilla NFTs" },
-    { to: "/media", label: "Media" },
+    { to: "/media", label: "Movecast" },
+    { to: "/gallery", label: "Gallery" },
     { to: "/beacon-events", label: "Beacon Events" },
     { to: "/partners", label: "Integrations" },
   ];

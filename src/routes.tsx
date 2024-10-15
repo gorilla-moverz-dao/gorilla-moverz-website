@@ -5,11 +5,12 @@ import HomePage from "./pages/HomePage";
 import About from "./pages/About";
 import Partners from "./pages/Partners";
 import GorillaNFT from "./pages/GorillaNFT";
-import Media from "./pages/Media";
+import Media from "./pages/Movecast";
 import BananaFarm from "./pages/BananaFarm";
 import BeaconEventsPage from "./pages/BeaconEventsPage";
 
 import { farmRoutes } from "./components/banana-farm/routes";
+import GalleryPage from "./pages/GalleryPage";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,7 @@ const router = createBrowserRouter([
       { path: "about", element: <About /> },
       { path: "nfts", element: <GorillaNFT /> },
       { path: "media", element: <Media /> },
+      { path: "gallery", element: <GalleryPage /> },
       { path: "partners", element: <Partners /> },
       { path: "beacon-events", element: <BeaconEventsPage /> },
       {
