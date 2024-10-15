@@ -89,6 +89,12 @@ function Media() {
       url: "https://www.youtube.com/embed/1a83Upmg9XA?si=c-bdMf5gP0PT7ibb",
       preview: "https://img.youtube.com/vi/1a83Upmg9XA/0.jpg",
     },
+    {
+      title: "Movecast Episode #11",
+      description: "How to use AI Content Creation Models | CoScription on Movement Labs",
+      url: "https://www.youtube.com/embed/KMHoM7yKvwE?si=A9utOxUGkaB33JUx",
+      preview: "https://img.youtube.com/vi/KMHoM7yKvwE/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
