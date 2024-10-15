@@ -100,11 +100,12 @@ function Media() {
   return (
     <>
       <Helmet>
-        <title>Gorilla Moverz - Media</title>
+        <title>Gorilla Moverz - Movecast</title>
         <meta name="description" content="Media and Movecast Episodes" />
-        <meta property="og:title" content="Gorilla Moverz - Media" />
-        <meta property="og:description" content="Media and Movecast Episodes" />
+        <meta property="og:title" content="Gorilla Moverz - Movecast" />
+        <meta property="og:description" content="Movecast Episodes" />
       </Helmet>
+
       <Modal size="6xl" isCentered isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent className="gorillaz-modal">

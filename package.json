@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "deploy:bananafarm": "tsx ./scripts/deploy-bananafarm.ts",
     "generate:database-types": "supabase gen types --lang=typescript --local > src/database.types.ts && supabase gen types --lang=typescript --local > supabase/functions/_shared/database.types.ts",
-    "build-abi": "tsx ./scripts/build-abi.ts"
+    "build-abi": "tsx ./scripts/build-abi.ts",
+    "resize-images": "tsx ./scripts/resize-images.ts"
   },
   "dependencies": {
     "@aptos-labs/ts-sdk": "1.27.1",
@@ -24,6 +25,7 @@
     "@thalalabs/surf": "^1.7.3",
     "@vercel/analytics": "^1.3.1",
     "framer-motion": "^11.2.10",
+    "fs-extra": "^11.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
@@ -31,7 +33,10 @@
     "react-icons": "^5.2.1",
     "react-just-parallax": "^3.1.16",
     "react-markdown": "^9.0.1",
+    "react-photo-album": "^3.0.2",
     "react-router-dom": "6.23.1",
+    "sharp": "^0.33.5",
+    "yet-another-react-lightbox": "^3.21.6",
     "zod": "^3.23.8"
   },
   "devDependencies": {
