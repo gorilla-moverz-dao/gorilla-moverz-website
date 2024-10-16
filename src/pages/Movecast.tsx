@@ -73,9 +73,27 @@ function Media() {
     },
     {
       title: "Movecast Episode #8",
+      description: "RazorDAO - How to build a community driven product on Movement",
+      url: "https://www.youtube.com/embed/Dg24P0Nv3L8?si=p-Vavgr6Q4l5IRaS",
+      preview: "https://img.youtube.com/vi/Dg24P0Nv3L8/0.jpg",
+    },
+    {
+      title: "Movecast Episode #9",
       description: "How to Earn on SocialFi on Movement Labs | Movewiffrens",
       url: "https://www.youtube.com/embed/t0vK6WHzb5w?si=N3-35pQ8fW5b4qqn",
       preview: "https://img.youtube.com/vi/t0vK6WHzb5w/0.jpg",
+    },
+    {
+      title: "Movecast Episode #10",
+      description: "Bring DeFi back to Bitcoin on Movement Labs SDK - Nexio",
+      url: "https://www.youtube.com/embed/1a83Upmg9XA?si=c-bdMf5gP0PT7ibb",
+      preview: "https://img.youtube.com/vi/1a83Upmg9XA/0.jpg",
+    },
+    {
+      title: "Movecast Episode #11",
+      description: "How to use AI Content Creation Models | CoScription on Movement Labs",
+      url: "https://www.youtube.com/embed/KMHoM7yKvwE?si=A9utOxUGkaB33JUx",
+      preview: "https://img.youtube.com/vi/KMHoM7yKvwE/0.jpg",
     },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
@@ -88,11 +106,12 @@ function Media() {
   return (
     <>
       <Helmet>
-        <title>Gorilla Moverz - Media</title>
+        <title>Gorilla Moverz - Movecast</title>
         <meta name="description" content="Media and Movecast Episodes" />
-        <meta property="og:title" content="Gorilla Moverz - Media" />
-        <meta property="og:description" content="Media and Movecast Episodes" />
+        <meta property="og:title" content="Gorilla Moverz - Movecast" />
+        <meta property="og:description" content="Movecast Episodes" />
       </Helmet>
+
       <Modal size="6xl" isCentered isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent className="gorillaz-modal">
