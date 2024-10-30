@@ -95,6 +95,12 @@ function Media() {
       url: "https://www.youtube.com/embed/KMHoM7yKvwE?si=A9utOxUGkaB33JUx",
       preview: "https://img.youtube.com/vi/KMHoM7yKvwE/0.jpg",
     },
+    {
+      title: "Movecast Episode #12",
+      description: "Monetize public spaces in web3 - Podium on Movement Labs",
+      url: "https://www.youtube.com/embed/kwjgQLNQRb8?si=U4AQjgG2Gip-9Z5y",
+      preview: "https://img.youtube.com/vi/kwjgQLNQRb8/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
