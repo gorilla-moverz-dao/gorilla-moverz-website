@@ -13,10 +13,6 @@ const query = graphql(`
       max_supply
       uri
       description
-      cdn_asset_uris {
-        cdn_animation_uri
-        cdn_image_uri
-      }
     }
     current_collection_ownership_v2_view(
       where: { collection_id: { _eq: $collection_id } }

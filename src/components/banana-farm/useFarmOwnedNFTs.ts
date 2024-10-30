@@ -28,11 +28,6 @@ const query = graphql(`
         token_data_id
         token_standard
         token_uri
-        cdn_asset_uris {
-          cdn_image_uri
-          asset_uri
-          raw_image_uri
-        }
         __typename
       }
       owner_address
