@@ -1,23 +1,16 @@
 import { useState } from "react";
 import PageTitle from "../components/PageTitle";
 import {
-  Card,
-  CardBody,
-  Text,
-  Stack,
-  Heading,
-  SimpleGrid,
-  useDisclosure,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Image,
-} from "@chakra-ui/react";
+  DialogRoot,
+  DialogContent,
+  DialogBackdrop,
+  DialogHeader,
+  DialogCloseTrigger,
+  DialogBody,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Helmet } from "react-helmet";
+import { Card, Heading, SimpleGrid, Image, useDisclosure, Stack, Text } from "@chakra-ui/react";
 
 interface Episode {
   title: string;
@@ -27,7 +20,7 @@ interface Episode {
 }
 
 function Media() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { open, onOpen, onClose } = useDisclosure();
   const episodes = [
     {
       title: "Movecast Episode #1",
@@ -112,12 +105,12 @@ function Media() {
         <meta property="og:description" content="Movecast Episodes" />
       </Helmet>
 
-      <Modal size="6xl" isCentered isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent className="gorillaz-modal">
-          <ModalHeader>{selectedEpisode?.description}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
+      <DialogRoot size="xl" placement={"center"} open={open} onOpenChange={(x) => x.open && onClose()}>
+        <DialogBackdrop />
+        <DialogContent className="gorillaz-modal">
+          <DialogHeader>{selectedEpisode?.description}</DialogHeader>
+          <DialogCloseTrigger />
+          <DialogBody>
             <iframe
               width="100%"
               height="600"
@@ -128,29 +121,29 @@ function Media() {
               referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
             ></iframe>
-          </ModalBody>
+          </DialogBody>
 
-          <ModalFooter></ModalFooter>
-        </ModalContent>
-      </Modal>
+          <DialogFooter></DialogFooter>
+        </DialogContent>
+      </DialogRoot>
 
       <PageTitle size="xl" paddingTop={0}>
         Media
       </PageTitle>
 
-      <SimpleGrid spacing={4} templateColumns="repeat(auto-fill, minmax(49%, 420px))">
+      <SimpleGrid gap={4} templateColumns="repeat(auto-fill, minmax(49%, 420px))">
         {episodes.map((episode) => (
-          <Card key={episode.url} className="gorillaz-card">
-            <CardBody onClick={() => openEpisodeModal(episode)}>
+          <Card.Root key={episode.url} className="gorillaz-card">
+            <Card.Body onClick={() => openEpisodeModal(episode)}>
               <Image src={episode.preview}></Image>
-              <Stack mt="6" spacing="3">
+              <Stack mt="6" gap="3">
                 <Heading size="md" color="green.600">
                   {episode.title}
                 </Heading>
                 <Text>{episode.description}</Text>
               </Stack>
-            </CardBody>
-          </Card>
+            </Card.Body>
+          </Card.Root>
         ))}
       </SimpleGrid>
     </>

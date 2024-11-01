@@ -1,4 +1,6 @@
-import { Button, HStack, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { Button, HStack } from "@chakra-ui/react";
+import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "@/components/ui/menu";
+
 import { FaChevronDown } from "react-icons/fa6";
 
 const filterOptions = [
@@ -70,22 +72,20 @@ function NFTFilter({ filter, onFilterChange }: NFTFilterProps) {
   return (
     <HStack paddingBottom={4} wrap="wrap">
       {filterOptions.map((option) => (
-        <Menu key={option.property}>
-          <MenuButton
-            as={Button}
-            rightIcon={<FaChevronDown />}
-            colorScheme={filter[option.property] ? "green" : "gray"}
-          >
-            {option.label} {filter[option.property] ? `: ${filter[option.property]}` : ""}
-          </MenuButton>
-          <MenuList>
+        <MenuRoot key={option.property}>
+          <MenuTrigger asChild>
+            <Button variant="outline" colorPalette={filter[option.property] ? "green" : "whiteAlpha"}>
+              {option.label} {filter[option.property] ? `: ${filter[option.property]}` : ""} <FaChevronDown />
+            </Button>
+          </MenuTrigger>
+          <MenuContent>
             {option.values.map((value) => (
-              <MenuItem key={value} onClick={() => onFilterChange(option.property, value)}>
+              <MenuItem key={value} value={value} onClick={() => onFilterChange(option.property, value)}>
                 {value}
               </MenuItem>
             ))}
-          </MenuList>
-        </Menu>
+          </MenuContent>
+        </MenuRoot>
       ))}
     </HStack>
   );

@@ -1,31 +1,24 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  HStack,
-  Link,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, HStack, Link, Text, useDisclosure } from "@chakra-ui/react";
 import { WalletSelector } from "../components/WalletSelector";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { MODULE_ADDRESS } from "../constants";
 import FarmParallax from "../components/banana-farm/FarmParallax";
 import useMovement from "../hooks/useMovement";
+import {
+  DialogRoot,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogBody,
+  DialogBackdrop,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 function BananaFarm() {
   const navigate = useNavigate();
   const { address } = useMovement();
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { open, onClose, onOpen } = useDisclosure();
 
   const navigationItems = [
     { id: "farm", name: "Banana farm" },
@@ -46,12 +39,12 @@ function BananaFarm() {
 
   return (
     <div>
-      <Modal size="6xl" isCentered isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay style={{ backdropFilter: "blur(5px)" }} />
-        <ModalContent>
-          <ModalHeader></ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
+      <DialogRoot size="xl" placement={"center"} open={open} onOpenChange={(x) => !x.open && onClose()}>
+        <DialogBackdrop style={{ backdropFilter: "blur(5px)" }} />
+        <DialogContent>
+          <DialogHeader></DialogHeader>
+          <DialogCloseTrigger />
+          <DialogBody>
             <Box zIndex={-1} position="absolute" top={0} left={0} right={0} bottom={0} overflow={"hidden"} rounded={8}>
               <FarmParallax />
             </Box>
@@ -85,11 +78,11 @@ function BananaFarm() {
                 <Outlet />
               </Box>
             </Flex>
-          </ModalBody>
+          </DialogBody>
 
-          <ModalFooter></ModalFooter>
-        </ModalContent>
-      </Modal>
+          <DialogFooter></DialogFooter>
+        </DialogContent>
+      </DialogRoot>
 
       <Box paddingBottom={4}>
         <HStack>
@@ -114,11 +107,7 @@ function BananaFarm() {
 
             <Text paddingTop={2}>
               🎬{" "}
-              <Link
-                isExternal
-                href="https://www.youtube.com/watch?v=PjMEkM_0yog&lc=Ugx8JA7BEGUaUd_wLX54AaABAg"
-                target="_blank"
-              >
+              <Link href="https://www.youtube.com/watch?v=PjMEkM_0yog&lc=Ugx8JA7BEGUaUd_wLX54AaABAg" target="_blank">
                 <b>View How to Video</b>
               </Link>
             </Text>

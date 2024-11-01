@@ -1,6 +1,5 @@
-import { Card, CardBody } from "@chakra-ui/card";
 import { FOUNDERS_COLLECTION_ID } from "../../constants";
-import { Heading, SimpleGrid, Spinner, Stack } from "@chakra-ui/react";
+import { Card, Heading, SimpleGrid, Spinner, Stack } from "@chakra-ui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import NFTFilter from "./NFTFilter";
@@ -47,33 +46,33 @@ function NFTBrowser() {
         hasMore={!!hasNextPage && !isDetailPageActive}
         loader={<Spinner />}
       >
-        <SimpleGrid spacing={4} templateColumns="repeat(auto-fill, minmax(29%, 300px))">
+        <SimpleGrid gap={4} templateColumns="repeat(auto-fill, minmax(29%, 300px))">
           {data &&
             data.pages.map((page) =>
               page.map((nft) => (
-                <Card
+                <Card.Root
                   className="gorillaz-card"
                   key={nft.token_data_id}
                   onClick={() => {
                     navigate(`/nfts/founder/${nft.token_name.split("#")[1]}`);
                   }}
                 >
-                  <CardBody>
+                  <Card.Body>
                     <LazyLoadImage
                       alt={nft.description}
-                      src={nft.cdn_asset_uris?.cdn_image_uri ?? ""}
+                      src={nft.token_uri}
                       width={260}
                       height={260}
                       effect="blur"
                       threshold={100}
                     />
-                    <Stack mt="6" spacing="3">
+                    <Stack mt="6" gap="3">
                       <Heading size="md" color="green.600">
                         {nft.token_name}
                       </Heading>
                     </Stack>
-                  </CardBody>
-                </Card>
+                  </Card.Body>
+                </Card.Root>
               )),
             )}
         </SimpleGrid>

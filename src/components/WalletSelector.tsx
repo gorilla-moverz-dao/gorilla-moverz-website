@@ -7,9 +7,11 @@ import {
   AptosStandardSupportedWallet,
   truncateAddress,
 } from "@aptos-labs/wallet-adapter-react";
-import { Badge, Box, Button, Image, Menu, MenuButton, MenuItem, MenuList, Text, Tooltip } from "@chakra-ui/react";
+import { Badge, Box, Button, Image, Text } from "@chakra-ui/react";
 import { FaChevronDown } from "react-icons/fa6";
 import { IoIosLogOut } from "react-icons/io";
+import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "@/components/ui/menu";
+import { Tooltip } from "@/components/ui/tooltip";
 
 export function WalletSelector() {
   const { connect, disconnect, account, wallets, connected, network, wallet } = useWallet();
@@ -31,9 +33,9 @@ export function WalletSelector() {
 
   if (connected) {
     return (
-      <Tooltip hasArrow label={getLabel()} bg="gray.700" color="gray.100" aria-label="Wallet information">
-        <Button className="wallet-button" onClick={() => disconnect()} rightIcon={<IoIosLogOut />}>
-          {buttonText}
+      <Tooltip showArrow content={getLabel()} aria-label="Wallet information">
+        <Button className="wallet-button" onClick={() => disconnect()}>
+          {buttonText} <IoIosLogOut />
         </Button>
       </Tooltip>
     );
@@ -41,16 +43,16 @@ export function WalletSelector() {
 
   return (
     <>
-      <Menu>
-        <MenuButton as={Button} rightIcon={<FaChevronDown />}>
-          Connect Wallet
-        </MenuButton>
-        <MenuList>
+      <MenuRoot>
+        <MenuTrigger as={Button}>
+          Connect Wallet <FaChevronDown />
+        </MenuTrigger>
+        <MenuContent>
           {wallets?.map((wallet: Wallet | AptosStandardSupportedWallet) => {
             return walletView(wallet, onWalletSelected);
           })}
-        </MenuList>
-      </Menu>
+        </MenuContent>
+      </MenuRoot>
     </>
   );
 }
@@ -65,7 +67,7 @@ const walletView = (wallet: Wallet | AptosStandardSupportedWallet, onWalletSelec
     // If the user has a deep linked app, show the wallet
     if (mobileSupport) {
       return (
-        <MenuItem key={wallet.name} onClick={() => onWalletSelected(wallet.name)}>
+        <MenuItem key={wallet.name} value={wallet.name} onClick={() => onWalletSelected(wallet.name)}>
           <div className="wallet-menu-wrapper">
             <div className="wallet-name-wrapper">
               <img src={wallet.icon} width={25} style={{ marginRight: 10 }} />
@@ -85,6 +87,7 @@ const walletView = (wallet: Wallet | AptosStandardSupportedWallet, onWalletSelec
     return (
       <MenuItem
         key={wallet.name}
+        value={wallet.name}
         onClick={
           wallet.readyState === WalletReadyState.Installed || wallet.readyState === WalletReadyState.Loadable
             ? () => onWalletSelected(wallet.name)

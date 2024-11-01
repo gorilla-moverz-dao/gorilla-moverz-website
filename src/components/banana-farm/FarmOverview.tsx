@@ -1,5 +1,5 @@
 import { useFarmOwnedNFTs } from "./useFarmOwnedNFTs";
-import { Box, Button, Flex, Image, Spinner, Text, useToast } from "@chakra-ui/react";
+import { Box, Button, Flex, Image, Spinner, Text } from "@chakra-ui/react";
 import PageTitle from "../PageTitle";
 import FarmCollectionMint from "./FarmCollectionMint";
 import { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ import FarmCountdown from "./FarmCountdown";
 import useFarmCollection from "./useFarmCollection";
 import BoxBlurred from "../BoxBlurred";
 import useBananaFarm from "../../hooks/useBananaFarm";
+import { toaster } from "@/components/ui/toaster";
 
 interface Props {
   collectionId: `0x${string}`;
@@ -23,7 +24,6 @@ function FarmerOverview({ collectionId, enableFarming }: Props) {
 
   const { address, farm } = useBananaFarm();
   const { refetch: refetchAssets } = useAssets();
-  const toast = useToast();
 
   const { data: farmed_data, refetch: refetchFarmed } = useFarmData();
 
@@ -34,18 +34,16 @@ function FarmerOverview({ collectionId, enableFarming }: Props) {
       const amount = await farm(farmerNFT, partnerNFTs);
       refetchFarmed();
 
-      toast({
+      toaster.create({
         title: "Success",
         description: "Farmed " + amount + " Banana(s)",
-        colorScheme: "green",
-        isClosable: true,
+        type: "success",
       });
     } catch (e) {
-      toast({
+      toaster.create({
         title: "Error",
         description: (e as Error).message,
-        colorScheme: "red",
-        isClosable: true,
+        type: "error",
       });
     }
     refetchAssets();

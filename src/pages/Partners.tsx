@@ -2,19 +2,10 @@ import {
   Button,
   Card,
   CardBody,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
+  DialogRoot,
   GridItem,
   Input,
   Link,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   SimpleGrid,
   Text,
   Textarea,
@@ -25,6 +16,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PageTitle from "../components/PageTitle";
 import { supabase } from "../services/supabase-client";
+import {
+  DialogBackdrop,
+  DialogBody,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+} from "@/components/ui/dialog";
+import { Field } from "@/components/ui/field";
 
 function Partners() {
   const {
@@ -33,7 +33,7 @@ function Partners() {
     reset,
     formState: { errors, isValid },
   } = useForm<Partner>({ resolver: zodResolver(PartnerSchema) });
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { open, onOpen, onClose } = useDisclosure();
 
   const integrations = [
     {
@@ -111,22 +111,22 @@ function Partners() {
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent className="gorillaz-modal">
-          <ModalHeader>Form submitted</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
+      <DialogRoot open={open} onOpenChange={(x) => x.open && onClose()}>
+        <DialogBackdrop />
+        <DialogContent className="gorillaz-modal">
+          <DialogHeader>Form submitted</DialogHeader>
+          <DialogCloseTrigger />
+          <DialogBody>
             <Text>Your form has been submitted. We will reach out to you!</Text>
-          </ModalBody>
+          </DialogBody>
 
-          <ModalFooter>
+          <DialogFooter>
             <Button colorScheme="green" mr={3} onClick={onClose}>
               Close
             </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+          </DialogFooter>
+        </DialogContent>
+      </DialogRoot>
       <div>
         <PageTitle size="xl" paddingTop={0}>
           Integrations
@@ -143,12 +143,12 @@ function Partners() {
           Existing Integrations
         </PageTitle>
 
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={5}>
+        <SimpleGrid columns={{ base: 1, md: 2 }} gap={5}>
           {integrations.map((partner, index) => (
             <GridItem key={index} verticalAlign="center" style={{ display: "flex", alignItems: "center" }}>
-              <Card className="gorillaz-card" width="100%" height="100%" alignItems="center">
+              <Card.Root className="gorillaz-card" width="100%" height="100%" alignItems="center">
                 <CardBody style={{ alignContent: "center", justifyContent: "center", backgroundColor: "10px" }}>
-                  <Link href={partner.href} target="_blank" isExternal>
+                  <Link href={partner.href} target="_blank">
                     <img
                       style={{ maxWidth: "300px", width: "100%", maxHeight: "60px" }}
                       src={partner.src}
@@ -156,7 +156,7 @@ function Partners() {
                     />
                   </Link>
                 </CardBody>
-              </Card>
+              </Card.Root>
             </GridItem>
           ))}
         </SimpleGrid>
@@ -175,82 +175,93 @@ function Partners() {
           form and a founder-level Gorilla (Silverback) will be in touch if it is of interest.
         </Text>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl isInvalid={!!errors.name} marginBottom={4}>
-            <FormLabel>Project Name</FormLabel>
+          <Field invalid={!!errors.name} marginBottom={4} label="Project Name" errorText={errors.name?.message}>
             <Input
               {...register("name")}
               id="name"
               placeholder="Project Name"
               _placeholder={{ opacity: 1, color: "gray.300" }}
             />
-            {errors.name && <FormErrorMessage>{errors.name.message}</FormErrorMessage>}
-          </FormControl>
+          </Field>
 
-          <FormControl isInvalid={!!errors.socials} marginBottom={4}>
-            <FormLabel>Project social media</FormLabel>
+          <Field
+            invalid={!!errors.socials}
+            marginBottom={4}
+            label="Project social media"
+            errorText={errors.socials?.message}
+          >
             <Input
               {...register("socials")}
               id="socials"
               placeholder="twitter/discord/tg/other"
               _placeholder={{ opacity: 1, color: "gray.300" }}
             />
-            {errors.socials && <FormErrorMessage>{errors.socials.message}</FormErrorMessage>}
-          </FormControl>
+          </Field>
 
-          <FormControl isInvalid={!!errors.contact_discord} marginBottom={4}>
-            <FormLabel>Contact person discord</FormLabel>
+          <Field
+            invalid={!!errors.contact_discord}
+            marginBottom={4}
+            label="Contact person discord"
+            errorText={errors.contact_discord?.message}
+          >
             <Input
               {...register("contact_discord")}
               id="contact_discord"
               placeholder="Discord handle that is registered in the Gorilla Moverz discord server"
               _placeholder={{ opacity: 1, color: "gray.300" }}
             />
-            {errors.contact_discord && <FormErrorMessage>{errors.contact_discord.message}</FormErrorMessage>}
-          </FormControl>
+          </Field>
 
-          <FormControl isInvalid={!!errors.description} marginBottom={4}>
-            <FormLabel>Project description</FormLabel>
+          <Field
+            invalid={!!errors.description}
+            marginBottom={4}
+            label="Project description"
+            errorText={errors.description?.message}
+          >
             <Textarea
               {...register("description")}
               id="description"
               placeholder="Please tell us about your project"
               _placeholder={{ opacity: 1, color: "gray.300" }}
             />
-            {errors.description && <FormErrorMessage>{errors.description.message}</FormErrorMessage>}
-          </FormControl>
+          </Field>
 
-          <FormControl isInvalid={!!errors.benefits_partner} marginBottom={4}>
-            <FormLabel>Your benefits</FormLabel>
+          <Field
+            invalid={!!errors.benefits_partner}
+            marginBottom={4}
+            label="Your benefits"
+            errorText={errors.benefits_partner?.message}
+          >
             <Textarea
               {...register("benefits_partner")}
               id="benefits_partner"
               placeholder="Please tell us what you think we can offer your project/community"
               _placeholder={{ opacity: 1, color: "gray.300" }}
             />
-            {errors.benefits_partner && <FormErrorMessage>{errors.benefits_partner.message}</FormErrorMessage>}
-          </FormControl>
+          </Field>
 
-          <FormControl isInvalid={!!errors.benefits_gorillaz} marginBottom={4}>
-            <FormLabel>Our benefits</FormLabel>
+          <Field
+            invalid={!!errors.benefits_gorillaz}
+            marginBottom={4}
+            label="Our benefits"
+            errorText={errors.benefits_gorillaz?.message}
+          >
             <Textarea
               {...register("benefits_gorillaz")}
               id="benefits_gorillaz"
               placeholder="And what your project can offer ours"
               _placeholder={{ opacity: 1, color: "gray.300" }}
             />
-            {errors.benefits_gorillaz && <FormErrorMessage>{errors.benefits_gorillaz.message}</FormErrorMessage>}
-          </FormControl>
+          </Field>
 
-          <FormControl isInvalid={!!errors.comments} marginBottom={4}>
-            <FormLabel>Comments</FormLabel>
+          <Field invalid={!!errors.comments} marginBottom={4} label="Comments" errorText={errors.comments?.message}>
             <Textarea
               {...register("comments")}
               id="comments"
               placeholder="Are there any other things you would like to mention?"
               _placeholder={{ opacity: 1, color: "gray.300" }}
             />
-            {errors.comments && <FormErrorMessage>{errors.comments.message}</FormErrorMessage>}
-          </FormControl>
+          </Field>
 
           <Button colorScheme="green" marginBottom={2} type="submit" disabled={!isValid}>
             Submit

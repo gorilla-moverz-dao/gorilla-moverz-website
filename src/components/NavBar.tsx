@@ -1,6 +1,7 @@
-import { Box, Button } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { NavLink, useNavigate } from "react-router-dom";
 import BoxBlurred from "./BoxBlurred";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   onClose?: () => void;
@@ -27,7 +28,10 @@ function NavBar({ onClose }: Props) {
                 {({ isActive }) => (
                   <Button
                     style={{ width: "100%" }}
-                    colorScheme={isActive ? "green" : "gray"}
+                    colorPalette={isActive ? "green" : "gray"}
+                    backdropBlur="5px"
+                    backdropFilter={"auto"}
+                    variant="subtle"
                     className={isActive ? "active" : ""}
                     onClick={() => {
                       navigate(nav.to);

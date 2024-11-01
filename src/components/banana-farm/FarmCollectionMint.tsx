@@ -1,18 +1,7 @@
 import { FC, FormEvent, useState } from "react";
 import { truncateAddress } from "@aptos-labs/wallet-adapter-react";
 import { useMintData } from "../../hooks/useMintData";
-import {
-  Box,
-  Button,
-  Divider,
-  Flex,
-  Heading,
-  IconButton,
-  Image,
-  Progress,
-  Text,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, IconButton, Image, Separator, Text, useDisclosure } from "@chakra-ui/react";
 import { NETWORK } from "../../constants";
 import { formatDate } from "../../helpers/date-functions";
 import { clampNumber } from "../../helpers/clampNumber";
@@ -23,6 +12,7 @@ import useFarmCollection from "./useFarmCollection";
 import BoxBlurred from "../BoxBlurred";
 import FarmAlert from "./FarmAlert";
 import useLaunchpad from "../../hooks/useLaunchpad";
+import { ProgressRoot } from "@/components/ui/progress";
 
 interface Props {
   collectionId: `0x${string}`;
@@ -34,7 +24,7 @@ function FarmCollectionMint({ collectionId }: Props) {
   const { refetch: refetchOwned } = useFarmOwnedNFTs();
   const col = useFarmCollection(collectionId);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { open, onOpen, onClose } = useDisclosure();
   const discordText =
     /*col?.discord_help ??*/
     `Use the banana farm bot to add your address to allowlist using this command:\n\n**/bananafarm-allowlist address: [address]**\n\nThen you can mint.\n\nIf you have any issues, ask in discord.`.replace(
@@ -58,7 +48,7 @@ function FarmCollectionMint({ collectionId }: Props) {
 
   return (
     <>
-      {isOpen && (
+      {open && (
         <FarmAlert
           title="Join discord and get on the allowlist"
           text={discordText}
@@ -70,11 +60,7 @@ function FarmCollectionMint({ collectionId }: Props) {
       <Flex direction={{ base: "column", md: "row" }} gap={4}>
         <Box flex={2}>
           <Image
-            src={
-              collection?.cdn_asset_uris?.cdn_image_uri ??
-              collection?.cdn_asset_uris?.cdn_animation_uri ??
-              "/nfts/" + col.slug + "/collection.png"
-            }
+            src={collection?.uri ?? "/nfts/" + col.slug + "/collection.png"}
             rounded={4}
             style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.8)" }}
           />
@@ -108,11 +94,11 @@ function FarmCollectionMint({ collectionId }: Props) {
 
               <Box flex={1}>
                 {clampNumber(totalMinted)} / {clampNumber(maxSupply, undefined, 10000)} Minted
-                <Progress value={(totalMinted / maxSupply) * 100} className="h-2" />
+                <ProgressRoot value={(totalMinted / maxSupply) * 100} className="h-2" />
               </Box>
             </Flex>
 
-            <Divider paddingTop={4} paddingBottom={4} />
+            <Separator paddingTop={4} paddingBottom={4} />
 
             <Flex justifyContent="space-between" alignItems="center" paddingBottom={2} paddingTop={2}>
               <Box>Collection Address</Box>
@@ -128,7 +114,9 @@ function FarmCollectionMint({ collectionId }: Props) {
                 target="_blank"
                 href={`https://explorer.aptoslabs.com/account/${collection?.collection_id}?network=${NETWORK}`}
               >
-                <IconButton icon={<FaLink />} aria-label="Copy address" className="dark:invert" />
+                <IconButton aria-label="Copy address" className="dark:invert">
+                  <FaLink />
+                </IconButton>
               </a>
             </Flex>
 
@@ -170,7 +158,9 @@ const AddressButton: FC<{ address: string }> = ({ address }) => {
     <>
       {copied ? "Copied!" : <>{truncateAddress(address)}</>}
       &nbsp;
-      <IconButton icon={<FaCopy />} aria-label="Copy address" onClick={onCopy}></IconButton>
+      <IconButton aria-label="Copy address" onClick={onCopy}>
+        <FaCopy />
+      </IconButton>
     </>
   );
 };

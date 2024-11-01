@@ -1,28 +1,25 @@
 import { Analytics } from "@vercel/analytics/react";
 import { NavLink, Outlet } from "react-router-dom";
-import {
-  Box,
-  Drawer,
-  DrawerBody,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
-  Flex,
-  Heading,
-  IconButton,
-  useDisclosure,
-  useMediaQuery,
-} from "@chakra-ui/react";
+import { Box, Flex, Heading, IconButton, useDisclosure, useMediaQuery } from "@chakra-ui/react";
 import NavBar from "../components/NavBar";
 import BoxBlurred from "../components/BoxBlurred";
 import { FiMenu } from "react-icons/fi";
 import SocialIcons from "../components/SocialIcons";
 import { Helmet } from "react-helmet";
+import {
+  DrawerRoot,
+  DrawerContent,
+  DrawerBackdrop,
+  DrawerHeader,
+  DrawerBody,
+  DrawerCloseTrigger,
+} from "@/components/ui/drawer";
 
 function Layout() {
-  const [isMobile] = useMediaQuery("(max-width: 768px)");
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const [isMobile] = useMediaQuery(["(max-width: 768px)"], { ssr: false });
+  // TODO: fix this
+  const isMobile = false;
+  const { open, onOpen, onClose } = useDisclosure();
 
   return (
     <>
@@ -43,21 +40,21 @@ function Layout() {
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
       {isMobile && (
-        <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
-          <DrawerOverlay />
+        <DrawerRoot placement="end" onOpenChange={(x) => x.open && onClose()} open={open}>
+          <DrawerBackdrop />
           <DrawerContent
             style={{
               backdropFilter: "blur(20px)",
               backgroundColor: "rgba(0, 0, 0, 0.5)",
             }}
           >
-            <DrawerCloseButton />
+            <DrawerCloseTrigger />
             <DrawerHeader>Gorilla Moverz</DrawerHeader>
             <DrawerBody>
               <NavBar onClose={onClose} />
             </DrawerBody>
           </DrawerContent>
-        </Drawer>
+        </DrawerRoot>
       )}
 
       <Flex direction={"column"}>
@@ -97,8 +94,9 @@ function Layout() {
               }}
               onClick={onOpen}
               aria-label="Open menu"
-              icon={<FiMenu />}
-            />
+            >
+              <FiMenu />
+            </IconButton>
           )}
 
           {!isMobile && (
