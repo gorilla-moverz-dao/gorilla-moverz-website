@@ -61,7 +61,11 @@ function NFTBrowser() {
                   <CardBody>
                     <LazyLoadImage
                       alt={nft.description}
-                      src={nft.cdn_asset_uris?.cdn_image_uri ?? ""}
+                      src={
+                        "https://gorilla-moverz.xyz/nft-founders-collection/images/" +
+                        nft.token_name.split("#")[1] +
+                        ".png"
+                      }
                       width={260}
                       height={260}
                       effect="blur"

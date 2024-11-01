@@ -9,10 +9,10 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "deploy:bananafarm": "tsx ./scripts/deploy-bananafarm.ts",
-    "generate:database-types": "supabase gen types --lang=typescript --local > src/database.types.ts && supabase gen types --lang=typescript --local > supabase/functions/_shared/database.types.ts",
     "build-abi": "tsx ./scripts/build-abi.ts",
     "resize-images": "tsx ./scripts/resize-images.ts",
-    "codegen": "graphql-codegen --config codegen.ts"
+    "generate:database-types": "supabase gen types --lang=typescript --local > src/database.types.ts && supabase gen types --lang=typescript --local > supabase/functions/_shared/database.types.ts",
+    "generate:graphql-types": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
     "@aptos-labs/ts-sdk": "1.27.1",

@@ -17,17 +17,12 @@ function NFTDetail() {
   if (!nft) return <div>NFT not found</div>;
 
   const properties = nft.current_token_data?.token_properties;
+  const imageUrl = "https://gorilla-moverz.xyz/nft-founders-collection/images/" + id + ".png";
 
   return (
     <Flex direction={{ base: "column", md: "row" }} gap={6}>
       <Box flex={2}>
-        {nft.current_token_data?.cdn_asset_uris?.cdn_image_uri && (
-          <Image
-            rounded={8}
-            src={nft.current_token_data.cdn_asset_uris.cdn_image_uri}
-            style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.8)" }}
-          />
-        )}
+        <Image rounded={8} src={imageUrl} style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.8)" }} />
 
         <Box paddingTop={4}>
           <Button marginBottom={2} onClick={() => setShowQRCode(!showQRCode)}>
