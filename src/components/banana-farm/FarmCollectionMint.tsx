@@ -51,7 +51,7 @@ function FarmCollectionMint({ collectionId }: Props) {
     e.preventDefault();
     if (!address || !data?.isMintActive) return;
 
-    await mintNFT(collection?.collection_id);
+    await mintNFT(collection?.collection_id as `0x${string}`);
     refetchOwned();
     refetchMint();
   };
@@ -70,11 +70,7 @@ function FarmCollectionMint({ collectionId }: Props) {
       <Flex direction={{ base: "column", md: "row" }} gap={4}>
         <Box flex={2}>
           <Image
-            src={
-              collection?.cdn_asset_uris?.cdn_image_uri ??
-              collection?.cdn_asset_uris?.cdn_animation_uri ??
-              "/nfts/" + col.slug + "/collection.png"
-            }
+            src={"/nfts/" + col.slug + "/collection.png"}
             rounded={4}
             style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.8)" }}
           />

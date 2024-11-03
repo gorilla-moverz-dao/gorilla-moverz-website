@@ -8,6 +8,7 @@ import { ABI as bananaABI } from "./banana.ts";
 const aptosConfig = new AptosConfig({
   network: NETWORK,
   fullnode: FULL_NODE,
+  indexer: "https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql",
 });
 const aptosClient = new Aptos(aptosConfig);
 const bananaFarmClient = createSurfClient(aptosClient).useABI(bananaFarmABI);

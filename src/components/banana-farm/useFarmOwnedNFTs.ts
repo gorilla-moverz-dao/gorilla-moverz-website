@@ -1,37 +1,44 @@
 import { useQuery } from "@tanstack/react-query";
 import useMovement from "../../hooks/useMovement";
 import useFarmCollections from "./useFarmCollections";
+import { graphql } from "../../gql";
 
-export interface Token {
-  token_name: string;
-  description: string;
-  token_data_id: `0x${string}`;
-  token_uri: string;
-  collection_id: string;
-  current_collection: {
-    collection_id: string;
-    collection_name: string;
-    description: string;
-  };
-  cdn_asset_uris: {
-    cdn_image_uri: string;
-    asset_uri: string;
-    raw_image_uri: string;
-  };
-}
-
-export interface CurrentTokenData {
-  current_token_data: Token;
-  owner_address: string;
-  amount: string;
-}
-
-interface NFTsQueryResult {
-  current_token_ownerships_v2: Array<CurrentTokenData>;
-}
+const query = graphql(`
+  query GetAccountNfts($address: String, $collectionIds: [String!]) {
+    current_token_ownerships_v2(
+      where: {
+        owner_address: { _eq: $address }
+        amount: { _gt: "0" }
+        current_token_data: { current_collection: { collection_id: { _in: $collectionIds } } }
+      }
+    ) {
+      current_token_data {
+        collection_id
+        largest_property_version_v1
+        current_collection {
+          collection_id
+          collection_name
+          description
+          creator_address
+          uri
+          __typename
+        }
+        description
+        token_name
+        token_data_id
+        token_standard
+        token_uri
+        __typename
+      }
+      owner_address
+      amount
+      __typename
+    }
+  }
+`);
 
 export function useFarmOwnedNFTs() {
-  const { address, aptosClient } = useMovement();
+  const { address, graphqlRequest, indexerUrl } = useMovement();
   const { data: collections, isLoading } = useFarmCollections();
 
   return useQuery({
@@ -44,47 +51,9 @@ export function useFarmOwnedNFTs() {
 
         const collectionIds = collections?.map((collection) => collection.collection_address);
 
-        const res = await aptosClient.queryIndexer<NFTsQueryResult>({
-          query: {
-            variables: {
-              address,
-              collectionIds,
-            },
-            query: `
-						query GetAccountNfts($address: String, $collectionIds: [String!]) {
-              current_token_ownerships_v2(
-                where: {owner_address: {_eq: $address}, amount: {_gt: "0"}, current_token_data: {current_collection: {collection_id: {_in: $collectionIds}}}}
-              ) {
-                current_token_data {
-                  collection_id
-                  largest_property_version_v1
-                  current_collection {
-                    collection_id
-                    collection_name
-                    description
-                    creator_address
-                    uri
-                    __typename
-                  }
-                  description
-                  token_name
-                  token_data_id
-                  token_standard
-                  token_uri
-                  cdn_asset_uris {
-                    cdn_image_uri
-                    asset_uri
-                    raw_image_uri
-                  }
-                  __typename
-                }
-                owner_address
-                amount
-                __typename
-              }
-            }
-`,
-          },
+        const res = await graphqlRequest(indexerUrl, query, {
+          address,
+          collectionIds,
         });
 
         return res.current_token_ownerships_v2;
