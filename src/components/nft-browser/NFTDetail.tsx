@@ -17,7 +17,8 @@ function NFTDetail() {
   if (!nft) return <div>NFT not found</div>;
 
   const properties = nft.current_token_data?.token_properties;
-  const imageUrl = "https://gorilla-moverz.xyz/nft-founders-collection/images/" + id + ".png";
+  const imageUrl =
+    "https://pinphweythafvrejqfgm.supabase.co/storage/v1/object/public/nft-founders-collection/images/" + id + ".png";
 
   return (
     <Flex direction={{ base: "column", md: "row" }} gap={6}>

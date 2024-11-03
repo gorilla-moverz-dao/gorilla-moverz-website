@@ -62,7 +62,7 @@ function NFTBrowser() {
                     <LazyLoadImage
                       alt={nft.description}
                       src={
-                        "https://gorilla-moverz.xyz/nft-founders-collection/images/" +
+                        "https://pinphweythafvrejqfgm.supabase.co/storage/v1/object/public/nft-founders-collection/images/" +
                         nft.token_name.split("#")[1] +
                         ".png"
                       }
