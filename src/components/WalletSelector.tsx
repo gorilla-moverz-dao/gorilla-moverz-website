@@ -10,9 +10,12 @@ import {
 import { Badge, Box, Button, Image, Menu, MenuButton, MenuItem, MenuList, Text, Tooltip } from "@chakra-ui/react";
 import { FaChevronDown } from "react-icons/fa6";
 import { IoIosLogOut } from "react-icons/io";
+import { SUPPORTED_WALLETS } from "../constants";
 
 export function WalletSelector() {
   const { connect, disconnect, account, wallets, connected, network, wallet } = useWallet();
+
+  const supportedWallets = wallets?.filter((wallet) => SUPPORTED_WALLETS.includes(wallet.name));
 
   const onWalletSelected = (wallet: WalletName) => {
     connect(wallet);
@@ -46,7 +49,7 @@ export function WalletSelector() {
           Connect Wallet
         </MenuButton>
         <MenuList>
-          {wallets?.map((wallet: Wallet | AptosStandardSupportedWallet) => {
+          {supportedWallets?.map((wallet: Wallet | AptosStandardSupportedWallet) => {
             return walletView(wallet, onWalletSelected);
           })}
         </MenuList>

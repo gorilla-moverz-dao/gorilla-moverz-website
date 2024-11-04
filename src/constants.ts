@@ -12,3 +12,4 @@ export const EXCLUDE_LEADERBOARD = [
   "0x2c9ab467113c6c3c1a990ae0eec00d4b8d0012278079c3c7705b7cdf57264d14",
 ];
 export const FOUNDERS_COLLECTION_ID = "0x323f7c341d2fdfda5c5dfefb1b51cad9063a0ad599fdc716ba12fea528510c5b";
+export const SUPPORTED_WALLETS = ["Nightly", "Razor Wallet"];
