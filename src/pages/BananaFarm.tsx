@@ -114,11 +114,7 @@ function BananaFarm() {
 
             <Text paddingTop={2}>
               🎬{" "}
-              <Link
-                isExternal
-                href="https://www.youtube.com/watch?v=PjMEkM_0yog&lc=Ugx8JA7BEGUaUd_wLX54AaABAg"
-                target="_blank"
-              >
+              <Link isExternal href="https://www.youtube.com/watch?v=C_ahuRpoStU" target="_blank">
                 <b>View How to Video</b>
               </Link>
             </Text>
