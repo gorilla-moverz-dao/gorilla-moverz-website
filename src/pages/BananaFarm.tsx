@@ -105,10 +105,7 @@ function BananaFarm() {
             ) : (
               <>
                 <Text paddingTop={2}>Please connect your wallet to access the Banana Farm</Text>
-                <Text paddingTop={2}>
-                  Use Petra Wallet or Nightly and connect to Aptos Testnet
-                  <br /> <b>until Movement deployment is ready</b>
-                </Text>
+                <Text paddingTop={2}>Use Razor Wallet or Nightly and connect to the Porto Testnet</Text>
               </>
             )}
 
