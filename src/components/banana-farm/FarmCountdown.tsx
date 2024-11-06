@@ -12,7 +12,7 @@ export default function FarmCountdown({ seconds, onActivate }: { seconds: number
     const endTime = new Date().getTime() + seconds * 1000;
 
     const interval = setInterval(() => {
-      const now = new Date().getTime();
+      const now = new Date().getTime() - 1000;
       const difference = endTime - now;
 
       if (difference <= 0) {
