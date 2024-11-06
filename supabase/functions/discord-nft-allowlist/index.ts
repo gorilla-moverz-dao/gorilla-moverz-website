@@ -76,7 +76,7 @@ async function home(request: Request) {
       return json({
         type: 4,
         data: {
-          content: "Address not found:" + ex.message,
+          content: ex.data.message,
         },
       });
     }
