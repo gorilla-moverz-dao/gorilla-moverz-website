@@ -1,15 +1,4 @@
-import { Account, Aptos, AptosConfig, Ed25519PrivateKey, Network } from "npm:@aptos-labs/ts-sdk@^1.18.1";
-
-const aptosConfig = new AptosConfig({
-  network: Network.CUSTOM,
-  fullnode: "https://aptos.testnet.porto.movementlabs.xyz/v1",
-  indexer: "https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql",
-});
-const aptos = new Aptos(aptosConfig);
-const privateKey = new Ed25519PrivateKey(Deno.env.get("APTOS_PK")!);
-const signer = Account.fromPrivateKey({
-  privateKey,
-});
+import { aptos, signer } from "../_shared/aptos-client.ts";
 
 export async function addAllowlistAddresses(address: string, guildId: string) {
   const addr = Deno.env.get("ACCOUNT_ADDRESS")!;
