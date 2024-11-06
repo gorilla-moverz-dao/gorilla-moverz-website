@@ -1,4 +1,4 @@
-import { Card, CardBody } from "@chakra-ui/card";
+import { Card, CardBody } from "@chakra-ui/react";
 import { FOUNDERS_COLLECTION_ID } from "../../constants";
 import { Heading, SimpleGrid, Spinner, Stack } from "@chakra-ui/react";
 import { useLocation, useNavigate } from "react-router-dom";

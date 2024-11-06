@@ -1,5 +1,5 @@
 import { useFarmOwnedNFTs } from "./useFarmOwnedNFTs";
-import { Box, Button, Flex, Image, Spinner, Text, useToast } from "@chakra-ui/react";
+import { Box, Flex, Image, Spinner, Text, useToast } from "@chakra-ui/react";
 import PageTitle from "../PageTitle";
 import FarmCollectionMint from "./FarmCollectionMint";
 import { useEffect, useState } from "react";
@@ -108,15 +108,12 @@ function FarmerOverview({ collectionId, enableFarming }: Props) {
                   <>
                     {address && farmed_data && (
                       <Box paddingTop={4}>
-                        <Button
-                          onClick={() =>
+                        <FarmCountdown
+                          seconds={farmed_data.remainingTime > 0 ? farmed_data.remainingTime : 0}
+                          onActivate={() =>
                             farmNFT(farmerNFT.current_token_data?.token_data_id as `0x${string}`, partnerNFTIds)
                           }
-                          colorScheme={farmed_data.remainingTime > 0 ? "gray" : "green"}
-                          disabled={farmed_data.remainingTime > 0}
-                        >
-                          <FarmCountdown seconds={farmed_data.remainingTime > 0 ? farmed_data.remainingTime : 0} />
-                        </Button>
+                        />
                         <Text paddingTop={2}>
                           <i>
                             Last Farmed:&nbsp;

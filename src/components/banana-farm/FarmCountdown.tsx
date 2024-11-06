@@ -1,6 +1,7 @@
+import { Button } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 
-export default function FarmCountdown({ seconds }: { seconds: number }) {
+export default function FarmCountdown({ seconds, onActivate }: { seconds: number; onActivate: () => void }) {
   const [timeLeft, setTimeLeft] = useState({
     mins: Math.floor(seconds / 60),
     secs: seconds % 60,
@@ -28,11 +29,14 @@ export default function FarmCountdown({ seconds }: { seconds: number }) {
     return () => clearInterval(interval);
   }, [seconds]);
 
-  if (timeLeft.mins <= 0 && timeLeft.secs <= 0) return "Farm Bananas";
+  const enabled = timeLeft.mins <= 0 && timeLeft.secs <= 0;
+  const buttonText = enabled
+    ? "Farm Bananas"
+    : `Farm Bananas in ${timeLeft.mins}:${timeLeft.secs < 10 ? `0${timeLeft.secs}` : timeLeft.secs}`;
 
   return (
-    <>
-      Farm Bananas in {timeLeft.mins}:{timeLeft.secs < 10 ? `0${timeLeft.secs}` : timeLeft.secs}
-    </>
+    <Button onClick={onActivate} colorScheme={enabled ? "green" : "gray"} disabled={!enabled}>
+      {buttonText}
+    </Button>
   );
 }
