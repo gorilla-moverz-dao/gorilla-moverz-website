@@ -1,6 +1,7 @@
 import { json, serve, validateRequest } from "https://deno.land/x/sift@0.6.0/mod.ts";
 import { DiscordCommandType, DiscordPostData, verifySignature } from "../_shared/discord-functions.ts";
 import { supabaseClient } from "../_shared/supabase-client.ts";
+import { aptos } from "../_shared/aptos-client.ts";
 
 serve({
   "/discord-nft-allowlist": home,
@@ -57,7 +58,28 @@ async function home(request: Request) {
       });
     }
 
-    const address = data.options.find((option) => option.name === "address")?.value;
+    const address = data.options.find((option) => option.name === "address")?.value as string;
+
+    // Validate the address
+    try {
+      const accountInfo = await aptos.account.getAccountInfo({ accountAddress: address });
+      if (!accountInfo) {
+        return json({
+          type: 4,
+          data: {
+            content: "Address not found",
+          },
+        });
+      }
+    } catch (ex) {
+      console.log(ex);
+      return json({
+        type: 4,
+        data: {
+          content: "Address not found:" + ex.message,
+        },
+      });
+    }
 
     try {
       if (!address) throw new Error("Address not provided");
