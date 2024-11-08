@@ -22,7 +22,7 @@ function FarmLeaderboard() {
             <Tbody>
               {data?.map((item, index) => (
                 <Tr key={index}>
-                  <Td>{truncateAddress(item.owner_address)}</Td>
+                  <Td>{item.discord_user_name ?? truncateAddress(item.owner_address)}</Td>
                   <Td isNumeric>{parseInt(item.amount) / Math.pow(10, 9)}</Td>
                 </Tr>
               ))}
