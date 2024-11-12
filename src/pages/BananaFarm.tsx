@@ -40,7 +40,7 @@ function BananaFarm() {
 
   useEffect(() => {
     if (address) {
-      onOpen();
+      // onOpen();
     }
   }, [address]);
 
@@ -77,13 +77,17 @@ function BananaFarm() {
                 ))}
               </HStack>
 
-              <Box padding={2}>
+              <Flex padding={2} flexDir={"column"} flex={1}>
                 <Heading as="h1" size={"xl"} paddingBottom={12} textAlign={"right"} paddingTop={4}>
                   {activeNavigation?.name}
                 </Heading>
 
-                <Outlet />
-              </Box>
+                <Box flex={1} position={"relative"}>
+                  <Box position={"absolute"} top={0} left={0} right={0} bottom={0} overflow={"auto"}>
+                    <Outlet />
+                  </Box>
+                </Box>
+              </Flex>
             </Flex>
           </ModalBody>
 
@@ -98,8 +102,8 @@ function BananaFarm() {
           <Box>
             {address ? (
               <Box paddingTop={4}>
-                <Button onClick={onOpen} colorScheme="green">
-                  Open Banana Farm
+                <Button onClick={onOpen} disabled={true} colorScheme="green">
+                  Banana Farm soon
                 </Button>
               </Box>
             ) : (
