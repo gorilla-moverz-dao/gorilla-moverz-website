@@ -5,13 +5,29 @@ import BoxBlurred from "../BoxBlurred";
 import PageTitle from "../PageTitle";
 import { truncateAddress } from "@aptos-labs/wallet-adapter-react";
 import { QRCodeCanvas } from "qrcode.react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FOUNDERS_COLLECTION_ID } from "../../constants";
 
 function NFTDetail() {
   const { id } = useParams();
   const { data: nft, isLoading } = useNFT("Gorilla Founder #" + id, FOUNDERS_COLLECTION_ID);
   const [showQRCode, setShowQRCode] = useState(false);
+  const [qrSize, setQrSize] = useState(352);
+
+  useEffect(() => {
+    const updateQRSize = () => {
+      if (window.innerWidth <= 768) {
+        const containerSize = Math.min(window.innerWidth - 32, 353.6);
+        setQrSize(containerSize - 32); // padding'leri çıkarıyoruz (2 * 16px)
+      } else {
+        setQrSize(352);
+      }
+    };
+
+    updateQRSize();
+    window.addEventListener('resize', updateQRSize);
+    return () => window.removeEventListener('resize', updateQRSize);
+  }, []);
 
   if (isLoading) return <Spinner />;
   if (!nft) return <div>NFT not found</div>;
@@ -30,17 +46,25 @@ function NFTDetail() {
             {showQRCode ? "Hide QR Code" : "Show QR Code"}
           </Button>
           {showQRCode && (
-            <BoxBlurred>
-              <Box padding={4}>
-                <QRCodeCanvas
-                  style={{ paddingTop: 10 }}
-                  value={window.location.href}
-                  size={320}
-                  bgColor={"#00000000"}
-                  fgColor={"#dddddd"}
-                />
-              </Box>
-            </BoxBlurred>
+            <Box 
+              width={{ base: "100%", md: "353.6px" }}
+              height={{ base: "auto", md: "353.6px" }}
+            >
+              <BoxBlurred padding={4}>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <QRCodeCanvas
+                    value={window.location.href}
+                    size={qrSize}
+                    bgColor={"#00000000"}
+                    fgColor={"#dddddd"}
+                  />
+                </Box>
+              </BoxBlurred>
+            </Box>
           )}
         </Box>
       </Box>
