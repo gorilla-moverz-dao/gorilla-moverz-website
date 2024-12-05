@@ -132,7 +132,7 @@ function Partners() {
           Integrations
         </PageTitle>
         <Text>
-          Gorilla Moverz is the first NFT project (with an ASSociated memecoin) on Movement.
+          Gorilla Moverz is the first NFT project on Movement.
           <br />
           Our mission is to be critical “social infrastructure”; a community of engaged, fanatically supportive users of
           Movement and the whole Movement Ecosystem. We work closely with the Movement team in striving to fulfil our
