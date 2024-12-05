@@ -101,6 +101,12 @@ function Media() {
       url: "https://www.youtube.com/embed/kwjgQLNQRb8?si=U4AQjgG2Gip-9Z5y",
       preview: "https://img.youtube.com/vi/kwjgQLNQRb8/0.jpg",
     },
+    {
+      title: "Movecast Episode #13",
+      description: "Movement Labs - A Crypto Network for People - Will (Movement Labs)",
+      url: "https://www.youtube.com/embed/F08DX5CXMp0?si=OWGIdw51Bq4-DnKa",
+      preview: "https://img.youtube.com/vi/F08DX5CXMp0/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
