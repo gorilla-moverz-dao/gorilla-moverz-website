@@ -29,12 +29,14 @@ function NFTBrowser() {
     navigate(`/nfts?filter=${queryString}`);
   };
 
-  const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteCollectionNFTs({
+  const { data, isLoading, fetchNextPage, hasNextPage, error } = useInfiniteCollectionNFTs({
     collection_id: { _eq: FOUNDERS_COLLECTION_ID },
     token_properties: { _contains: filter },
   });
 
   if (isLoading) return <div>Loading...</div>;
+
+  if (error) return <div>Error: {error.message}</div>;
 
   const itemsCount = data?.pages.reduce((acc, page) => acc + page.length, 0) || 0;
 
