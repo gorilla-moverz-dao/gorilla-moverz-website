@@ -46,7 +46,7 @@ export function useCollectionNFTs(filter: Current_Token_Datas_V2_Bool_Exp) {
         return nfts;
       } catch (error) {
         console.error(error);
-        return null;
+        throw error;
       }
     },
   });
