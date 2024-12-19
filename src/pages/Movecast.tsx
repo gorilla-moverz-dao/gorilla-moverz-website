@@ -107,6 +107,12 @@ function Media() {
       url: "https://www.youtube.com/embed/F08DX5CXMp0?si=OWGIdw51Bq4-DnKa",
       preview: "https://img.youtube.com/vi/F08DX5CXMp0/0.jpg",
     },
+    {
+      title: "Movecast Episode #14",
+      description: "Nightly Building a Wallet on Movement",
+      url: "https://www.youtube.com/embed/FFEF2Lv6_i4?si=PcZXtaPg6yz_Cek-",
+      preview: "https://img.youtube.com/vi/FFEF2Lv6_i4/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
