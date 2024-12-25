@@ -113,6 +113,12 @@ function Media() {
       url: "https://www.youtube.com/embed/FFEF2Lv6_i4?si=PcZXtaPg6yz_Cek-",
       preview: "https://img.youtube.com/vi/FFEF2Lv6_i4/0.jpg",
     },
+    {
+      title: "Movecast Episode #15",
+      description: "Henry Social - Yield on Crypto Cashbacks in web3 powered on Movement Labs",
+      url: "https://www.youtube.com/embed/mO2LjE2GOEo?si=f-BrnjNN5hbLQx-L",
+      preview: "https://img.youtube.com/vi/mO2LjE2GOEo/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
