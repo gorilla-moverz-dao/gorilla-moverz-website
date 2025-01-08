@@ -119,6 +119,12 @@ function Media() {
       url: "https://www.youtube.com/embed/mO2LjE2GOEo?si=f-BrnjNN5hbLQx-L",
       preview: "https://img.youtube.com/vi/mO2LjE2GOEo/0.jpg",
     },
+    {
+      title: "Movecast Episode #16",
+      description: "WarpGate - Why we need Memecoins on Movement Labs",
+      url: "https://www.youtube.com/embed/BFSwStTtEDI?si=826k5WRXKldzEknG",
+      preview: "https://img.youtube.com/vi/BFSwStTtEDI/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
