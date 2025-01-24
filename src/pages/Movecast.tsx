@@ -125,6 +125,12 @@ function Media() {
       url: "https://www.youtube.com/embed/BFSwStTtEDI?si=826k5WRXKldzEknG",
       preview: "https://img.youtube.com/vi/BFSwStTtEDI/0.jpg",
     },
+    {
+      title: "Movecast Episode #17",
+      description: "Arche Protocol - The First Stablecoin on Movement Labs",
+      url: "https://www.youtube.com/embed/TvBLZDd4ZD0?si=Kbnv7Sxg3YZC_249",
+      preview: "https://img.youtube.com/vi/TvBLZDd4ZD0/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
