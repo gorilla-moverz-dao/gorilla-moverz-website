@@ -131,6 +131,12 @@ function Media() {
       url: "https://www.youtube.com/embed/TvBLZDd4ZD0?si=Kbnv7Sxg3YZC_249",
       preview: "https://img.youtube.com/vi/TvBLZDd4ZD0/0.jpg",
     },
+    {
+      title: "Movecast Episode #18",
+      description: "UP Network - Onboarding Billions with the Agentic OS powered by Movement Labs",
+      url: "https://www.youtube.com/embed/K0G8dYSgT3Q?si=CIj3A74DlebSqmuS",
+      preview: "https://img.youtube.com/vi/K0G8dYSgT3Q/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
