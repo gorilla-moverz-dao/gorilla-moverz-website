@@ -137,6 +137,12 @@ function Media() {
       url: "https://www.youtube.com/embed/K0G8dYSgT3Q?si=CIj3A74DlebSqmuS",
       preview: "https://img.youtube.com/vi/K0G8dYSgT3Q/0.jpg",
     },
+    {
+      title: "Movecast Episode #19",
+      description: "Colony - Community Driven Ecosystem Accelerator on Movement Labs",
+      url: "https://www.youtube.com/embed/Hxefqv1ewIc?si=flaMBwb8rthY_goq",
+      preview: "https://img.youtube.com/vi/Hxefqv1ewIc/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
