@@ -143,6 +143,12 @@ function Media() {
       url: "https://www.youtube.com/embed/Hxefqv1ewIc?si=flaMBwb8rthY_goq",
       preview: "https://img.youtube.com/vi/Hxefqv1ewIc/0.jpg",
     },
+    {
+      title: "Movecast Episode #20",
+      description: "Novastro - Tokenize Real World Assets (RWAs) on Movement Labs",
+      url: "https://www.youtube.com/embed/cROeut8WNXg?si=atxC0CVUE4Ltv7YL",
+      preview: "https://img.youtube.com/vi/cROeut8WNXg/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
