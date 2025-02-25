@@ -12,6 +12,7 @@ import BeaconEventsPage from "./pages/BeaconEventsPage";
 import { farmRoutes } from "./components/banana-farm/routes";
 import GalleryPage from "./pages/GalleryPage";
 import NFTDetail from "./components/nft-browser/NFTDetail";
+import CheckerPage from "./pages/CheckerPage";
 
 const router = createBrowserRouter([
   {
@@ -26,11 +27,8 @@ const router = createBrowserRouter([
       { path: "gallery", element: <GalleryPage /> },
       { path: "partners", element: <Partners /> },
       { path: "beacon-events", element: <BeaconEventsPage /> },
-      {
-        path: "bananas",
-        element: <BananaFarm />,
-        children: farmRoutes,
-      },
+      { path: "checker", element: <CheckerPage /> },
+      { path: "bananas", element: <BananaFarm />, children: farmRoutes },
     ],
   },
 ]);

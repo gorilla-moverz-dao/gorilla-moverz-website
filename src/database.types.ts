@@ -129,6 +129,27 @@ export type Database = {
           },
         ]
       }
+      community_collection_allowlist: {
+        Row: {
+          created_at: string
+          id: number
+          spots: number | null
+          wallet: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          spots?: number | null
+          wallet?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          spots?: number | null
+          wallet?: string | null
+        }
+        Relationships: []
+      }
       partner: {
         Row: {
           benefits_gorillaz: string | null
