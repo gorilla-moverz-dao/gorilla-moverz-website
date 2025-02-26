@@ -35,7 +35,12 @@ function CheckerPage() {
             <Input type="text" placeholder="Enter your wallet address" ref={walletAddressRef} />
           </FormControl>
 
-          {spots != null && <Text color="lightgreen"> You have {spots} guaranteed WL spots</Text>}
+          {spots != null && (
+            <Text color="lightgreen">
+              {" "}
+              You have {spots} guaranteed WL {spots === 1 ? "spot" : "spots"}
+            </Text>
+          )}
           {error && (
             <Text color="red">
               {error}. Go to this{" "}
