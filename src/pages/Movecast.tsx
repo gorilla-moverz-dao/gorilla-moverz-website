@@ -149,6 +149,12 @@ function Media() {
       url: "https://www.youtube.com/embed/cROeut8WNXg?si=atxC0CVUE4Ltv7YL",
       preview: "https://img.youtube.com/vi/cROeut8WNXg/0.jpg",
     },
+    {
+      title: "Movecast Episode #21",
+      description: "Swipe to bet - Hookt Revolutionizes Predicting Markets",
+      url: "https://www.youtube.com/embed/XPqMoHn92uQ?si=SeNbSfg8FpoEpQxA",
+      preview: "https://img.youtube.com/vi/XPqMoHn92uQ/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
