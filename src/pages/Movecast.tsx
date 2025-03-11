@@ -155,6 +155,12 @@ function Media() {
       url: "https://www.youtube.com/embed/XPqMoHn92uQ?si=SeNbSfg8FpoEpQxA",
       preview: "https://img.youtube.com/vi/XPqMoHn92uQ/0.jpg",
     },
+    {
+      title: "Movecast Episode #22",
+      description: "Play to Earn Memecoin on Movement Labs",
+      url: "https://www.youtube.com/embed/kgOce4D3KsM?si=VNBj0Bi36yMyJ2D5",
+      preview: "https://img.youtube.com/vi/kgOce4D3KsM/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
