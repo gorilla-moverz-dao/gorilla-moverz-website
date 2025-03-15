@@ -40,7 +40,7 @@ function BananaFarm() {
 
   useEffect(() => {
     if (address) {
-      // onOpen();
+      onOpen();
     }
   }, [address]);
 

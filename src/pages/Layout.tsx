@@ -65,8 +65,8 @@ function Layout() {
           <NavLink to={"/"}>
             <img
               src="/images/gogo-shake.png"
-              width={isMobile ? 120 : 200}
-              style={{ paddingLeft: isMobile ? 0 : 20 }}
+              width={isMobile ? 120 : 120}
+              style={{ paddingLeft: isMobile ? 0 : 20, marginTop: "-20px" }}
               className="logo"
               alt="GOGO logo"
             />
@@ -84,7 +84,7 @@ function Layout() {
           ) : (
             <Box flex="1" textAlign={"left"}>
               <Heading marginLeft={12} className="logo-text">
-                Gorilla Moverz
+                Gorilla Moverz - Banana Farm
               </Heading>
             </Box>
           )}
@@ -102,19 +102,13 @@ function Layout() {
           )}
 
           {!isMobile && (
-            <Box paddingLeft={isMobile ? 0 : 4}>
+            <Box paddingLeft={isMobile ? 0 : 4} paddingTop={4}>
               <SocialIcons />
             </Box>
           )}
         </Flex>
         <Flex>
-          {!isMobile && (
-            <Box width={300} paddingLeft={4} paddingRight={4}>
-              <NavBar />
-            </Box>
-          )}
-
-          <Box width={"100%"} textAlign={"left"} marginTop={isMobile ? 0 : -106}>
+          <Box width={"100%"} textAlign={"left"} marginTop={isMobile ? 0 : -2}>
             <BoxBlurred>
               <Box padding={4}>
                 <Outlet />
