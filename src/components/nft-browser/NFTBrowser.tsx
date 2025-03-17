@@ -7,12 +7,12 @@ import { useInfiniteCollectionNFTs } from "../../hooks/useInfiniteCollectionNFTs
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
-function NFTBrowser({ collectionId }: { collectionId: string }) {
+function NFTBrowser({ collectionId, collectionName }: { collectionId: string; collectionName: string }) {
   const searchParams = new URLSearchParams(useLocation().search);
   const filterFromQueryString = searchParams.get("filter");
   const [filter, setFilter] = useState(filterFromQueryString ? JSON.parse(filterFromQueryString) : {});
   const navigate = useNavigate();
-  const isDetailPageActive = useLocation().pathname.includes("nfts/founder");
+  const isDetailPageActive = useLocation().pathname.includes("nfts/" + collectionName);
 
   const buildFilter = (property: string, value: string) => {
     const newFilter = { ...filter };
@@ -56,7 +56,7 @@ function NFTBrowser({ collectionId }: { collectionId: string }) {
                   className="gorillaz-card"
                   key={nft.token_data_id}
                   onClick={() => {
-                    navigate(`/nfts/founder/${nft.token_name.split("#")[1]}`);
+                    navigate(`/nfts/${collectionName}/${nft.token_name.split("#")[1]}`);
                   }}
                 >
                   <CardBody>

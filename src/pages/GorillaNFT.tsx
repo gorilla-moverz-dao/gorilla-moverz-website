@@ -13,7 +13,7 @@ function GorillaNFT({ collectionId, title, path }: { collectionId: string; title
       <Outlet />
 
       <div style={{ display: detailRouteActive ? "none" : "block" }}>
-        <NFTBrowser collectionId={collectionId} />
+        <NFTBrowser collectionId={collectionId} collectionName={path} />
       </div>
     </>
   );
