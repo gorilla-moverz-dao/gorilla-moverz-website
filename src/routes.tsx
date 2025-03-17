@@ -6,10 +6,8 @@ import About from "./pages/About";
 import Partners from "./pages/Partners";
 import GorillaNFT from "./pages/GorillaNFT";
 import Media from "./pages/Movecast";
-import BananaFarm from "./pages/BananaFarm";
 import BeaconEventsPage from "./pages/BeaconEventsPage";
 
-import { farmRoutes } from "./components/banana-farm/routes";
 import GalleryPage from "./pages/GalleryPage";
 import NFTDetail from "./components/nft-browser/NFTDetail";
 import CheckerPage from "./pages/CheckerPage";
@@ -45,7 +43,6 @@ const router = createBrowserRouter([
       { path: "partners", element: <Partners /> },
       { path: "beacon-events", element: <BeaconEventsPage /> },
       { path: "checker", element: <CheckerPage /> },
-      { path: "bananas", element: <BananaFarm />, children: farmRoutes },
     ],
   },
 ]);
