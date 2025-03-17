@@ -1,5 +1,4 @@
 import { Card, CardBody } from "@chakra-ui/react";
-import { FOUNDERS_COLLECTION_ID } from "../../constants";
 import { Heading, SimpleGrid, Spinner, Stack } from "@chakra-ui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -8,7 +7,7 @@ import { useInfiniteCollectionNFTs } from "../../hooks/useInfiniteCollectionNFTs
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
-function NFTBrowser() {
+function NFTBrowser({ collectionId }: { collectionId: string }) {
   const searchParams = new URLSearchParams(useLocation().search);
   const filterFromQueryString = searchParams.get("filter");
   const [filter, setFilter] = useState(filterFromQueryString ? JSON.parse(filterFromQueryString) : {});
@@ -30,7 +29,7 @@ function NFTBrowser() {
   };
 
   const { data, isLoading, fetchNextPage, hasNextPage, error } = useInfiniteCollectionNFTs({
-    collection_id: { _eq: FOUNDERS_COLLECTION_ID },
+    collection_id: { _eq: collectionId },
     token_properties: { _contains: filter },
   });
 
@@ -63,11 +62,7 @@ function NFTBrowser() {
                   <CardBody>
                     <LazyLoadImage
                       alt={nft.description}
-                      src={
-                        "https://pinphweythafvrejqfgm.supabase.co/storage/v1/object/public/nft-founders-collection/images/" +
-                        nft.token_name.split("#")[1] +
-                        ".png"
-                      }
+                      src={nft.token_uri}
                       width={260}
                       height={260}
                       effect="blur"

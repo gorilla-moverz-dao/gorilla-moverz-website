@@ -13,6 +13,8 @@ import { farmRoutes } from "./components/banana-farm/routes";
 import GalleryPage from "./pages/GalleryPage";
 import NFTDetail from "./components/nft-browser/NFTDetail";
 import CheckerPage from "./pages/CheckerPage";
+import { COMMUNITY_COLLECTION_ID, FOUNDERS_COLLECTION_ID } from "./constants";
+import GorillaNFTOverview from "./pages/GorillaNFTOverview";
 
 const router = createBrowserRouter([
   {
@@ -22,7 +24,22 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "about", element: <About /> },
-      { path: "nfts", element: <GorillaNFT />, children: [{ path: "founder/:id", element: <NFTDetail /> }] },
+      {
+        path: "nfts",
+        element: <GorillaNFTOverview />,
+        children: [
+          {
+            element: <GorillaNFT collectionId={FOUNDERS_COLLECTION_ID} title="Founders Edition" path="founder" />,
+            path: "founder",
+            children: [{ path: ":id", element: <NFTDetail collectionId={FOUNDERS_COLLECTION_ID} /> }],
+          },
+          {
+            element: <GorillaNFT collectionId={COMMUNITY_COLLECTION_ID} title="Community Edition" path="community" />,
+            path: "community",
+            children: [{ path: ":id", element: <NFTDetail collectionId={COMMUNITY_COLLECTION_ID} /> }],
+          },
+        ],
+      },
       { path: "media", element: <Media /> },
       { path: "gallery", element: <GalleryPage /> },
       { path: "partners", element: <Partners /> },

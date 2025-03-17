@@ -109,7 +109,7 @@ function BananaFarm() {
             ) : (
               <>
                 <Text paddingTop={2}>Please connect your wallet to access the Banana Farm</Text>
-                <Text paddingTop={2}>Use Razor Wallet or Nightly and connect to the Porto Testnet</Text>
+                <Text paddingTop={2}>Use Razor Wallet or Nightly and connect to the Bardock Testnet</Text>
               </>
             )}
 

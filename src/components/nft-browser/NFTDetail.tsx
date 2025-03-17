@@ -6,19 +6,17 @@ import PageTitle from "../PageTitle";
 import { truncateAddress } from "@aptos-labs/wallet-adapter-react";
 import { QRCodeCanvas } from "qrcode.react";
 import { useState } from "react";
-import { FOUNDERS_COLLECTION_ID } from "../../constants";
 
-function NFTDetail() {
+function NFTDetail({ collectionId }: { collectionId: string }) {
   const { id } = useParams();
-  const { data: nft, isLoading } = useNFT("Gorilla Founder #" + id, FOUNDERS_COLLECTION_ID);
+  const { data: nft, isLoading } = useNFT("Gorilla Mover #" + id, collectionId);
   const [showQRCode, setShowQRCode] = useState(false);
 
   if (isLoading) return <Spinner />;
   if (!nft) return <div>NFT not found</div>;
 
   const properties = nft.current_token_data?.token_properties;
-  const imageUrl =
-    "https://pinphweythafvrejqfgm.supabase.co/storage/v1/object/public/nft-founders-collection/images/" + id + ".png";
+  const imageUrl = nft.current_token_data?.token_uri;
 
   return (
     <Flex direction={{ base: "column", md: "row" }} gap={6}>

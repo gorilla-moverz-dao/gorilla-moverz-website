@@ -2,18 +2,18 @@ import PageTitle from "../components/PageTitle";
 import NFTBrowser from "../components/nft-browser/NFTBrowser";
 import { Outlet, useLocation } from "react-router-dom";
 
-function GorillaNFT() {
-  const detailRouteActive = useLocation().pathname.includes("founder");
+function GorillaNFT({ collectionId, title, path }: { collectionId: string; title: string; path: string }) {
+  const detailRouteActive = useLocation().pathname.includes(path + "/");
   return (
     <>
       <PageTitle size="xl" paddingTop={0}>
-        Gorilla NFTs
+        {title}
       </PageTitle>
 
       <Outlet />
 
       <div style={{ display: detailRouteActive ? "none" : "block" }}>
-        <NFTBrowser />
+        <NFTBrowser collectionId={collectionId} />
       </div>
     </>
   );
