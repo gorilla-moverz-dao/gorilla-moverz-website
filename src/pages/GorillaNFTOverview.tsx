@@ -47,14 +47,15 @@ function GorillaNFTOverview() {
       <Tabs
         index={currentTab}
         paddingBottom={2}
+        colorScheme="green"
         onChange={(index) => {
           const path = index === 0 ? "/nfts/founder" : "/nfts/community";
           navigate(path);
         }}
       >
         <TabList>
-          <Tab>Founder Edition</Tab>
-          <Tab>Community Edition</Tab>
+          <Tab>Founder Collection</Tab>
+          <Tab>Community Collection</Tab>
         </TabList>
       </Tabs>
 

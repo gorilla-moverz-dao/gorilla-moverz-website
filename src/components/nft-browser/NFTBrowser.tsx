@@ -1,16 +1,27 @@
 import { Card, CardBody } from "@chakra-ui/react";
 import { Heading, SimpleGrid, Spinner, Stack } from "@chakra-ui/react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import NFTFilter from "./NFTFilter";
 import { useInfiniteCollectionNFTs } from "../../hooks/useInfiniteCollectionNFTs";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
 function NFTBrowser({ collectionId, collectionName }: { collectionId: string; collectionName: string }) {
-  const searchParams = new URLSearchParams(useLocation().search);
+  const location = useLocation();
+  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const filterFromQueryString = searchParams.get("filter");
   const [filter, setFilter] = useState(filterFromQueryString ? JSON.parse(filterFromQueryString) : {});
+
+  useEffect(() => {
+    const newFilterFromQueryString = searchParams.get("filter");
+    if (newFilterFromQueryString) {
+      setFilter(JSON.parse(newFilterFromQueryString));
+    } else {
+      setFilter({});
+    }
+  }, [searchParams]);
+
   const navigate = useNavigate();
   const isDetailPageActive = useLocation().pathname.includes("nfts/" + collectionName);
 
