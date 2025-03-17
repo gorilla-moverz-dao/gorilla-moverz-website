@@ -25,7 +25,7 @@ function NFTBrowser({ collectionId, collectionName }: { collectionId: string; co
 
     // Add filter to query string
     const queryString = JSON.stringify(newFilter);
-    navigate(`/nfts?filter=${queryString}`);
+    navigate(`/nfts/${collectionName}?filter=${queryString}`);
   };
 
   const { data, isLoading, fetchNextPage, hasNextPage, error } = useInfiniteCollectionNFTs({
@@ -41,7 +41,7 @@ function NFTBrowser({ collectionId, collectionName }: { collectionId: string; co
 
   return (
     <div>
-      <NFTFilter filter={filter} onFilterChange={buildFilter} />
+      <NFTFilter collectionName={collectionName} filter={filter} onFilterChange={buildFilter} />
       <InfiniteScroll
         dataLength={itemsCount}
         next={fetchNextPage}
