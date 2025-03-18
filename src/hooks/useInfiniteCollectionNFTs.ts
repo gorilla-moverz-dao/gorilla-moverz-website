@@ -1,7 +1,8 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import useMovement from "./useMovement";
 import { graphql } from "../gql";
 import { Current_Token_Datas_V2_Bool_Exp } from "../gql/graphql";
+import { INDEXER_URL } from "../constants";
+import { request } from "graphql-request";
 
 const query = graphql(`
   query GetCollectionNfts($limit: Int!, $offset: Int!, $filter: current_token_datas_v2_bool_exp) {
@@ -16,7 +17,6 @@ const query = graphql(`
 `);
 
 export function useInfiniteCollectionNFTs(filter: Current_Token_Datas_V2_Bool_Exp) {
-  const { graphqlRequest, indexerUrl } = useMovement();
   const pageSize = 50;
 
   return useInfiniteQuery({
@@ -24,7 +24,7 @@ export function useInfiniteCollectionNFTs(filter: Current_Token_Datas_V2_Bool_Ex
     queryFn: async ({ pageParam = 0 }) => {
       try {
         const offset = pageParam * pageSize;
-        const res = await graphqlRequest(indexerUrl, query, {
+        const res = await request(INDEXER_URL, query, {
           limit: pageSize,
           offset,
           filter,

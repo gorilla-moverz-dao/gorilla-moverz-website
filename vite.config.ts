@@ -8,7 +8,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          aptos: ["@aptos-labs/ts-sdk", "@aptos-labs/wallet-adapter-react"],
+          aptos: ["@aptos-labs/ts-sdk"],
           react: ["react", "react-dom", "react-router-dom"],
           chakra: ["@chakra-ui/react"],
           reactQuery: ["@tanstack/react-query"],

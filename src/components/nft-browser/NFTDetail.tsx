@@ -3,7 +3,6 @@ import { useNFT } from "../../hooks/useNFT";
 import { Badge, Box, Button, Flex, HStack, Image, Spinner, Text } from "@chakra-ui/react";
 import BoxBlurred from "../BoxBlurred";
 import PageTitle from "../PageTitle";
-import { truncateAddress } from "@aptos-labs/wallet-adapter-react";
 import { QRCodeCanvas } from "qrcode.react";
 import { useState } from "react";
 
@@ -79,7 +78,7 @@ function NFTDetail({ collectionId }: { collectionId: string }) {
               Owner
             </Badge>
             <Badge fontSize={"14px"} paddingX={2} borderRadius={"4px"} colorScheme={"green"}>
-              {truncateAddress(nft.owner_address)}
+              {nft.owner_address ? `${nft.owner_address.slice(0, 6)}...${nft.owner_address.slice(-4)}` : ""}
             </Badge>
           </HStack>
         </BoxBlurred>
