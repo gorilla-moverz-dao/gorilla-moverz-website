@@ -2,7 +2,7 @@ import { Network } from "@aptos-labs/ts-sdk";
 
 export const SUPRA_API_URL = import.meta.env?.VITE_SUPRA_API_URL;
 export const SURPA_ANON_KEY = import.meta.env?.VITE_SUPRA_ANON_KEY;
-export const MODULE_ADDRESS = "f161ef37562d16b9f4e0aac020cdc4e902a871effec1f706eff738546f3e8e73";
+export const MODULE_ADDRESS = "ef88d140bd12edaa47736bb34f7af91c7a6cbb0f5853a0c334e04e451f416522";
 export const FULL_NODE = "https://aptos.testnet.porto.movementlabs.xyz/v1";
 export const FARM_COLLECTION_ID = "0xb0304659f0f67035a59878148092ed5b2426b46489a01bc5cc4d906d3ab9d853";
 export const NETWORK = Network.CUSTOM;

@@ -102,8 +102,8 @@ function BananaFarm() {
           <Box>
             {address ? (
               <Box paddingTop={4}>
-                <Button onClick={onOpen} disabled={true} colorScheme="green">
-                  Banana Farm soon
+                <Button onClick={onOpen} colorScheme="green">
+                  Open Banana Farm
                 </Button>
               </Box>
             ) : (

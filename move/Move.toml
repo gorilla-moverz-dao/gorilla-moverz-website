@@ -1,0 +1,15 @@
+[package]
+name = "Gorilla Moverz Banana Farm"
+version = "0.0.1"
+
+[addresses]
+GorillaMoverz = "ef88d140bd12edaa47736bb34f7af91c7a6cbb0f5853a0c334e04e451f416522"
+initial_creator_addr = "ef88d140bd12edaa47736bb34f7af91c7a6cbb0f5853a0c334e04e451f416522"
+minter = "0x7a377968cb92784e66ad39b0e6be2cd10e0843d9ea72a6b9b3b5bfb051872bf6"
+
+[dependencies]
+AptosFramework = { git = "https://github.com/movementlabsxyz/aptos-core", rev = "movement", subdir = "aptos-move/framework/aptos-framework" }
+AptosTokenObjects = { git = "https://github.com/movementlabsxyz/aptos-core", rev = "movement", subdir = "aptos-move/framework/aptos-token-objects" }
+TokenMinter = { git = "https://github.com/aptos-labs/token-minter.git", rev = "main", subdir = "token-minter" }
+
+[dev-dependencies]

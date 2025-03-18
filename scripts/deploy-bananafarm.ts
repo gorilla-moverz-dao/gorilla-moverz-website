@@ -3,7 +3,7 @@ import { bananaClient, bananaFarmClient, launchpadClient } from "../src/services
 import { convertToAmount, dateToSeconds, runCommand } from "./helper";
 import { Account, UserTransactionResponse } from "@aptos-labs/ts-sdk";
 
-const moveDir = "move/banana/";
+const moveDir = "move/";
 const aptosYml = moveDir + ".aptos/config.yaml";
 const mint_amount = 100_000_000;
 const deposit_amount = 10_000_000;
