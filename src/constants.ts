@@ -3,7 +3,7 @@ import { Network } from "@aptos-labs/ts-sdk";
 export const SUPRA_API_URL = import.meta.env?.VITE_SUPRA_API_URL;
 export const SURPA_ANON_KEY = import.meta.env?.VITE_SUPRA_ANON_KEY;
 export const MODULE_ADDRESS = "ef88d140bd12edaa47736bb34f7af91c7a6cbb0f5853a0c334e04e451f416522";
-export const FULL_NODE = "https://aptos.testnet.porto.movementlabs.xyz/v1";
+export const FULL_NODE = "https://aptos.testnet.bardock.movementlabs.xyz/v1";
 export const FARM_COLLECTION_ID = "0xb0304659f0f67035a59878148092ed5b2426b46489a01bc5cc4d906d3ab9d853";
 export const NETWORK = Network.CUSTOM;
 export const BANANA_CONTRACT_ADDRESS = "0xcbffa124c1b5ffb7efc79a95612b95ea20bc7a1b75d045ca94a7263a5c3c4b40";
