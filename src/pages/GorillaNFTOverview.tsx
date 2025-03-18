@@ -21,7 +21,7 @@ function GorillaNFTOverview() {
               <Image src="images/collection-founder.png"></Image>
               <Stack mt="6" spacing="3">
                 <Heading size="md" color="green.600">
-                  Founder Collection
+                  Founders Collection
                 </Heading>
               </Stack>
             </CardBody>
@@ -54,7 +54,7 @@ function GorillaNFTOverview() {
         }}
       >
         <TabList>
-          <Tab>Founder Collection</Tab>
+          <Tab>Founders Collection</Tab>
           <Tab>Community Collection</Tab>
         </TabList>
       </Tabs>
