@@ -98,7 +98,7 @@ async function createCollection(signer: Account, collection: CollectionConfig): 
 
   const collectionCreated = response.events.find((e) => e.type.split("::")[2] === "CreateCollectionEvent");
   const collectionId = collectionCreated?.data.collection_obj.inner;
-  console.log(`Collection created successful. - tx: `, collectionId);
+  console.log(`Collection created successful. - collectionId: `, collectionId);
   return collectionId;
 }
 
