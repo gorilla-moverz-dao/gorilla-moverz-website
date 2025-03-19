@@ -2,7 +2,7 @@ import { Account, Aptos, AptosConfig, Ed25519PrivateKey, Network } from "npm:@ap
 
 const aptosConfig = new AptosConfig({
   network: Network.CUSTOM,
-  fullnode: "https://aptos.testnet.bardock.movementlabs.xyz/v1",
+  fullnode: "https://testnet.bardock.movementnetwork.xyz/v1",
   indexer: "https://indexer.testnet.movementnetwork.xyz/v1/graphql",
 });
 export const aptos = new Aptos(aptosConfig);

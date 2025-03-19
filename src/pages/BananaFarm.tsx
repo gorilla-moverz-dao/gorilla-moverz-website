@@ -36,7 +36,7 @@ function BananaFarm() {
   if (address === "0x" + MODULE_ADDRESS) {
     navigationItems.push({ id: "create", name: "Create collection" });
   }
-  const activeNavigation = navigationItems.find((tab) => window.location.pathname.includes(`bananas/${tab.id}`));
+  const activeNavigation = navigationItems.find((tab) => window.location.pathname.includes(`${tab.id}`));
 
   useEffect(() => {
     if (address) {
@@ -78,7 +78,14 @@ function BananaFarm() {
               </HStack>
 
               <Flex padding={2} flexDir={"column"} flex={1}>
-                <Heading as="h1" size={"xl"} paddingBottom={12} textAlign={"right"} paddingTop={4}>
+                <Heading
+                  as="h1"
+                  size={"xl"}
+                  paddingBottom={12}
+                  textAlign={"right"}
+                  paddingTop={4}
+                  textShadow={"1px 1px 6px rgba(0, 0, 0, 1)"}
+                >
                   {activeNavigation?.name}
                 </Heading>
 
