@@ -3,7 +3,7 @@ import { bananaClient, bananaFarmClient, launchpadClient } from "../src/services
 import { convertToAmount, dateToSeconds, runCommand } from "./helper";
 import { Account, UserTransactionResponse } from "@aptos-labs/ts-sdk";
 
-const moveDir = "move/";
+const moveDir = "move/banana/";
 const aptosYml = moveDir + ".aptos/config.yaml";
 const mint_amount = 100_000_000;
 const deposit_amount = 10_000_000;
@@ -98,7 +98,7 @@ async function createCollection(signer: Account, collection: CollectionConfig): 
 
   const collectionCreated = response.events.find((e) => e.type.split("::")[2] === "CreateCollectionEvent");
   const collectionId = collectionCreated?.data.collection_obj.inner;
-  console.log(`Collection created successful. - collectionId: `, collectionId);
+  console.log(`Collection created successful. - tx: `, collectionId);
   return collectionId;
 }
 

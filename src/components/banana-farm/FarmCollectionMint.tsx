@@ -13,7 +13,7 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { NETWORK_NAME } from "../../constants";
+import { NETWORK } from "../../constants";
 import { formatDate } from "../../helpers/date-functions";
 import { clampNumber } from "../../helpers/clampNumber";
 import { FaCopy, FaLink } from "react-icons/fa6";
@@ -122,7 +122,7 @@ function FarmCollectionMint({ collectionId }: Props) {
               View on Explorer{" "}
               <a
                 target="_blank"
-                href={`https://explorer.movementnetwork.xyz/account/${collection?.collection_id}?network=${NETWORK_NAME}`}
+                href={`https://explorer.aptoslabs.com/account/${collection?.collection_id}?network=${NETWORK}`}
               >
                 <IconButton icon={<FaLink />} aria-label="Copy address" className="dark:invert" />
               </a>

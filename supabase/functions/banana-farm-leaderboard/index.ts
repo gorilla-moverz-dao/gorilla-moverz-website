@@ -7,7 +7,7 @@ serve({
   "/banana-farm-leaderboard": leaderboard,
 });
 
-export const MODULE_ADDRESS = "ef88d140bd12edaa47736bb34f7af91c7a6cbb0f5853a0c334e04e451f416522";
+export const MODULE_ADDRESS = "f161ef37562d16b9f4e0aac020cdc4e902a871effec1f706eff738546f3e8e73";
 export const BANANA_CONTRACT_ADDRESS = "0xcbffa124c1b5ffb7efc79a95612b95ea20bc7a1b75d045ca94a7263a5c3c4b40";
 export const EXCLUDE_LEADERBOARD = [
   "0x" + MODULE_ADDRESS,

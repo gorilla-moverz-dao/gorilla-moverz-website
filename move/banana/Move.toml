@@ -1,0 +1,15 @@
+[package]
+name = "Gorilla Moverz"
+version = "0.0.1"
+
+[addresses]
+GorillaMoverz = "f161ef37562d16b9f4e0aac020cdc4e902a871effec1f706eff738546f3e8e73"
+initial_creator_addr = "f161ef37562d16b9f4e0aac020cdc4e902a871effec1f706eff738546f3e8e73"
+minter = "0x7a377968cb92784e66ad39b0e6be2cd10e0843d9ea72a6b9b3b5bfb051872bf6"
+
+[dependencies]
+AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", rev = "mainnet", subdir = "aptos-move/framework/aptos-framework" }
+AptosTokenObjects = { git = "https://github.com/aptos-labs/aptos-core.git", rev = "mainnet", subdir = "aptos-move/framework/aptos-token-objects" }
+TokenMinter = { git = "https://github.com/aptos-labs/token-minter.git", rev = "main", subdir = "token-minter" }
+
+[dev-dependencies]

@@ -71,7 +71,7 @@ module GorillaMoverz::launchpad {
         public_mint_start_time: Option<u64>,
         public_mint_end_time: Option<u64>,
         public_mint_limit_per_addr: Option<u64>,
-        public_mint_fee_per_nft: Option<u64>
+        public_mint_fee_per_nft: Option<u64>,
     }
 
     #[event]
@@ -79,14 +79,14 @@ module GorillaMoverz::launchpad {
         collection_obj: Object<Collection>,
         nft_objs: vector<Object<Token>>,
         recipient_addr: address,
-        total_mint_fee: u64
+        total_mint_fee: u64,
     }
 
     #[event]
     struct BatchPreMintNftsEvent has store, drop {
         collection_obj: Object<Collection>,
         nft_objs: vector<Object<Token>>,
-        recipient_addr: address
+        recipient_addr: address,
     }
 
     /// Unique per collection
@@ -95,7 +95,7 @@ module GorillaMoverz::launchpad {
     struct CollectionOwnerObjConfig has key {
         /// Only thing it stores is the link to collection object
         collection_obj: Object<Collection>,
-        extend_ref: object::ExtendRef
+        extend_ref: object::ExtendRef,
     }
 
     /// Unique per collection
@@ -103,7 +103,7 @@ module GorillaMoverz::launchpad {
         /// Key is stage, value is mint fee denomination
         mint_fee_per_nft_by_stages: SimpleMap<String, u64>,
         collection_owner_obj: Object<CollectionOwnerObjConfig>,
-        allowlist_manager: Option<address>
+        allowlist_manager: Option<address>,
     }
 
     /// Global per contract
@@ -118,22 +118,21 @@ module GorillaMoverz::launchpad {
         // admin can set pending admin, accept admin, update mint fee collector, create FA and update creator
         admin_addr: address,
         pending_admin_addr: Option<address>,
-        mint_fee_collector_addr: address
+        mint_fee_collector_addr: address,
     }
 
     // If you deploy the module under an object, sender is the object's signer
     // If you deploy the module under your own account, sender is your account's signer
     fun init_module(sender: &signer) {
-        move_to(sender, Registry { collection_objects: vector::empty() });
-        move_to(
-            sender,
-            Config {
-                creator_addr: @initial_creator_addr,
-                admin_addr: signer::address_of(sender),
-                pending_admin_addr: option::none(),
-                mint_fee_collector_addr: signer::address_of(sender)
-            }
-        );
+        move_to(sender, Registry {
+            collection_objects: vector::empty()
+        });
+        move_to(sender, Config {
+            creator_addr: @initial_creator_addr,
+            admin_addr: signer::address_of(sender),
+            pending_admin_addr: option::none(),
+            mint_fee_collector_addr: signer::address_of(sender),
+        });
     }
 
     // ================================= Entry Functions ================================= //
@@ -191,7 +190,7 @@ module GorillaMoverz::launchpad {
         public_mint_end_time: Option<u64>,
         public_mint_limit_per_addr: Option<u64>,
         // Public mint fee per NFT denominated in oapt (smallest unit of APT, i.e. 1e-8 APT)
-        public_mint_fee_per_nft: Option<u64>
+        public_mint_fee_per_nft: Option<u64>,
     ) acquires Registry, Config, CollectionConfig, CollectionOwnerObjConfig {
         let sender_addr = signer::address_of(sender);
         let config = borrow_global<Config>(@GorillaMoverz);
@@ -206,22 +205,30 @@ module GorillaMoverz::launchpad {
         let collection_owner_obj_signer = &object::generate_signer(collection_owner_obj_constructor_ref);
 
         let collection_obj_constructor_ref =
-            &collection::create_fixed_collection(collection_owner_obj_signer, description, max_supply, name, royalty, uri);
+            &collection::create_fixed_collection(
+                collection_owner_obj_signer,
+                description,
+                max_supply,
+                name,
+                royalty,
+                uri,
+            );
         let collection_obj_signer = &object::generate_signer(collection_obj_constructor_ref);
         let collection_obj_addr = signer::address_of(collection_obj_signer);
         let collection_obj = object::object_from_constructor_ref(collection_obj_constructor_ref);
 
         collection_components::create_refs_and_properties(collection_obj_constructor_ref);
 
-        move_to(
-            collection_owner_obj_signer,
-            CollectionOwnerObjConfig { extend_ref: object::generate_extend_ref(collection_owner_obj_constructor_ref), collection_obj }
-        );
+        move_to(collection_owner_obj_signer, CollectionOwnerObjConfig {
+            extend_ref: object::generate_extend_ref(collection_owner_obj_constructor_ref),
+            collection_obj,
+        });
         let collection_owner_obj = object::object_from_constructor_ref(collection_owner_obj_constructor_ref);
-        move_to(
-            collection_obj_signer,
-            CollectionConfig { mint_fee_per_nft_by_stages: simple_map::new(), collection_owner_obj, allowlist_manager }
-        );
+        move_to(collection_obj_signer, CollectionConfig {
+            mint_fee_per_nft_by_stages: simple_map::new(),
+            collection_owner_obj,
+            allowlist_manager,
+        });
 
         assert!(
             option::is_some(&allowlist) || option::is_some(&public_mint_start_time),
@@ -238,7 +245,7 @@ module GorillaMoverz::launchpad {
                 allowlist_start_time,
                 allowlist_end_time,
                 allowlist_mint_limit_per_addr,
-                allowlist_mint_fee_per_nft
+                allowlist_mint_fee_per_nft,
             );
         };
 
@@ -251,34 +258,32 @@ module GorillaMoverz::launchpad {
                 *option::borrow(&public_mint_start_time),
                 public_mint_end_time,
                 public_mint_limit_per_addr,
-                public_mint_fee_per_nft
+                public_mint_fee_per_nft,
             );
         };
 
         let registry = borrow_global_mut<Registry>(@GorillaMoverz);
         vector::push_back(&mut registry.collection_objects, collection_obj);
 
-        event::emit(
-            CreateCollectionEvent {
-                creator_addr: sender_addr,
-                collection_owner_obj,
-                collection_obj,
-                max_supply,
-                name,
-                description,
-                uri,
-                pre_mint_amount,
-                allowlist,
-                allowlist_start_time,
-                allowlist_end_time,
-                allowlist_mint_limit_per_addr,
-                allowlist_mint_fee_per_nft,
-                public_mint_start_time,
-                public_mint_end_time,
-                public_mint_limit_per_addr,
-                public_mint_fee_per_nft
-            }
-        );
+        event::emit(CreateCollectionEvent {
+            creator_addr: sender_addr,
+            collection_owner_obj,
+            collection_obj,
+            max_supply,
+            name,
+            description,
+            uri,
+            pre_mint_amount,
+            allowlist,
+            allowlist_start_time,
+            allowlist_end_time,
+            allowlist_mint_limit_per_addr,
+            allowlist_mint_fee_per_nft,
+            public_mint_start_time,
+            public_mint_end_time,
+            public_mint_limit_per_addr,
+            public_mint_fee_per_nft,
+        });
 
         let nft_objs = vector[];
         for (i in 0..*option::borrow_with_default(&pre_mint_amount, &DEFAULT_PRE_MINT_AMOUNT)) {
@@ -286,11 +291,19 @@ module GorillaMoverz::launchpad {
             vector::push_back(&mut nft_objs, nft_obj);
         };
 
-        event::emit(BatchPreMintNftsEvent { recipient_addr: sender_addr, collection_obj, nft_objs });
+        event::emit(BatchPreMintNftsEvent {
+            recipient_addr: sender_addr,
+            collection_obj,
+            nft_objs,
+        });
     }
 
     // Mint NFT
-    public entry fun mint_nft(sender: &signer, collection_obj: Object<Collection>, amount: u64) acquires CollectionConfig, CollectionOwnerObjConfig, Config {
+    public entry fun mint_nft(
+        sender: &signer,
+        collection_obj: Object<Collection>,
+        amount: u64,
+    ) acquires CollectionConfig, CollectionOwnerObjConfig, Config {
         let sender_addr = signer::address_of(sender);
 
         let stage_idx = &mint_stage::execute_earliest_stage(sender, collection_obj, amount);
@@ -307,30 +320,30 @@ module GorillaMoverz::launchpad {
             vector::push_back(&mut nft_objs, nft_obj);
         };
 
-        event::emit(
-            BatchMintNftsEvent { recipient_addr: sender_addr, total_mint_fee, collection_obj, nft_objs }
-        );
+        event::emit(BatchMintNftsEvent {
+            recipient_addr: sender_addr,
+            total_mint_fee,
+            collection_obj,
+            nft_objs,
+        });
     }
 
     // Add addresses to allowlist
-    public entry fun add_allowlist_addresses(
-        sender: &signer, addresses: vector<address>, collection_obj: Object<Collection>
-    ) acquires CollectionOwnerObjConfig, CollectionConfig {
+    public entry fun add_allowlist_addresses(sender: &signer, addresses: vector<address>, collection_obj: Object<Collection>) acquires CollectionOwnerObjConfig, CollectionConfig {
         let collection_config = borrow_global<CollectionConfig>(object::object_address(&collection_obj));
 
-        assert!(
-            collection_config.allowlist_manager == option::some(signer::address_of(sender)),
-            EONLY_ALLOWLIST_MANAGER_CAN_ADD
-        );
+        assert!(collection_config.allowlist_manager == option::some(signer::address_of(sender)), EONLY_ALLOWLIST_MANAGER_CAN_ADD);
 
         let collection_owner_obj = collection_config.collection_owner_obj;
-        let collection_owner_config = borrow_global<CollectionOwnerObjConfig>(object::object_address(&collection_owner_obj));
+        let collection_owner_config = borrow_global<CollectionOwnerObjConfig>(
+            object::object_address(&collection_owner_obj)
+        );
 
         let collection_owner_obj_signer = &object::generate_signer_for_extending(&collection_owner_config.extend_ref);
         let stage = string::utf8(ALLOWLIST_MINT_STAGE_CATEGORY);
 
         for (i in 0..vector::length(&addresses)) {
-            mint_stage::upsert_allowlist(
+             mint_stage::upsert_allowlist(
                 collection_owner_obj_signer,
                 collection_obj,
                 mint_stage::find_mint_stage_index_by_name(collection_obj, stage),
@@ -341,14 +354,9 @@ module GorillaMoverz::launchpad {
     }
 
     // Set allowlist manager
-    public entry fun set_allowlist_manager(
-        sender: &signer, allowlist_manager: address, collection_obj: Object<Collection>
-    ) acquires Config, CollectionConfig {
+    public entry fun set_allowlist_manager(sender: &signer, allowlist_manager: address, collection_obj: Object<Collection>) acquires Config, CollectionConfig {
         let config = borrow_global<Config>(@GorillaMoverz);
-        assert!(
-            is_admin(config, signer::address_of(sender)),
-            EONLY_ADMIN_CAN_UPDATE_ALOWWLIST_MANAGER
-        );
+        assert!(is_admin(config, signer::address_of(sender)), EONLY_ADMIN_CAN_UPDATE_ALOWWLIST_MANAGER);
 
         let collection_config = borrow_global_mut<CollectionConfig>(object::object_address(&collection_obj));
         collection_config.allowlist_manager = option::some(allowlist_manager);
@@ -401,17 +409,24 @@ module GorillaMoverz::launchpad {
 
     // Get mint fee for a specific stage, denominated in oapt (smallest unit of APT, i.e. 1e-8 APT)
     #[view]
-    public fun get_mint_fee(collection_obj: Object<Collection>, stage_name: String, amount: u64): u64 acquires CollectionConfig {
+    public fun get_mint_fee(
+        collection_obj: Object<Collection>,
+        stage_name: String,
+        amount: u64,
+    ): u64 acquires CollectionConfig {
         let collection_config = borrow_global<CollectionConfig>(object::object_address(&collection_obj));
         let fee = *simple_map::borrow(&collection_config.mint_fee_per_nft_by_stages, &stage_name);
         amount * fee
     }
 
     #[view]
-    public fun verify_collection(nft: Object<Token>): bool {
+    public fun verify_collection(
+        nft: Object<Token>,
+    ): bool {
         let collection_obj = token::collection_object(nft);
         exists<CollectionConfig>(object::object_address(&collection_obj))
     }
+
 
     // Get the name of the current active mint stage or the next mint stage if there is no active mint stage
     #[view]
@@ -447,12 +462,15 @@ module GorillaMoverz::launchpad {
     // ================================= Helpers ================================= //
 
     fun is_admin(config: &Config, sender: address): bool {
-        if (sender == config.admin_addr) { true }
-        else {
+        if (sender == config.admin_addr) {
+            true
+        } else {
             if (object::is_object(@GorillaMoverz)) {
                 let obj = object::address_to_object<ObjectCore>(@GorillaMoverz);
                 object::is_owner(obj, sender)
-            } else { false }
+            } else {
+                false
+            }
         }
     }
 
@@ -469,21 +487,18 @@ module GorillaMoverz::launchpad {
         allowlist_start_time: Option<u64>,
         allowlist_end_time: Option<u64>,
         allowlist_mint_limit_per_addr: Option<u64>,
-        allowlist_mint_fee_per_nft: Option<u64>
+        allowlist_mint_fee_per_nft: Option<u64>,
     ) acquires CollectionConfig {
         assert!(option::is_some(&allowlist_start_time), ESTART_TIME_MUST_BE_SET_FOR_STAGE);
         assert!(option::is_some(&allowlist_end_time), EEND_TIME_MUST_BE_SET_FOR_STAGE);
-        assert!(
-            option::is_some(&allowlist_mint_limit_per_addr),
-            EMINT_LIMIT_PER_ADDR_MUST_BE_SET_FOR_STAGE
-        );
+        assert!(option::is_some(&allowlist_mint_limit_per_addr), EMINT_LIMIT_PER_ADDR_MUST_BE_SET_FOR_STAGE);
 
         let stage = string::utf8(ALLOWLIST_MINT_STAGE_CATEGORY);
         mint_stage::create(
             collection_obj_signer,
             stage,
             *option::borrow(&allowlist_start_time),
-            *option::borrow(&allowlist_end_time)
+            *option::borrow(&allowlist_end_time),
         );
 
         for (i in 0..vector::length(&allowlist)) {
@@ -512,12 +527,9 @@ module GorillaMoverz::launchpad {
         public_mint_start_time: u64,
         public_mint_end_time: Option<u64>,
         public_mint_limit_per_addr: Option<u64>,
-        public_mint_fee_per_nft: Option<u64>
+        public_mint_fee_per_nft: Option<u64>,
     ) acquires CollectionConfig {
-        assert!(
-            option::is_some(&public_mint_limit_per_addr),
-            EMINT_LIMIT_PER_ADDR_MUST_BE_SET_FOR_STAGE
-        );
+        assert!(option::is_some(&public_mint_limit_per_addr), EMINT_LIMIT_PER_ADDR_MUST_BE_SET_FOR_STAGE);
 
         let stage = string::utf8(PUBLIC_MINT_MINT_STAGE_CATEGORY);
         mint_stage::create(
@@ -527,7 +539,7 @@ module GorillaMoverz::launchpad {
             *option::borrow_with_default(
                 &public_mint_end_time,
                 &(ONE_HUNDRED_YEARS_IN_SECONDS + public_mint_start_time)
-            )
+            ),
         );
 
         let stage_idx = mint_stage::find_mint_stage_index_by_name(collection_obj, stage);
@@ -545,7 +557,7 @@ module GorillaMoverz::launchpad {
         simple_map::upsert(
             &mut collection_config.mint_fee_per_nft_by_stages,
             stage,
-            *option::borrow_with_default(&public_mint_fee_per_nft, &DEFAULT_MINT_FEE_PER_NFT)
+            *option::borrow_with_default(&public_mint_fee_per_nft, &DEFAULT_MINT_FEE_PER_NFT),
         );
     }
 
@@ -555,7 +567,10 @@ module GorillaMoverz::launchpad {
         }
     }
 
-    fun royalty(royalty_numerator: &mut Option<u64>, admin_addr: address): Option<Royalty> {
+    fun royalty(
+        royalty_numerator: &mut Option<u64>,
+        admin_addr: address,
+    ): Option<Royalty> {
         if (option::is_some(royalty_numerator)) {
             let num = option::extract(royalty_numerator);
             option::some(royalty::create(num, 100, admin_addr))
@@ -564,11 +579,16 @@ module GorillaMoverz::launchpad {
         }
     }
 
-    fun mint_nft_internal(sender_addr: address, collection_obj: Object<Collection>): Object<Token> acquires CollectionConfig, CollectionOwnerObjConfig {
+    fun mint_nft_internal(
+        sender_addr: address,
+        collection_obj: Object<Collection>,
+    ): Object<Token> acquires CollectionConfig, CollectionOwnerObjConfig {
         let collection_config = borrow_global<CollectionConfig>(object::object_address(&collection_obj));
 
         let collection_owner_obj = collection_config.collection_owner_obj;
-        let collection_owner_config = borrow_global<CollectionOwnerObjConfig>(object::object_address(&collection_owner_obj));
+        let collection_owner_config = borrow_global<CollectionOwnerObjConfig>(
+            object::object_address(&collection_owner_obj)
+        );
         let collection_owner_obj_signer = &object::generate_signer_for_extending(&collection_owner_config.extend_ref);
 
         let next_nft_id = *option::borrow(&collection::count(collection_obj)) + 1;
@@ -576,17 +596,16 @@ module GorillaMoverz::launchpad {
         let collection_uri = collection::uri(collection_obj);
         let nft_metadata_uri = construct_nft_metadata_uri(&collection_uri, next_nft_id);
 
-        let nft_obj_constructor_ref =
-            &token::create(
-                collection_owner_obj_signer,
-                collection::name(collection_obj),
-                // placeholder value, please read description from json metadata in offchain storage
-                string_utils::to_string(&next_nft_id),
-                // placeholder value, please read name from json metadata in offchain storage
-                string_utils::to_string(&next_nft_id),
-                royalty::get(collection_obj),
-                nft_metadata_uri
-            );
+        let nft_obj_constructor_ref = &token::create(
+            collection_owner_obj_signer,
+            collection::name(collection_obj),
+            // placeholder value, please read description from json metadata in offchain storage
+            string_utils::to_string(&next_nft_id),
+            // placeholder value, please read name from json metadata in offchain storage
+            string_utils::to_string(&next_nft_id),
+            royalty::get(collection_obj),
+            nft_metadata_uri,
+        );
         token_components::create_refs(nft_obj_constructor_ref);
         let nft_obj = object::object_from_constructor_ref(nft_obj_constructor_ref);
         object::transfer(collection_owner_obj_signer, nft_obj, sender_addr);
@@ -594,13 +613,15 @@ module GorillaMoverz::launchpad {
         nft_obj
     }
 
-    fun construct_nft_metadata_uri(collection_uri: &String, next_nft_id: u64): String {
-        let nft_metadata_uri =
-            &mut string::sub_string(
-                collection_uri,
-                0,
-                string::length(collection_uri) - string::length(&string::utf8(b"collection.json"))
-            );
+    fun construct_nft_metadata_uri(
+        collection_uri: &String,
+        next_nft_id: u64,
+    ): String {
+        let nft_metadata_uri = &mut string::sub_string(
+            collection_uri,
+            0,
+            string::length(collection_uri) - string::length(&string::utf8(b"collection.json"))
+        );
         let nft_metadata_filename = string_utils::format1(&b"metadata/{}", next_nft_id);
         string::append(nft_metadata_uri, nft_metadata_filename);
         *nft_metadata_uri
@@ -614,19 +635,19 @@ module GorillaMoverz::launchpad {
     use aptos_framework::account;
 
     #[test_only]
-    public fun test_init(creator: &signer) {
+    public fun test_init(
+        creator: &signer,
+    ) {
         init_module(creator);
     }
 
-    #[test(
-        aptos_framework = @0x1, sender = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300, user2 = @0x301
-    )]
+    #[test(aptos_framework = @0x1, sender = @GorillaMoverz, allowlist_manager = @0x200, user1 = @0x300, user2 = @0x301)]
     fun test_happy_path(
         aptos_framework: &signer,
         sender: &signer,
         allowlist_manager: &signer,
         user1: &signer,
-        user2: &signer
+        user2: &signer,
     ) acquires Registry, Config, CollectionConfig, CollectionOwnerObjConfig {
         let (burn_cap, mint_cap) = aptos_coin::initialize_for_test(aptos_framework);
 
@@ -648,9 +669,9 @@ module GorillaMoverz::launchpad {
             allowlist_manager_addr,
             string::utf8(b"description"),
             string::utf8(b"name"),
-            option::some(vector[user1_addr])
+            option::some(vector[user1_addr]),
         );
-
+        
         let registry = get_registry();
         let collection_1 = *vector::borrow(&registry, vector::length(&registry) - 1);
         assert!(collection::count(collection_1) == option::some(3), 1);
@@ -661,39 +682,36 @@ module GorillaMoverz::launchpad {
         mint_nft(user1, collection_1, 1);
 
         let nft = mint_nft_internal(user1_addr, collection_1);
-        assert!(
-            token::uri(nft) == string::utf8(b"https://gorilla-moverz.xyz/nfts/farmer/metadata/5"),
-            2
-        );
+        assert!(token::uri(nft) == string::utf8(b"https://gorilla-moverz.xyz/nfts/farmer/metadata/5"), 2);
 
         let active_or_next_stage = get_active_or_next_mint_stage(collection_1);
-        assert!(
-            active_or_next_stage == option::some(string::utf8(ALLOWLIST_MINT_STAGE_CATEGORY)),
-            3
+        assert!(active_or_next_stage == option::some(string::utf8(ALLOWLIST_MINT_STAGE_CATEGORY)), 3);
+        let (start_time, end_time) = get_mint_stage_start_and_end_time(
+            collection_1,
+            string::utf8(ALLOWLIST_MINT_STAGE_CATEGORY)
         );
-        let (start_time, end_time) = get_mint_stage_start_and_end_time(collection_1, string::utf8(ALLOWLIST_MINT_STAGE_CATEGORY));
         assert!(start_time == 0, 4);
         assert!(end_time == 100, 5);
 
         // bump global timestamp to 150 so allowlist stage is over but public mint stage is not started yet
         timestamp::update_global_time_for_test_secs(150);
         let active_or_next_stage = get_active_or_next_mint_stage(collection_1);
-        assert!(
-            active_or_next_stage == option::some(string::utf8(PUBLIC_MINT_MINT_STAGE_CATEGORY)),
-            6
+        assert!(active_or_next_stage == option::some(string::utf8(PUBLIC_MINT_MINT_STAGE_CATEGORY)), 6);
+        let (start_time, end_time) = get_mint_stage_start_and_end_time(
+            collection_1,
+            string::utf8(PUBLIC_MINT_MINT_STAGE_CATEGORY)
         );
-        let (start_time, end_time) = get_mint_stage_start_and_end_time(collection_1, string::utf8(PUBLIC_MINT_MINT_STAGE_CATEGORY));
         assert!(start_time == 200, 7);
         assert!(end_time == 300, 8);
 
         // bump global timestamp to 250 so public mint stage is active
         timestamp::update_global_time_for_test_secs(250);
         let active_or_next_stage = get_active_or_next_mint_stage(collection_1);
-        assert!(
-            active_or_next_stage == option::some(string::utf8(PUBLIC_MINT_MINT_STAGE_CATEGORY)),
-            9
+        assert!(active_or_next_stage == option::some(string::utf8(PUBLIC_MINT_MINT_STAGE_CATEGORY)), 9);
+        let (start_time, end_time) = get_mint_stage_start_and_end_time(
+            collection_1,
+            string::utf8(PUBLIC_MINT_MINT_STAGE_CATEGORY)
         );
-        let (start_time, end_time) = get_mint_stage_start_and_end_time(collection_1, string::utf8(PUBLIC_MINT_MINT_STAGE_CATEGORY));
         assert!(start_time == 200, 10);
         assert!(end_time == 300, 11);
 
@@ -709,12 +727,7 @@ module GorillaMoverz::launchpad {
     }
 
     #[test_only]
-    public fun test_setup_banana_farmer(
-        aptos_framework: &signer,
-        creator: &signer,
-        allowlist_manager: address,
-        allowlist: Option<vector<address>>
-    ): (Object<Collection>, Object<Collection>) acquires Registry, Config, CollectionConfig, CollectionOwnerObjConfig {
+    public fun test_setup_banana_farmer(aptos_framework: &signer, creator: &signer, allowlist_manager: address, allowlist: Option<vector<address>>): (Object<Collection>, Object<Collection>) acquires Registry, Config, CollectionConfig, CollectionOwnerObjConfig {
         timestamp::set_time_has_started_for_testing(aptos_framework);
         test_create_collection(
             creator,
@@ -750,13 +763,7 @@ module GorillaMoverz::launchpad {
     }
 
     #[test_only]
-    fun test_create_collection(
-        sender: &signer,
-        allowlist_manager: address,
-        description: String,
-        name: String,
-        allowlist: Option<vector<address>>
-    ) acquires Registry, Config, CollectionConfig, CollectionOwnerObjConfig {
+    fun test_create_collection(sender: &signer, allowlist_manager: address, description: String, name: String, allowlist: Option<vector<address>>) acquires Registry, Config, CollectionConfig, CollectionOwnerObjConfig {
         create_collection(
             sender,
             description,
@@ -774,8 +781,7 @@ module GorillaMoverz::launchpad {
             option::some(timestamp::now_seconds() + 200),
             option::some(timestamp::now_seconds() + 300),
             option::some(2),
-            option::some(10)
+            option::some(10),
         );
     }
 }
-

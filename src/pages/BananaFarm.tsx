@@ -36,11 +36,11 @@ function BananaFarm() {
   if (address === "0x" + MODULE_ADDRESS) {
     navigationItems.push({ id: "create", name: "Create collection" });
   }
-  const activeNavigation = navigationItems.find((tab) => window.location.pathname.includes(`${tab.id}`));
+  const activeNavigation = navigationItems.find((tab) => window.location.pathname.includes(`bananas/${tab.id}`));
 
   useEffect(() => {
     if (address) {
-      onOpen();
+      // onOpen();
     }
   }, [address]);
 
@@ -78,14 +78,7 @@ function BananaFarm() {
               </HStack>
 
               <Flex padding={2} flexDir={"column"} flex={1}>
-                <Heading
-                  as="h1"
-                  size={"xl"}
-                  paddingBottom={12}
-                  textAlign={"right"}
-                  paddingTop={4}
-                  textShadow={"1px 1px 6px rgba(0, 0, 0, 1)"}
-                >
+                <Heading as="h1" size={"xl"} paddingBottom={12} textAlign={"right"} paddingTop={4}>
                   {activeNavigation?.name}
                 </Heading>
 
@@ -109,14 +102,14 @@ function BananaFarm() {
           <Box>
             {address ? (
               <Box paddingTop={4}>
-                <Button onClick={onOpen} colorScheme="green">
-                  Open Banana Farm
+                <Button onClick={onOpen} disabled={true} colorScheme="green">
+                  Banana Farm soon
                 </Button>
               </Box>
             ) : (
               <>
                 <Text paddingTop={2}>Please connect your wallet to access the Banana Farm</Text>
-                <Text paddingTop={2}>Use Razor Wallet or Nightly and connect to the Bardock Testnet</Text>
+                <Text paddingTop={2}>Use Razor Wallet or Nightly and connect to the Porto Testnet</Text>
               </>
             )}
 

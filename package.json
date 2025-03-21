@@ -8,7 +8,6 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "deploy:contract": "cd move && aptos move publish --move-1 --bytecode-version 6",
     "deploy:bananafarm": "tsx ./scripts/deploy-bananafarm.ts",
     "build-abi": "tsx ./scripts/build-abi.ts",
     "resize-images": "tsx ./scripts/resize-images.ts",
