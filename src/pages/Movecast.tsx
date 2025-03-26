@@ -161,6 +161,12 @@ function Media() {
       url: "https://www.youtube.com/embed/kgOce4D3KsM?si=VNBj0Bi36yMyJ2D5",
       preview: "https://img.youtube.com/vi/kgOce4D3KsM/0.jpg",
     },
+    {
+      title: "Movecast Episode #23",
+      description: "Cross-chain AI agents with PicWE on Movement Labs",
+      url: "https://www.youtube.com/embed/qyODsnLlLCg?si=Ley43q63HZBCtLZI",
+      preview: "https://img.youtube.com/vi/qyODsnLlLCg/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
