@@ -167,6 +167,12 @@ function Media() {
       url: "https://www.youtube.com/embed/qyODsnLlLCg?si=Ley43q63HZBCtLZI",
       preview: "https://img.youtube.com/vi/qyODsnLlLCg/0.jpg",
     },
+    {
+      title: "Movecast Episode #24",
+      description: "Unlocking Cross-Chain Liquidity on Movement",
+      url: "https://www.youtube.com/embed/wm4RMrVvkAc?si=fdG-dds_dQJnnOgt",
+      preview: "https://img.youtube.com/vi/wm4RMrVvkAc/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
