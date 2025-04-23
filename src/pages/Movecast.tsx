@@ -173,6 +173,12 @@ function Media() {
       url: "https://www.youtube.com/embed/wm4RMrVvkAc?si=fdG-dds_dQJnnOgt",
       preview: "https://img.youtube.com/vi/wm4RMrVvkAc/0.jpg",
     },
+    {
+      title: "Movecast Episode #25",
+      description: "Arkai's first Moves on Movement",
+      url: "https://www.youtube.com/embed/oY1hliFpknI?si=9iR8vzJROXGr_4I8",
+      preview: "https://img.youtube.com/vi/oY1hliFpknI/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
