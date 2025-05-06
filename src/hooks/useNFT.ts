@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import useMovement from "./useMovement";
 import { graphql } from "../gql";
+import { INDEXER_URL } from "../constants";
+import { request } from "graphql-request";
 
 const query = graphql(`
   query GetNft($id: String, $collectionId: String!) {
@@ -32,13 +33,11 @@ const query = graphql(`
 `);
 
 export function useNFT(id: string, collectionId: string) {
-  const { graphqlRequest, indexerUrl } = useMovement();
-
   return useQuery({
     queryKey: ["nft", id],
     queryFn: async () => {
       try {
-        const res = await graphqlRequest(indexerUrl, query, {
+        const res = await request(INDEXER_URL, query, {
           id,
           collectionId: collectionId,
         });

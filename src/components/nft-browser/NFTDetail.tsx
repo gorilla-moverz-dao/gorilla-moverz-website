@@ -3,22 +3,20 @@ import { useNFT } from "../../hooks/useNFT";
 import { Badge, Box, Button, Flex, HStack, Image, Spinner, Text } from "@chakra-ui/react";
 import BoxBlurred from "../BoxBlurred";
 import PageTitle from "../PageTitle";
-import { truncateAddress } from "@aptos-labs/wallet-adapter-react";
 import { QRCodeCanvas } from "qrcode.react";
 import { useState } from "react";
-import { FOUNDERS_COLLECTION_ID } from "../../constants";
 
-function NFTDetail() {
+function NFTDetail({ collectionId, prefix, digits }: { collectionId: string; prefix: string; digits: number }) {
   const { id } = useParams();
-  const { data: nft, isLoading } = useNFT("Gorilla Founder #" + id, FOUNDERS_COLLECTION_ID);
+  const paddedId = id?.padStart(digits, "0");
+  const { data: nft, isLoading } = useNFT(prefix + paddedId, collectionId);
   const [showQRCode, setShowQRCode] = useState(false);
 
   if (isLoading) return <Spinner />;
   if (!nft) return <div>NFT not found</div>;
 
   const properties = nft.current_token_data?.token_properties;
-  const imageUrl =
-    "https://pinphweythafvrejqfgm.supabase.co/storage/v1/object/public/nft-founders-collection/images/" + id + ".png";
+  const imageUrl = nft.current_token_data?.token_uri;
 
   return (
     <Flex direction={{ base: "column", md: "row" }} gap={6}>
@@ -81,7 +79,7 @@ function NFTDetail() {
               Owner
             </Badge>
             <Badge fontSize={"14px"} paddingX={2} borderRadius={"4px"} colorScheme={"green"}>
-              {truncateAddress(nft.owner_address)}
+              {nft.owner_address ? `${nft.owner_address.slice(0, 6)}...${nft.owner_address.slice(-4)}` : ""}
             </Badge>
           </HStack>
         </BoxBlurred>

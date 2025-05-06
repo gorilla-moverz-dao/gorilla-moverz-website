@@ -1,19 +1,28 @@
 import { Card, CardBody } from "@chakra-ui/react";
-import { FOUNDERS_COLLECTION_ID } from "../../constants";
 import { Heading, SimpleGrid, Spinner, Stack } from "@chakra-ui/react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useLocation, useNavigate, useMatch } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
 import NFTFilter from "./NFTFilter";
 import { useInfiniteCollectionNFTs } from "../../hooks/useInfiniteCollectionNFTs";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
-function NFTBrowser() {
-  const searchParams = new URLSearchParams(useLocation().search);
+function NFTBrowser({ collectionId, collectionName }: { collectionId: string; collectionName: string }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isDetailPageActive = useMatch(`/nfts/${collectionName}/:tokenId`) !== null;
+  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const filterFromQueryString = searchParams.get("filter");
   const [filter, setFilter] = useState(filterFromQueryString ? JSON.parse(filterFromQueryString) : {});
-  const navigate = useNavigate();
-  const isDetailPageActive = useLocation().pathname.includes("nfts/founder");
+
+  useEffect(() => {
+    const newFilterFromQueryString = searchParams.get("filter");
+    if (newFilterFromQueryString) {
+      setFilter(JSON.parse(newFilterFromQueryString));
+    } else {
+      setFilter({});
+    }
+  }, [searchParams]);
 
   const buildFilter = (property: string, value: string) => {
     const newFilter = { ...filter };
@@ -26,11 +35,11 @@ function NFTBrowser() {
 
     // Add filter to query string
     const queryString = JSON.stringify(newFilter);
-    navigate(`/nfts?filter=${queryString}`);
+    navigate(`/nfts/${collectionName}?filter=${queryString}`);
   };
 
   const { data, isLoading, fetchNextPage, hasNextPage, error } = useInfiniteCollectionNFTs({
-    collection_id: { _eq: FOUNDERS_COLLECTION_ID },
+    collection_id: { _eq: collectionId },
     token_properties: { _contains: filter },
   });
 
@@ -42,7 +51,7 @@ function NFTBrowser() {
 
   return (
     <div>
-      <NFTFilter filter={filter} onFilterChange={buildFilter} />
+      <NFTFilter collectionName={collectionName} filter={filter} onFilterChange={buildFilter} />
       <InfiniteScroll
         dataLength={itemsCount}
         next={fetchNextPage}
@@ -57,17 +66,13 @@ function NFTBrowser() {
                   className="gorillaz-card"
                   key={nft.token_data_id}
                   onClick={() => {
-                    navigate(`/nfts/founder/${nft.token_name.split("#")[1]}`);
+                    navigate(`/nfts/${collectionName}/${nft.token_name.split("#")[1]}`);
                   }}
                 >
                   <CardBody>
                     <LazyLoadImage
                       alt={nft.description}
-                      src={
-                        "https://pinphweythafvrejqfgm.supabase.co/storage/v1/object/public/nft-founders-collection/images/" +
-                        nft.token_name.split("#")[1] +
-                        ".png"
-                      }
+                      src={nft.token_uri}
                       width={260}
                       height={260}
                       effect="blur"
