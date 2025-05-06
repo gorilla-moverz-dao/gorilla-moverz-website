@@ -27,14 +27,26 @@ const router = createBrowserRouter([
         element: <GorillaNFTOverview />,
         children: [
           {
-            element: <GorillaNFT collectionId={FOUNDERS_COLLECTION_ID} title="Founders Edition" path="founder" />,
+            element: <GorillaNFT collectionId={FOUNDERS_COLLECTION_ID} title="Founders Collection" path="founder" />,
             path: "founder",
-            children: [{ path: ":id", element: <NFTDetail collectionId={FOUNDERS_COLLECTION_ID} /> }],
+            children: [
+              {
+                path: ":id",
+                element: <NFTDetail collectionId={FOUNDERS_COLLECTION_ID} prefix="Gorilla Founder #" digits={3} />,
+              },
+            ],
           },
           {
-            element: <GorillaNFT collectionId={COMMUNITY_COLLECTION_ID} title="Community Edition" path="community" />,
+            element: (
+              <GorillaNFT collectionId={COMMUNITY_COLLECTION_ID} title="Community Collection" path="community" />
+            ),
             path: "community",
-            children: [{ path: ":id", element: <NFTDetail collectionId={COMMUNITY_COLLECTION_ID} /> }],
+            children: [
+              {
+                path: ":id",
+                element: <NFTDetail collectionId={COMMUNITY_COLLECTION_ID} prefix="Gorilla Mover #" digits={4} />,
+              },
+            ],
           },
         ],
       },

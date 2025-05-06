@@ -6,9 +6,10 @@ import PageTitle from "../PageTitle";
 import { QRCodeCanvas } from "qrcode.react";
 import { useState } from "react";
 
-function NFTDetail({ collectionId }: { collectionId: string }) {
+function NFTDetail({ collectionId, prefix, digits }: { collectionId: string; prefix: string; digits: number }) {
   const { id } = useParams();
-  const { data: nft, isLoading } = useNFT("Gorilla Mover #" + id, collectionId);
+  const paddedId = id?.padStart(digits, "0");
+  const { data: nft, isLoading } = useNFT(prefix + paddedId, collectionId);
   const [showQRCode, setShowQRCode] = useState(false);
 
   if (isLoading) return <Spinner />;

@@ -27,6 +27,7 @@ function GorillaNFTOverview() {
             </CardBody>
           </Card>
 
+          {/*
           <Card className="gorillaz-card">
             <CardBody onClick={() => navigate("/nfts/community")}>
               <Image src="images/collection-community.png"></Image>
@@ -37,6 +38,7 @@ function GorillaNFTOverview() {
               </Stack>
             </CardBody>
           </Card>
+          */}
         </SimpleGrid>
       </>
     );
@@ -55,7 +57,9 @@ function GorillaNFTOverview() {
       >
         <TabList>
           <Tab>Founders Collection</Tab>
+          {/*
           <Tab>Community Collection</Tab>
+          */}
         </TabList>
       </Tabs>
 
