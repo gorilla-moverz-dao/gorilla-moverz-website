@@ -161,6 +161,24 @@ function Media() {
       url: "https://www.youtube.com/embed/kgOce4D3KsM?si=VNBj0Bi36yMyJ2D5",
       preview: "https://img.youtube.com/vi/kgOce4D3KsM/0.jpg",
     },
+    {
+      title: "Movecast Episode #23",
+      description: "Cross-chain AI agents with PicWE on Movement Labs",
+      url: "https://www.youtube.com/embed/qyODsnLlLCg?si=Ley43q63HZBCtLZI",
+      preview: "https://img.youtube.com/vi/qyODsnLlLCg/0.jpg",
+    },
+    {
+      title: "Movecast Episode #24",
+      description: "Unlocking Cross-Chain Liquidity on Movement",
+      url: "https://www.youtube.com/embed/wm4RMrVvkAc?si=fdG-dds_dQJnnOgt",
+      preview: "https://img.youtube.com/vi/wm4RMrVvkAc/0.jpg",
+    },
+    {
+      title: "Movecast Episode #25",
+      description: "Arkai's first Moves on Movement",
+      url: "https://www.youtube.com/embed/oY1hliFpknI?si=9iR8vzJROXGr_4I8",
+      preview: "https://img.youtube.com/vi/oY1hliFpknI/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
