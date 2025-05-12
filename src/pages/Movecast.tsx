@@ -179,6 +179,12 @@ function Media() {
       url: "https://www.youtube.com/embed/oY1hliFpknI?si=9iR8vzJROXGr_4I8",
       preview: "https://img.youtube.com/vi/oY1hliFpknI/0.jpg",
     },
+    {
+      title: "Movecast Episode #26",
+      description: "Canopy is bringing Liquidity to Movement",
+      url: "https://www.youtube.com/embed/Wje3WZfgohU?si=UNHHH8oK5g0I__MM",
+      preview: "https://img.youtube.com/vi/Wje3WZfgohU/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
