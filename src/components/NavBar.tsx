@@ -11,6 +11,7 @@ function NavBar({ onClose }: Props) {
   const navigation = [
     { to: "/", label: "Home" },
     { to: "/nfts", label: "Gorilla NFTs" },
+    { to: "https://cc.gorilla-moverz.xyz", label: "Mint NFTs" },
     { to: "/checker", label: "Checker" },
     { to: "/media", label: "Movecast" },
     { to: "/gallery", label: "Gallery" },
@@ -24,14 +25,18 @@ function NavBar({ onClose }: Props) {
         <Box padding={2} paddingTop={4} paddingBottom={2}>
           {navigation.map((nav) => (
             <Box key={nav.to} padding={2} paddingBottom={4}>
-              <NavLink to={nav.to}>
+              <NavLink to={nav.to} target={nav.to.startsWith("https://") ? "_blank" : undefined}>
                 {({ isActive }) => (
                   <Button
                     style={{ width: "100%" }}
                     colorScheme={isActive ? "green" : "gray"}
                     className={isActive ? "active" : ""}
                     onClick={() => {
-                      navigate(nav.to);
+                      if (nav.to.startsWith("https://")) {
+                        window.open(nav.to, "_blank");
+                      } else {
+                        navigate(nav.to);
+                      }
                       onClose?.();
                     }}
                   >

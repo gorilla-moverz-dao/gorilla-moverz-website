@@ -18,7 +18,7 @@ function GorillaNFTOverview() {
         <SimpleGrid spacing={4} templateColumns="repeat(auto-fill, minmax(49%, 420px))">
           <Card className="gorillaz-card">
             <CardBody onClick={() => navigate("/nfts/founder")}>
-              <Image src="images/collection-founder.png"></Image>
+              <Image src="images/collection-founder.webp"></Image>
               <Stack mt="6" spacing="3">
                 <Heading size="md" color="green.600">
                   Founders Collection
@@ -27,10 +27,9 @@ function GorillaNFTOverview() {
             </CardBody>
           </Card>
 
-          {/*
           <Card className="gorillaz-card">
             <CardBody onClick={() => navigate("/nfts/community")}>
-              <Image src="images/collection-community.png"></Image>
+              <Image src="images/collection-community.webp"></Image>
               <Stack mt="6" spacing="3">
                 <Heading size="md" color="green.600">
                   Community Collection
@@ -38,7 +37,6 @@ function GorillaNFTOverview() {
               </Stack>
             </CardBody>
           </Card>
-          */}
         </SimpleGrid>
       </>
     );
@@ -57,9 +55,7 @@ function GorillaNFTOverview() {
       >
         <TabList>
           <Tab>Founders Collection</Tab>
-          {/*
           <Tab>Community Collection</Tab>
-          */}
         </TabList>
       </Tabs>
 
