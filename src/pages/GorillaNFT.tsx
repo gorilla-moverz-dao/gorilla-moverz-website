@@ -3,7 +3,6 @@ import PageTitle from "../components/PageTitle";
 import NFTBrowser from "../components/nft-browser/NFTBrowser";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { Text } from "@chakra-ui/react";
-import { COMMUNITY_COLLECTION_ID } from "../constants";
 
 function GorillaNFT({ collectionId, title, path }: { collectionId: string; title: string; path: string }) {
   const detailRouteActive = useLocation().pathname.includes(path + "/");
@@ -34,18 +33,6 @@ function GorillaNFT({ collectionId, title, path }: { collectionId: string; title
       <Text fontSize="sm" color="gray.300">
         Collection: {collectionId}
       </Text>
-      {collectionId === COMMUNITY_COLLECTION_ID && (
-        <div style={{ marginBottom: "16px" }}>
-          Mint at:{" "}
-          <Link
-            to="https://cc.gorilla-moverz.xyz"
-            target="_blank"
-            style={{ textDecoration: "underline", color: "lightgreen", fontWeight: "bold" }}
-          >
-            cc.gorilla-moverz.xyz
-          </Link>
-        </div>
-      )}
 
       <Outlet />
       <div style={{ display: detailRouteActive ? "none" : "block" }}>

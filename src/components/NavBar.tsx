@@ -11,7 +11,6 @@ function NavBar({ onClose }: Props) {
   const navigation = [
     { to: "/", label: "Home" },
     { to: "/nfts", label: "Gorilla NFTs" },
-    { to: "https://cc.gorilla-moverz.xyz", label: "Mint NFTs" },
     { to: "/checker", label: "Checker" },
     { to: "/media", label: "Movecast" },
     { to: "/gallery", label: "Gallery" },
