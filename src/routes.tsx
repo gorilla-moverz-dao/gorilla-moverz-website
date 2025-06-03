@@ -10,7 +10,6 @@ import BeaconEventsPage from "./pages/BeaconEventsPage";
 
 import GalleryPage from "./pages/GalleryPage";
 import NFTDetail from "./components/nft-browser/NFTDetail";
-import CheckerPage from "./pages/CheckerPage";
 import { COMMUNITY_COLLECTION_ID, FOUNDERS_COLLECTION_ID } from "./constants";
 import GorillaNFTOverview from "./pages/GorillaNFTOverview";
 
@@ -54,7 +53,6 @@ const router = createBrowserRouter([
       { path: "gallery", element: <GalleryPage /> },
       { path: "partners", element: <Partners /> },
       { path: "beacon-events", element: <BeaconEventsPage /> },
-      { path: "checker", element: <CheckerPage /> },
     ],
   },
 ]);
