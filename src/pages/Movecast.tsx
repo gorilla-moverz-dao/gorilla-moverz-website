@@ -185,6 +185,18 @@ function Media() {
       url: "https://www.youtube.com/embed/Wje3WZfgohU?si=UNHHH8oK5g0I__MM",
       preview: "https://img.youtube.com/vi/Wje3WZfgohU/0.jpg",
     },
+    {
+      title: "Movecast Episode #27",
+      description: "Community Management as kickstarter for your web3 career",
+      url: "https://www.youtube.com/embed/2r5G7K885cI?si=BpME6puIdz0PkLOs",
+      preview: "https://img.youtube.com/vi/2r5G7K885cI/0.jpg",
+    },
+    {
+      title: "Movecast Episode #28",
+      description: "State of the Movement Community - Will at EthCC 2025",
+      url: "https://www.youtube.com/embed/vl6qoOeGRL0?si=4id4fqbTznfWyt8z",
+      preview: "https://img.youtube.com/vi/vl6qoOeGRL0/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
