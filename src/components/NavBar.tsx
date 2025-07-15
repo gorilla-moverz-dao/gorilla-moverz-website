@@ -14,7 +14,7 @@ function NavBar({ onClose }: Props) {
     { to: "/media", label: "Movecast" },
     { to: "/gallery", label: "Gallery" },
     //{ to: "/beacon-events", label: "Beacon Events" },
-    //{ to: "/partners", label: "Integrations" },
+    { to: "/partners", label: "Integrations" },
   ];
 
   return (

@@ -139,6 +139,7 @@ function Partners() {
           mission.
         </Text>
 
+        {/*
         <PageTitle size="lg" paddingTop={4}>
           Existing Integrations
         </PageTitle>
@@ -160,8 +161,9 @@ function Partners() {
             </GridItem>
           ))}
         </SimpleGrid>
+        */}
 
-        <PageTitle size="lg" paddingTop={12}>
+        <PageTitle size="lg" paddingTop={8}>
           Become integrated
         </PageTitle>
 
