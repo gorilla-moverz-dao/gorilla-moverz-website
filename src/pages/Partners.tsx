@@ -1,13 +1,9 @@
 import {
   Button,
-  Card,
-  CardBody,
   FormControl,
   FormErrorMessage,
   FormLabel,
-  GridItem,
   Input,
-  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -15,7 +11,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  SimpleGrid,
   Text,
   Textarea,
   useDisclosure,
@@ -34,69 +29,6 @@ function Partners() {
     formState: { errors, isValid },
   } = useForm<Partner>({ resolver: zodResolver(PartnerSchema) });
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const integrations = [
-    {
-      href: "https://movementlabs.xyz/",
-      src: "/partners/movement-logo-yellow-rgb.svg",
-      alt: "Movement Labs",
-    },
-    {
-      href: "https://razorwallet.xyz/",
-      src: "/partners/razor.png",
-      alt: "Razor DAO",
-    },
-    {
-      href: "https://www.henry.social/",
-      src: "/partners/henry_white_logo.png",
-      alt: "Henry Social",
-    },
-    {
-      href: "https://www.curvance.com/",
-      src: "/partners/curvance-logo-light.svg",
-      alt: "Curvance",
-    },
-    {
-      href: "https://www.brkt.gg/",
-      src: "/partners/brkt-logo.svg",
-      alt: "BRKT",
-    },
-    {
-      href: "https://interestprotocol.com/",
-      src: "/partners/interest-protocol-dark.svg",
-      alt: "Interest Protocol",
-    },
-    {
-      href: "https://www.upnetwork.xyz/",
-      src: "/partners/upnetwork-logo.png",
-      alt: "Up Network",
-    },
-    {
-      href: "https://t.co/wjbCLMmDFD",
-      src: "/partners/nexio.png",
-      alt: "Nexio",
-    },
-    {
-      href: "https://www.satay.finance/",
-      src: "/partners/satay.svg",
-      alt: "Satay Finance",
-    },
-    {
-      href: "https://www.movewiffrens.xyz/",
-      src: "/partners/movewiffrens.svg",
-      alt: "Movewiffrends",
-    },
-    {
-      href: "https://xebra.trade/",
-      src: "/partners/xebra.svg",
-      alt: "Xebra",
-    },
-    {
-      href: "https://v2.routex.io/",
-      src: "/partners/routex.png",
-      alt: "Route-X",
-    },
-  ];
 
   const onSubmit = async (partner: Partner) => {
     const { error } = await supabase.from("partner").insert([partner]);
@@ -138,30 +70,6 @@ function Partners() {
           Movement and the whole Movement Ecosystem. We work closely with the Movement team in striving to fulfil our
           mission.
         </Text>
-
-        {/*
-        <PageTitle size="lg" paddingTop={4}>
-          Existing Integrations
-        </PageTitle>
-
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={5}>
-          {integrations.map((partner, index) => (
-            <GridItem key={index} verticalAlign="center" style={{ display: "flex", alignItems: "center" }}>
-              <Card className="gorillaz-card" width="100%" height="100%" alignItems="center">
-                <CardBody style={{ alignContent: "center", justifyContent: "center", backgroundColor: "10px" }}>
-                  <Link href={partner.href} target="_blank" isExternal>
-                    <img
-                      style={{ maxWidth: "300px", width: "100%", maxHeight: "60px" }}
-                      src={partner.src}
-                      alt={partner.alt}
-                    />
-                  </Link>
-                </CardBody>
-              </Card>
-            </GridItem>
-          ))}
-        </SimpleGrid>
-        */}
 
         <PageTitle size="lg" paddingTop={8}>
           Become integrated
