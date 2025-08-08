@@ -197,6 +197,12 @@ function Media() {
       url: "https://www.youtube.com/embed/vl6qoOeGRL0?si=4id4fqbTznfWyt8z",
       preview: "https://img.youtube.com/vi/vl6qoOeGRL0/0.jpg",
     },
+    {
+      title: "Movecast Episode #29",
+      description: "Outlook on Movement - Torab on the Transition into MOVE Industries",
+      url: "https://www.youtube.com/embed/PPXiDPjGc3A?si=MGl4RbVXon2oHnSQ",
+      preview: "https://img.youtube.com/vi/PPXiDPjGc3A/0.jpg",
+    },
   ].reverse();
   const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
 
