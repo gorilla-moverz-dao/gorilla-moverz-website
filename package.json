@@ -15,8 +15,7 @@
   "dependencies": {
     "@chakra-ui/react": "2.10.7",
     "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.5",
-    "@graphql-codegen/cli": "^5.0.2",
+    "@emotion/styled": "^11.11.5",    
     "@hookform/resolvers": "^3.6.0",
     "@parcel/watcher": "^2.4.1",
     "@supabase/supabase-js": "^2.43.4",
@@ -43,7 +42,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "5.0.2",
+    "@graphql-codegen/cli": "^5.0.2",
     "@graphql-codegen/client-preset": "4.3.3",
     "@types/js-yaml": "^4.0.9",
     "@types/react": "^18.2.66",
